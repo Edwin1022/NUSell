@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "NUSell",
+    "slug": "NUSell",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/NUSell_app_icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ca77ad1f-8cae-4276-833a-a7cc6a602de4"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/ca77ad1f-8cae-4276-833a-a7cc6a602de4"
+    }
+  }
+}
