@@ -13,6 +13,7 @@ import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
 import ConfirmationScreen from "../screens/ConfirmationScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import UserAccountScreen from "../screens/UserAccountScreen";
+import ItemListingScreen from "../screens/ItemListingScreen";
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -32,6 +33,21 @@ const StackNavigator = () => {
                 <Entypo name="home" size={24} color="#007FFF" />
               ) : (
                 <AntDesign name="home" size={24} color="black" />
+              ),
+          }}
+        />
+        <Tab.Screen
+          name="Sell"
+          component={ItemListingScreen}
+          options={{
+            tabBarLabel: "Sell",
+            tabBarLabelStyle: { color: "#007FFF" },
+            //headerShown: false,
+            tabBarIcon: ({ focused }) =>
+              focused ? (
+                <Ionicons name="add-circle" size={24} color="#007FFF" />
+              ) : (
+                <Ionicons name="add-circle" size={24} color="black" />
               ),
           }}
         />

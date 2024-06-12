@@ -67,7 +67,7 @@ const UserAccountScreen = () => {
   // retrieve user data from the backend
   useEffect(() => {
     axios
-      .get(`http://192.168.0.110:8000/users/getUserData?email=${user.email}`)
+      .get(`http://192.168.0.115:8000/users/getUserData?email=${user.email}`)
       .then((res) => {
         setUser(res.data.data);
       })
@@ -200,7 +200,7 @@ const UserAccountScreen = () => {
 
       // send a post request to the backend API
       const response = await axios.post(
-        "http://192.168.0.110:8000/users/updateProfile",
+        "http://192.168.0.115:8000/users/updateProfile",
         formData,
         {
           headers: {
