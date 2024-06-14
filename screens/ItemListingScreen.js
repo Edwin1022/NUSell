@@ -6,7 +6,6 @@ import {
   View,
   Image,
   Alert,
-  Button,
   TextInput,
   TouchableOpacity,
   Pressable,
@@ -17,64 +16,152 @@ import Back from "react-native-vector-icons/Ionicons";
 import CustomButton from "../components/CustomButton";
 import { StyleSheet } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
+import * as ImagePicker from "expo-image-picker";
+import ModalScreen from "./ModalScreen";
+import axios from "axios";
+import { createIconSetFromFontello } from "react-native-vector-icons";
 
 const ItemListingScreen = () => {
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const placeholderImage = "";
+
   //category states
   const [value, setValue] = useState(null);
   const data = [
-    { label: "Computers and Tech", value: "computers and tech" },
-    { label: "Women's Fashion", value: "women's fashion" },
-    { label: "Men's Fashion", value: "men's fashion" },
-    { label: "Luxury", value: "luxury" },
-    { label: "Mobile Phones & Gadgets", value: "mobile phones & gadgets" },
-    { label: "Video Gaming", value: "video gaming" },
-    { label: "Audio", value: "audio" },
-    { label: "Photography", value: "photography" },
-    { label: "TV & Home Appliances", value: "tv & home appliances" },
-    { label: "Sports Equipments", value: "sports equipments" },
-    { label: "Others", value: "others" },
+    {
+      label: "Computers and Tech",
+      value: "666bffdbadffbb04e4c808b5",
+    },
+    {
+      label: "Women's Fashion",
+      value: "666c0060adffbb04e4c808b7",
+    },
+    {
+      label: "Men's Fashion",
+      value: "666c0070adffbb04e4c808b9",
+    },
+    { label: "Sneakers", value: "666c07c8eec38cf6815cfc8c" },
+    { label: "Luxury", value: "666c0090adffbb04e4c808bb" },
+    {
+      label: "Mobile Phones & Gadgets",
+      value: "666c00dbadffbb04e4c808bd",
+    },
+    {
+      label: "Video Gaming",
+      value: "666c0120adffbb04e4c808bf",
+    },
+    { label: "Books", value: "666c01a0adffbb04e4c808c1" },
+    {
+      label: "Collectibles",
+      value: "666c01b6adffbb04e4c808c3",
+    },
+    {
+      label: "Electronics & Home Appliances",
+      value: "666c01d9adffbb04e4c808c5",
+    },
+    {
+      label: "Furnitures",
+      value: "666c0826eec38cf6815cfc8e",
+    },
+    {
+      label: "Household Goods",
+      value: "666c083ceec38cf6815cfc90",
+    },
+    {
+      label: "Skincare products",
+      value: "666c0858eec38cf6815cfc92",
+    },
+    { label: "Snacks", value: "666c086ceec38cf6815cfc94" },
+    {
+      label: "Sports Equipments",
+      value: "666c01f7adffbb04e4c808c7",
+    },
+    {
+      label: "Concert Tickets",
+      value: "666c0238adffbb04e4c808c9",
+    },
+    { label: "Others", value: "666c025badffbb04e4c808cb" },
   ];
-  //button states
-  const [isPressedUsedButton, setIsPressedUsedButton] = useState(false);
-  const [isPressedBrandNewButton, setIsPressedBrandNewButton] = useState(false);
 
   //text input states
+  const [image, setImage] = useState();
   const [itemName, setItemName] = useState("");
   const [itemDescription, setItemDescription] = useState("");
+  const [brand, setBrand] = useState("");
+  const [condition, setCondition] = useState("");
   const [price, setPrice] = useState("");
 
+  const [errorImage, setErrorImage] = useState();
   const [errorItemName, setErrorItemName] = useState("");
   const [errorItemDescription, setErrorItemDescription] = useState("");
+  const [errorBrand, setErrorBrand] = useState("");
   const [errorCategory, setErrorCategory] = useState("");
   const [errorCondition, setErrorCondition] = useState("");
   const [errorPrice, setErrorPrice] = useState("");
 
-  //handle UsedButton
-  const handlePressUsedButton = () => {
-    setIsPressedUsedButton(!isPressedUsedButton);
-    if (isPressedBrandNewButton) {
-      setIsPressedBrandNewButton(false);
+  // allow users to upload their profile pictures
+  const uploadImage = async (mode) => {
+    try {
+      let result = {};
+
+      if (mode == "gallery") {
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+        result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          aspect: [1, 1],
+          quality: 1,
+        });
+      } else {
+        await ImagePicker.requestCameraPermissionsAsync();
+        result = await ImagePicker.launchCameraAsync({
+          cameraType: ImagePicker.CameraType.back,
+          allowsEditing: true,
+          aspect: [1, 1],
+          quality: 1,
+        });
+      }
+
+      if (!result.canceled) {
+        // save image
+        setImage(result.assets[0].uri);
+        setModalVisible(false);
+      }
+    } catch (error) {
+      Alert.alert("Error uploading image: " + error.message);
+      setModalVisible(false);
     }
   };
 
-  //handleBrandNewButton
-  const handlePressBrandNewButton = () => {
-    setIsPressedBrandNewButton(!isPressedBrandNewButton);
-    if (isPressedUsedButton) {
-      setIsPressedUsedButton(false);
+  // allow users to delete their profile pictures
+  const removeImage = async () => {
+    try {
+      setImage(placeholderImage);
+      setModalVisible(false);
+    } catch ({ message }) {
+      Alert.alert(message);
+      setModalVisible(false);
     }
   };
 
   //handle Publish logic
-  const handlePublish = () => {
+  const handlePublish = async () => {
+    setErrorImage(null);
     setErrorItemName(null);
     setErrorItemDescription(null);
+    setErrorBrand(null);
     setErrorCategory(null);
     setErrorCondition(null);
     setErrorPrice(null);
 
     let isValid = true;
+
+    if (!image) {
+      setErrorImage("Please provide an item image");
+      isValid = false;
+    }
 
     if (!itemName.trim()) {
       setErrorItemName("Please provide an item name");
@@ -86,12 +173,17 @@ const ItemListingScreen = () => {
       isValid = false;
     }
 
+    if (!brand.trim()) {
+      setErrorBrand("Please provide the item brand");
+      isValid = false;
+    }
+
     if (!value) {
       setErrorCategory("Please select a category");
       isValid = false;
     }
 
-    if (!isPressedUsedButton && !isPressedBrandNewButton) {
+    if (!condition) {
       setErrorCondition("Please select a condition");
       isValid = false;
     }
@@ -103,8 +195,64 @@ const ItemListingScreen = () => {
 
     if (isValid) {
       Alert.alert("Published successfully!");
+    } else {
+      return;
+    }
+
+    const product = {
+      name: itemName,
+      description: itemDescription,
+      image: image,
+      brand: brand,
+      price: price,
+      category: value,
+      condition: condition,
+    };
+
+    try {
+      const formData = new FormData();
+      formData.append("product", JSON.stringify(product));
+      formData.append("image", {
+        uri: image,
+        type: "image/jpeg",
+        name: "profile.jpg",
+      });
+
+      // send a post request to the backend API
+      const response = await axios.post(
+        "http://192.168.0.110:8000/products",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      Alert.alert(
+        "Product Listed Successful",
+        "You have listed your product successfully"
+      );
+
+      navigation.navigate("Home");
+
+      setImage("");
+      setItemName("");
+      setItemDescription("");
+      setBrand("");
+      setValue("");
+      setCondition("");
+      setPrice(0);
+    } catch (error) {
+      console.log("product listed failed", error);
+      Alert.alert(
+        "Profile Update Error",
+        "An error occurred while listing product"
+      );
     }
   };
+
+  console.log(value);
 
   // header
   useLayoutEffect(() => {
@@ -129,10 +277,7 @@ const ItemListingScreen = () => {
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
     >
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={{ marginLeft: 10 }}
-      >
+      <ScrollView showsVerticalScrollIndicator={false}>
         <KeyboardAvoidingView>
           <View style={{ alignItems: "center", marginTop: 10 }}>
             <Text
@@ -147,75 +292,79 @@ const ItemListingScreen = () => {
             </Text>
           </View>
 
-          <TouchableOpacity>
-            <View style={styles.photoUpload}>
-              <View>
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
+            <ModalScreen
+              image={image}
+              placeholderImage={placeholderImage}
+              isVisible={modalVisible}
+              onClose={() => setModalVisible(false)}
+              onCameraPress={uploadImage}
+              onImagePress={() => uploadImage("gallery")}
+              onDeletePress={removeImage}
+            />
+
+            {image ? (
+              <View
+                style={{
+                  alignItems: "center",
+                  marginTop: 20,
+                  flex: 1,
+                  width: 350,
+                  borderWidth: 1,
+                  borderRadius: 10,
+                }}
+              >
                 <Image
                   source={{
-                    uri: "https://static-00.iconduck.com/assets.00/camera-icon-512x417-vgmhgbfy.png",
+                    uri: image,
                   }}
-                  style={styles.itemPhoto}
+                  style={{
+                    borderWidth: 1,
+                    borderRadius: 10,
+                    width: 350,
+                    height: 200,
+                  }}
                 />
               </View>
+            ) : (
+              <View style={styles.photoUpload}>
+                <View>
+                  <Image
+                    source={{
+                      uri: "https://static-00.iconduck.com/assets.00/camera-icon-512x417-vgmhgbfy.png",
+                    }}
+                    style={styles.itemPhoto}
+                  />
+                </View>
 
-              <Text style={{ fontSize: 20 }}>Add photo to start a listing</Text>
-            </View>
+                <Text style={{ fontSize: 20 }}>
+                  Add photo to start a listing
+                </Text>
+              </View>
+            )}
+
+            {!!errorCondition && (
+              <Text style={styles.error}>{errorImage}</Text>
+            )}
           </TouchableOpacity>
 
-          <View style={{ alignItems: "center" }}>
-            <ScrollView horizontal style={{ marginTop: 20 }}>
-              <TouchableOpacity>
-                <View style={styles.morePhotosContainer}>
-                  <Image
-                    source={{
-                      uri: "https://cdn-icons-png.flaticon.com/512/262/262038.png",
-                    }}
-                    style={styles.photoItem}
-                  />
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={styles.morePhotosContainer}>
-                  <Image
-                    source={{
-                      uri: "https://cdn-icons-png.flaticon.com/512/262/262038.png",
-                    }}
-                    style={styles.photoItem}
-                  />
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={styles.morePhotosContainer}>
-                  <Image
-                    source={{
-                      uri: "https://cdn-icons-png.flaticon.com/512/262/262038.png",
-                    }}
-                    style={styles.photoItem}
-                  />
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={styles.morePhotosContainer}>
-                  <Image
-                    source={{
-                      uri: "https://cdn-icons-png.flaticon.com/512/262/262038.png",
-                    }}
-                    style={styles.photoItem}
-                  />
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={styles.morePhotosContainer}>
-                  <Image
-                    source={{
-                      uri: "https://cdn-icons-png.flaticon.com/512/262/262038.png",
-                    }}
-                    style={styles.photoItem}
-                  />
-                </View>
-              </TouchableOpacity>
-            </ScrollView>
-          </View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("MorePhotos")}
+            style={styles.sidePhotosUpload}
+          >
+            <View>
+              <Image
+                source={{
+                  uri: "https://static-00.iconduck.com/assets.00/camera-icon-512x417-vgmhgbfy.png",
+                }}
+                style={styles.sidePhotos}
+              />
+            </View>
+
+            <Text style={{ fontSize: 17, marginLeft: 10 }}>
+              Add more photos of your product
+            </Text>
+          </TouchableOpacity>
 
           <View style={{ marginBottom: 20, marginTop: 20 }}>
             <Text style={styles.Title}>Item Name</Text>
@@ -249,6 +398,20 @@ const ItemListingScreen = () => {
             )}
           </View>
 
+          <View style={{ marginBottom: 20, marginTop: 20 }}>
+            <Text style={styles.Title}>Brand</Text>
+            <TextInput
+              value={brand}
+              onChangeText={setBrand}
+              style={styles.itemNameInput}
+              editable
+              multiline={true}
+              maxLength={100}
+              placeholder="What is the brand of this item?"
+            />
+            {!!errorBrand && <Text style={styles.error}>{errorBrand}</Text>}
+          </View>
+
           <View style={styles.container}>
             <Text style={styles.Title}>Category </Text>
             <Dropdown
@@ -267,21 +430,21 @@ const ItemListingScreen = () => {
             )}
           </View>
 
-          <View style={{ alignItems: "left" }}>
+          <View>
             <Text style={styles.Title}>Condition</Text>
             <View style={styles.conditionButtonContainer}>
               <Pressable
-                style={({ pressed }) => [
+                style={[
                   {
-                    backgroundColor: isPressedUsedButton ? "white" : "#007FFF",
+                    backgroundColor: condition === "Used" ? "#007FFF" : "white",
                   },
                   styles.usedButton,
                 ]}
-                onPress={handlePressUsedButton}
+                onPress={() => setCondition("Used")}
               >
                 <Text
                   style={[
-                    { color: isPressedUsedButton ? "#007FFF" : "white" },
+                    { color: condition === "Used" ? "white" : "#007FFF" },
                     styles.usedButtonText,
                   ]}
                 >
@@ -290,19 +453,18 @@ const ItemListingScreen = () => {
               </Pressable>
 
               <Pressable
-                style={({ pressed }) => [
+                style={[
                   {
-                    backgroundColor: isPressedBrandNewButton
-                      ? "white"
-                      : "#007FFF",
+                    backgroundColor:
+                      condition === "Brand New" ? "#007FFF" : "white",
                   },
                   styles.brandNewButton,
                 ]}
-                onPress={handlePressBrandNewButton}
+                onPress={() => setCondition("Brand New")}
               >
                 <Text
                   style={[
-                    { color: isPressedBrandNewButton ? "#007FFF" : "white" },
+                    { color: condition === "Brand New" ? "white" : "#007FFF" },
                     styles.brandNewButtonText,
                   ]}
                 >
@@ -368,6 +530,14 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
 
+  sidePhotos: {
+    height: 30,
+    width: 30,
+    resizeMode: "contain",
+    marginVertical: 10,
+    marginHorizontal: 10,
+  },
+
   photoUpload: {
     alignItems: "center",
     marginTop: 20,
@@ -375,6 +545,19 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     padding: 50,
+    width: 350,
+    borderColor: "gray",
+    borderWidth: 1,
+    borderRadius: 10,
+    borderStyle: "solid",
+  },
+
+  sidePhotosUpload: {
+    alignItems: "center",
+    marginTop: 20,
+    backgroundColor: "#D0D0D0",
+    flex: 1,
+    flexDirection: "row",
     width: 350,
     borderColor: "gray",
     borderWidth: 1,

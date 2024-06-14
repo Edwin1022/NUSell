@@ -54,7 +54,9 @@ router.get(`/:id`, async (req, res) => {
 });
 
 router.post(`/`, uploadOptions.single("image"), async (req, res) => {
-  const category = await Category.findById(req.body.category);
+  const productData = JSON.parse(req.body.product);
+
+  const category = await Category.findById(productData.category);
   if (!category) return res.status(400).send("Invalid Category");
 
   const file = req.file;
@@ -64,17 +66,15 @@ router.post(`/`, uploadOptions.single("image"), async (req, res) => {
   const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
 
   let product = new Product({
-    name: req.body.name,
-    description: req.body.description,
-    richDescription: req.body.richDescription,
+    name: productData.name,
+    description: productData.description,
+    richDescription: productData.richDescription,
     image: `${basePath}${fileName}`,
-    brand: req.body.brand,
-    price: req.body.price,
-    category: req.body.category,
-    countInStock: req.body.countInStock,
-    rating: req.body.rating,
-    numReviews: req.body.numReviews,
-    isFeatured: req.body.isFeatured,
+    brand: productData.brand,
+    price: productData.price,
+    category: productData.category,
+    countInStock: productData.countInStock,
+    isFeatured: productData.isFeatured,
   });
   product = await product.save();
 
@@ -106,7 +106,7 @@ router.put(`/:id`, async (req, res) => {
       numReviews: req.body.numReviews,
       isFeatured: req.body.isFeatured,
     },
-    { new: true },
+    { new: true }
   );
 
   if (!product) return res.status(500).send("the product cannot be updated");
@@ -173,13 +173,13 @@ router.put(
       {
         images: imagesPaths,
       },
-      { new: true },
+      { new: true }
     );
 
     if (!product) return res.status(500).send("the product cannot be updated");
 
     res.send(product);
-  },
+  }
 );
 
 module.exports = router;

@@ -20,6 +20,7 @@ import PurchaseScreen from "../screens/PurchaseScreen";
 import OrderScreen from "../screens/OrderScreen";
 import UserProfileScreen from "../screens/UserProfileScreen";
 import CartScreen from "../screens/CartScreen";
+import MorePhotosScreen from "../screens/MorePhotosScreen";
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -93,6 +94,7 @@ const StackNavigator = () => {
         <Stack.Screen name="Order" component={OrderScreen} />
         <Stack.Screen name="UserProfile" component={UserProfileScreen} />
         <Stack.Screen name="Cart" component={CartScreen} />
+        <Stack.Screen name="MorePhotos" component={MorePhotosScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
