@@ -116,7 +116,7 @@ const LoginScreen = () => {
             </Text>
           </View>
 
-          <View style={{ marginTop: 50 }}>
+          <View style={{ marginTop: 80 }}>
             <CustomInput
               name="email"
               iconName="email"
@@ -133,7 +133,7 @@ const LoginScreen = () => {
             />
           </View>
 
-          <View style={{ marginTop: 10 }}>
+          <View style={{ marginTop: 40 }}>
             <CustomInput
               name="password"
               iconName="lock1"

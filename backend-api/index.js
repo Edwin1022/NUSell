@@ -22,9 +22,17 @@ const port = process.env.PORT;
 const connection = process.env.CONNECTION;
 
 const usersRoutes = require("./routes/users");
+const categoriesRoutes = require("./routes/categories");
+const productsRoutes = require("./routes/products");
+const ordersRoutes = require("./routes/orders");
+const googleCloudVisionRoutes = require("./routes/googleCloudVision");
 
 //routers
 app.use(`/users`, usersRoutes);
+app.use(`/categories`, categoriesRoutes);
+app.use(`/products`, productsRoutes);
+app.use(`/orders`, ordersRoutes);
+app.use(`/googleCloudVision`, googleCloudVisionRoutes);
 
 mongoose
   .connect(connection)

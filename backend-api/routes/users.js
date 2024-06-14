@@ -234,7 +234,7 @@ router.post("/resetPasswordConfirm", async (req, res) => {
     // check if the verification codes match
     if (user.resetToken !== verificationCode) {
       return res
-        .status(300)
+        .status(401)
         .json({ message: "Verification codes do not match" });
     }
 
@@ -324,7 +324,11 @@ router.post("/updateProfile", upload.single("image"), async (req, res) => {
       {
         name: userData.name,
         gender: userData.gender,
+        studentId: userData.studentId,
+        faculty: userData.faculty,
+        major: userData.major,
         mobileNo: userData.mobileNo,
+        teleHandle: userData.teleHandle,
         image: imageName,
       },
       { new: true }
@@ -339,7 +343,7 @@ router.post("/updateProfile", upload.single("image"), async (req, res) => {
     });
   } catch (error) {
     console.log("error updating profile", error);
-    res.status(500).json({ message: "Profile failed to update" });
+    res.status(500).json({ message: "Failed to update profile" });
   }
 });
 
@@ -363,6 +367,114 @@ router.get("/getUserData", async (req, res) => {
     res.send({ status: "ok", data: user });
   } catch (error) {
     res.status(500).json({ status: "error", message: error.message });
+  }
+});
+
+// endpoint to add a new address to the database
+router.post("/addresses", async (req, res) => {
+  try {
+    const { userId, address } = req.body;
+
+    // find the user by the userId
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // add the new address to the user's addresses array
+    user.addresses.push(address);
+
+    // save the updated user in the backend
+    await user.save();
+
+    res.status(200).json({ message: "Address created successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error adding address" });
+  }
+});
+
+// endpoint to get all the addresses of a particular user
+router.get("/addresses/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // find the user by the userId
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const addresses = user.addresses;
+
+    res.status(200).json({ addresses });
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving the addresses" });
+  }
+});
+
+// endpoint to delete a particular address of a particular user from the database
+router.put("/addresses", async (req, res) => {
+  try {
+    const { userId, updatedAddresses } = req.body;
+
+    // find the user by the userId
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // update user's addresses array
+    user.addresses = updatedAddresses;
+
+    // save the updated user in the backend
+    await user.save();
+
+    res.status(200).json({ message: "Address deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting address" });
+  }
+});
+
+// endpoint to set default address of a particular user in the database
+router.post("/setDefaultAddress", async (req, res) => {
+  try {
+    const { userId, defaultAddressId, defaultAddress } = req.body;
+
+    // find the user by the userId
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // update user's default address
+    user.defaultAddress = defaultAddress;
+    user.defaultAddress._id = defaultAddressId
+
+    // save the updated user in the backend
+    await user.save();
+
+    res.status(200).json({ message: "Default address set successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error setting default address" });
+  }
+});
+
+// endpoint to get all the addresses of a particular user
+router.get("/getDefaultAddress/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // find the user by the userId
+    const user = await User.findById(userId).populate("defaultAddress");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const defaultAddress = user.defaultAddress;
+
+    res.status(200).json({ defaultAddress });
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving the default address" });
   }
 });
 

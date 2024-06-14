@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "nusell",
+  "private_key_id": "b5742f0b2ca4d9c092b28da44ee015d0fc827c89",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCzgb5Y2fFCyF6H\n9+yxVNbVZdC3S8RMevQazmz1S9zyfamFcQ9IEhtsxCYy5ypiobFHDwx6OOU0C2QO\nunuQd3RvWZw/9XLXzqMLw+XcSJGYJbrbJzKVSbXotABhq3Gkoi88Ah/5cXSt/Enh\nLTJAQ20GeFlAuNtp7Zyv9wWO3YLWerj7vWNUTZB7muZOLZ2CFBr8iOJjkeU3SUP7\n5gy29SbAKSUkXDuP22scKFh2bXGCtSpbviF9hlYWUeXX3WobkfWNx1fdYXz2dC/e\nzQ2yJqRe2EvK1z2E7sa6WqYhRLPLpkkDfvHarjnZfwFb4c4xxwokjJTYUacEvPkI\nqzmzlMCHAgMBAAECggEAG48AN6jiEtQrOymzc3gocWOruvBNZ0Z7IoBtlu06Mxpa\nw8tbQr/Q6Q5mJOt7hN/5FQU476y7d5WGG4LCxKeqPwwdYm5e3sXxHzXInNyhSaAF\nQ28No4DJBjxYUKZfEJz7rnVPDl8+QBXbC9CCBf60BsnEPh0DRox9wUAl4MyeMSot\nVOU6+I8YbgKzRnvRyebse2sv8Qujw9hI16JwjBh4NE9bqy6m1Nlp09yfYJHb8EkP\nWxT/UGzorvJpFuIdJF4VQGdsUhxxwxn3g3TD0pC5NPHu9YHyJdxLs8z71ngciI9q\nchzrke6jDedSo6amBNaOJxg10UUGKB01knezxKCRAQKBgQDa8mJYRNBSGSQnOYx9\nI4dR3kSS2JVUHXJDjkWtQqL7U41YxcY6WmDAPnCFyrfB8Jn4lP9CWDjHkGDJ3SSH\nfP1v6v6E03hCyAMoreXLqyvgyBr8+CEcsgm01sBYvNB9p1Hq6ugE+m5LvI0qL7oT\nI1OAoDg46SJ3p0wnjJ+PmrWBAQKBgQDR4qrMoKFPZ1U+JA74z85uz3oGih6TrxCZ\n3hEiSYmKMbsOZPbRJWSDrRJBf3HXKDxbQiaBejPK2nz/Mf47HMy8h9XYghl4rqiH\nu9Fh0sFrjMmZfRVsSBBL/KWsCyLBBWD5hF8pQdiHKuQPz3hH0rVCDhJPWl6DCFKj\nNgScT6S5hwKBgQC7OqkEyJvIiP1Uma7c2EQAq2zCknloO+IZiRFmb2SGPVXTAxVX\nky/HVd3NW6Q2MbTJUUjTiDPN3FYYaYayYh0r1q2eEmR13ypsYADxYMgd6aDCkMFo\nE4ufXEGR4Kz9ttajaAvPLgShuXSSDcw2T3A5v0k0yZCS97p025kbKXZrAQKBgCcZ\nk/oU/pgdRvsRmpxtkiaAjloDhxi6J1ySyxxZGL9e7lsLIhPqZGRHbLw48stDWqMh\nmqzKSDXFKD4eYR9ACUAiCguQiRA7cXf/3EzeB1xy2Oe4LrKCZk7RnUeEt4+/4cX6\nDARSmPTtX5k2bFDtBwlsN6sCydKdTU/Mc2VvTN+nAoGBALwXlS/XO/NF7HSii+xR\nDkeAmQuwmvxJZ4woEI1+pxY2ny/jI7zWXRSgp8ZPBEU/erdRy4MQIrDpyqMzueun\nr0jLl69nj7dDb9t26VkOEt2q3j+7QDil+mJRGSnEYSreR8duxZlI4x9xfWU74f/a\n9RGP1gm5hltLKVP3vQlJKDv9\n-----END PRIVATE KEY-----\n",
+  "client_email": "nusell@nusell.iam.gserviceaccount.com",
+  "client_id": "112573014936130650105",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/nusell%40nusell.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

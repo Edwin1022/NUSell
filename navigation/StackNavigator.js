@@ -13,6 +13,13 @@ import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
 import ConfirmationScreen from "../screens/ConfirmationScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import UserAccountScreen from "../screens/UserAccountScreen";
+import ItemListingScreen from "../screens/ItemListingScreen";
+import AddAddressScreen from "../screens/AddAddressScreen";
+import AddressScreen from "../screens/AddressScreen";
+import PurchaseScreen from "../screens/PurchaseScreen";
+import OrderScreen from "../screens/OrderScreen";
+import UserProfileScreen from "../screens/UserProfileScreen";
+import CartScreen from "../screens/CartScreen";
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -36,6 +43,21 @@ const StackNavigator = () => {
           }}
         />
         <Tab.Screen
+          name="Sell"
+          component={ItemListingScreen}
+          options={{
+            tabBarLabel: "Sell",
+            tabBarLabelStyle: { color: "#007FFF" },
+            //headerShown: false,
+            tabBarIcon: ({ focused }) =>
+              focused ? (
+                <Ionicons name="add-circle" size={24} color="#007FFF" />
+              ) : (
+                <Ionicons name="add-circle" size={24} color="black" />
+              ),
+          }}
+        />
+        <Tab.Screen
           name="Profile"
           component={ProfileScreen}
           options={{
@@ -49,52 +71,28 @@ const StackNavigator = () => {
               ),
           }}
         />
-        <Tab.Screen
-          name="Cart"
-          component={HomeScreen}
-          options={{
-            tabBarLabel: "Cart",
-            tabBarLabelStyle: { color: "#007FFF" },
-            headerShown: false,
-            tabBarIcon: ({ focused }) =>
-              focused ? (
-                <AntDesign name="shoppingcart" size={24} color="#007FFF" />
-              ) : (
-                <AntDesign name="shoppingcart" size={24} color="black" />
-              ),
-          }}
-        />
       </Tab.Navigator>
     );
   }
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-        />
-        <Stack.Screen
-          name="Register"
-          component={RegisterScreen}
-        />
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen
           name="Main"
           component={BottomTabs}
           options={{ headerShown: false }}
         />
-        <Stack.Screen
-          name="ForgotPassword"
-          component={ForgotPasswordScreen}
-        />
-        <Stack.Screen
-          name="Confirmation"
-          component={ConfirmationScreen}
-        />
-        <Stack.Screen
-          name="UserAccount"
-          component={UserAccountScreen}
-        />
+        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+        <Stack.Screen name="Confirmation" component={ConfirmationScreen} />
+        <Stack.Screen name="UserAccount" component={UserAccountScreen} />
+        <Stack.Screen name="Address" component={AddressScreen} />
+        <Stack.Screen name="AddAddress" component={AddAddressScreen} />
+        <Stack.Screen name="Purchase" component={PurchaseScreen} />
+        <Stack.Screen name="Order" component={OrderScreen} />
+        <Stack.Screen name="UserProfile" component={UserProfileScreen} />
+        <Stack.Screen name="Cart" component={CartScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

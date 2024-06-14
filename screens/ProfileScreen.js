@@ -1,16 +1,11 @@
-import {
-  Text,
-  View,
-  ScrollView,
-  Pressable,
-} from "react-native";
+import { Text, View, ScrollView, Pressable } from "react-native";
 import React, { useContext, useEffect, useLayoutEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import axios from "axios";
 import { UserContext } from "../UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import CustomButton from "../components/CustomButton";
 
 const ProfileScreen = () => {
   const { userId } = useContext(UserContext);
@@ -33,7 +28,7 @@ const ProfileScreen = () => {
             marginLeft: 20,
           }}
         >
-          NUSell
+          Your Profile
         </Text>
       ),
       headerRight: () => (
@@ -45,9 +40,12 @@ const ProfileScreen = () => {
             marginRight: 20,
           }}
         >
-          <Ionicons name="notifications-outline" size={24} color="white" />
-
-          <AntDesign name="search1" size={24} color="white" />
+          <AntDesign
+            onPress={() => navigation.navigate("Cart")}
+            name="shoppingcart"
+            size={30}
+            color="white"
+          />
         </View>
       ),
     });
@@ -82,7 +80,9 @@ const ProfileScreen = () => {
 
   return (
     <ScrollView style={{ padding: 10, flex: 1, backgroundColor: "white" }}>
-      <Text style={{ fontSize: 16, fontWeight: "bold" }}>Welcome {user.name}</Text>
+      <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+        Welcome {user.name}
+      </Text>
 
       <View
         style={{
@@ -147,6 +147,28 @@ const ProfileScreen = () => {
           <Text style={{ textAlign: "center" }}>Log Out</Text>
         </Pressable>
       </View>
+
+      {/*dummy buttons*/}
+      <View style={{ marginTop: 50 }} />
+
+      <CustomButton
+        onPress={() => navigation.navigate("Address")}
+        text="AddressScreen"
+      />
+
+      <View style={{ marginTop: 20 }} />
+
+      <CustomButton
+        onPress={() => navigation.navigate("Purchase")}
+        text="PurchaseScreen"
+      />
+
+      <View style={{ marginTop: 20 }} />
+
+      <CustomButton
+        onPress={() => navigation.navigate("UserProfile")}
+        text="UserProfileScreen"
+      />
     </ScrollView>
   );
 };

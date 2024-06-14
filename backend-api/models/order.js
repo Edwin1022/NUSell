@@ -23,19 +23,7 @@ const orderSchema = new mongoose.Schema({
     required: true,
   },
   shippingAddress: {
-    name: {
-      type: String,
-      required: true,
-    },
-    imageUrl: {
-      type: String,
-      required: true,
-    },
-    mobileNo: {
-      type: String,
-      required: true,
-    },
-    houseNo: {
+    blockNo: {
       type: String,
       required: true,
     },
@@ -43,9 +31,13 @@ const orderSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
-    landmark: {
+    unit: {
       type: String,
-      required: true,
+      default: "",
+    },
+    building: {
+      type: String,
+      default: "",
     },
     postalCode: {
       type: String,
@@ -62,6 +54,12 @@ const orderSchema = new mongoose.Schema({
   },
 });
 
-const Order = mongoose.model("Order", orderSchema);
+orderSchema.virtual("id").get(function () {
+  return this._id.toHexString();
+});
 
-module.exports = Order;
+orderSchema.set("toJSON", {
+  virtuals: true,
+});
+
+exports.Order = mongoose.model("Order", orderSchema);

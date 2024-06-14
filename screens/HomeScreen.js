@@ -1,11 +1,14 @@
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import React, { useContext, useEffect } from "react";
 import { UserContext } from "../UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
+import DetectObject from "../components/DetectObject";
+import axios from "axios";
 
 const HomeScreen = () => {
   const { setUserId } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   useEffect(() => {
     const fetchUser = async () => {
       const token = await AsyncStorage.getItem("authToken");
@@ -16,11 +19,33 @@ const HomeScreen = () => {
 
     fetchUser();
   }, []);
+
+  // retrieve user data from the backend
+  useEffect(() => {
+    axios
+      .get(`http://192.168.0.110:8000/users/getUserData?email=${user.email}`)
+      .then((res) => {
+        setUser(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
-    <View>
-      <Text>HomeScreen</Text>
+    <View style={styles.container}>
+      <DetectObject />
     </View>
   );
 };
 
 export default HomeScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

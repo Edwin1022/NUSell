@@ -100,7 +100,7 @@ const RegisterScreen = () => {
             </Text>
           </View>
 
-          <View style={{ marginTop: 20 }}>
+          <View style={{ marginTop: 40 }}>
             <CustomInput
               name="name"
               iconName="person"
@@ -121,7 +121,7 @@ const RegisterScreen = () => {
             />
           </View>
 
-          <View style={{ marginTop: 10 }}>
+          <View style={{ marginTop: 40 }}>
             <CustomInput
               name="email"
               iconName="email"
@@ -138,7 +138,7 @@ const RegisterScreen = () => {
             />
           </View>
 
-          <View style={{ marginTop: 10 }}>
+          <View style={{ marginTop: 40 }}>
             <CustomInput
               name="password"
               iconName="lock1"
@@ -160,7 +160,7 @@ const RegisterScreen = () => {
             />
           </View>
 
-          <View style={{ marginTop: 10 }}>
+          <View style={{ marginTop: 40 }}>
             <CustomInput
               name="password-repeat"
               iconName="lock1"

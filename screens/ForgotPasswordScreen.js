@@ -108,13 +108,13 @@ const ForgotPasswordScreen = () => {
                   marginRight: "auto",
                 }}
               >
-                Enter your email address below to reset your password.
+                Enter your email address below to reset {"\n"} your password.
               </Text>
             </View>
           </View>
 
           <View
-            style={{ marginTop: 10, marginLeft: "auto", marginRight: "auto" }}
+            style={{ marginTop: 40, marginLeft: "auto", marginRight: "auto" }}
           >
             <CustomInput
               name="email"
