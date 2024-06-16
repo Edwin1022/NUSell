@@ -30,7 +30,6 @@ const CustomInput = ({
               backgroundColor: "#D0D0D0",
               paddingVertical: 5,
               borderRadius: 5,
-              marginTop: 30,
             }}
           >
             {iconType === "MaterialIcons" ? (

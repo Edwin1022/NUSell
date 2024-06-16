@@ -126,7 +126,7 @@ const ConfirmationScreen = () => {
             </Text>
           </View>
 
-          <View style={{ marginTop: 30 }}>
+          <View style={{ marginTop: 60 }}>
             <CustomInput
               name="code"
               iconName="domain-verification"
@@ -137,7 +137,7 @@ const ConfirmationScreen = () => {
             />
           </View>
 
-          <View style={{ marginTop: 10 }}>
+          <View style={{ marginTop: 40 }}>
             <CustomInput
               name="password"
               iconName="lock1"
@@ -159,7 +159,7 @@ const ConfirmationScreen = () => {
             />
           </View>
 
-          <View style={{ marginTop: 10 }}>
+          <View style={{ marginTop: 40 }}>
             <CustomInput
               name="password-repeat"
               iconName="lock1"

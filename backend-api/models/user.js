@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
- 
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -14,7 +14,23 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  studentId: {
+    type: String,
+    default: "",
+  },
+  faculty: {
+    type: String,
+    default: "",
+  },
+  major: {
+    type: String,
+    default: "",
+  },
   mobileNo: {
+    type: String,
+    default: "",
+  },
+  teleHandle: {
     type: String,
     default: "",
   },
@@ -25,6 +41,10 @@ const userSchema = new mongoose.Schema({
   gender: {
     type: String,
     default: "",
+  },
+  rating: {
+    type: Number,
+    default: 0,
   },
   isAdmin: {
     type: Boolean,
@@ -43,18 +63,41 @@ const userSchema = new mongoose.Schema({
     type: Date,
     required: false,
   },
-  addressess: [
+  addresses: [
     {
-      name: String,
-      mobileNo: String,
-      houseNo: String,
+      blockNo: String,
       street: String,
-      landmark: String,
-      city: String,
-      country: String,
+      unit: String,
+      building: String,
       postalCode: String,
     },
   ],
+  defaultAddress: {
+    _id: {
+      type: String,
+      required: true,
+    },
+    blockNo: {
+      type: String,
+      required: true,
+    },
+    street: {
+      type: String,
+      required: true,
+    },
+    unit: {
+      type: String,
+      default: "",
+    },
+    building: {
+      type: String,
+      default: "",
+    },
+    postalCode: {
+      type: String,
+      required: true,
+    },
+  },
   orders: [
     {
       type: mongoose.Schema.Types.ObjectId,
