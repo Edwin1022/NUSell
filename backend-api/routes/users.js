@@ -448,7 +448,7 @@ router.post("/setDefaultAddress", async (req, res) => {
 
     // update user's default address
     user.defaultAddress = defaultAddress;
-    user.defaultAddress._id = defaultAddressId
+    user.defaultAddress._id = defaultAddressId;
 
     // save the updated user in the backend
     await user.save();
@@ -475,6 +475,31 @@ router.get("/getDefaultAddress/:userId", async (req, res) => {
     res.status(200).json({ defaultAddress });
   } catch (error) {
     res.status(500).json({ message: "Error retrieving the default address" });
+  }
+});
+
+// endpoint to rate a user
+router.post("/rateUser", async (req, res) => {
+  try {
+    const { userId, rating } = req.body;
+
+    // find the user by the userId
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // update user's default address
+    user.totalRating += rating;
+    user.numRatings += 1;
+    user.rating = (user.totalRating / user.numRatings).toFixed(1);
+
+    // save the updated user in the backend
+    await user.save();
+
+    res.status(200).json({ message: "Rate user successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error rating user" });
   }
 });
 

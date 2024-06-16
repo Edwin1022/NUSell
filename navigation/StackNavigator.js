@@ -1,26 +1,24 @@
-import { Text, View } from "react-native";
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Entypo, AntDesign, Ionicons } from "@expo/vector-icons";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import HomeScreen from "../screens/HomeScreen";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Entypo } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons";
 import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
 import ConfirmationScreen from "../screens/ConfirmationScreen";
 import ProfileScreen from "../screens/ProfileScreen";
-import UserAccountScreen from "../screens/UserAccountScreen";
+import YourAccountScreen from "../screens/YourAccountScreen";
 import ItemListingScreen from "../screens/ItemListingScreen";
 import AddAddressScreen from "../screens/AddAddressScreen";
 import AddressScreen from "../screens/AddressScreen";
 import PurchaseScreen from "../screens/PurchaseScreen";
-import OrderScreen from "../screens/OrderScreen";
 import UserProfileScreen from "../screens/UserProfileScreen";
 import CartScreen from "../screens/CartScreen";
 import MorePhotosScreen from "../screens/MorePhotosScreen";
+import YourOrdersScreen from "../screens/YourOrdersScreen";
+import YourListingsScreen from "../screens/YourListingsScreen";
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -87,14 +85,15 @@ const StackNavigator = () => {
         />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="Confirmation" component={ConfirmationScreen} />
-        <Stack.Screen name="UserAccount" component={UserAccountScreen} />
+        <Stack.Screen name="YourAccount" component={YourAccountScreen} />
         <Stack.Screen name="Address" component={AddressScreen} />
         <Stack.Screen name="AddAddress" component={AddAddressScreen} />
         <Stack.Screen name="Purchase" component={PurchaseScreen} />
-        <Stack.Screen name="Order" component={OrderScreen} />
         <Stack.Screen name="UserProfile" component={UserProfileScreen} />
         <Stack.Screen name="Cart" component={CartScreen} />
         <Stack.Screen name="MorePhotos" component={MorePhotosScreen} />
+        <Stack.Screen name="YourOrders" component={YourOrdersScreen} />
+        <Stack.Screen name="YourListings" component={YourListingsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
