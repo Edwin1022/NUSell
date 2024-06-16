@@ -22,14 +22,18 @@ const HomeScreen = () => {
 
   // retrieve user data from the backend
   useEffect(() => {
-    axios
-      .get(`http://192.168.0.110:8000/users/getUserData?email=${user.email}`)
-      .then((res) => {
+    const fetchUserData = async () => {
+      try {
+        const res = await axios.get(
+          `http://192.168.0.110:8000/users/getUserData?email=${user.email}`
+        );
         setUser(res.data.data);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.log(err);
-      });
+      }
+    };
+
+    fetchUserData();
   }, []);
 
   return (

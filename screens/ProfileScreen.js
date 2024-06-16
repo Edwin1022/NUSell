@@ -6,6 +6,7 @@ import axios from "axios";
 import { UserContext } from "../UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomButton from "../components/CustomButton";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const ProfileScreen = () => {
   const { userId } = useContext(UserContext);
@@ -80,76 +81,125 @@ const ProfileScreen = () => {
 
   return (
     <ScrollView style={{ padding: 10, flex: 1, backgroundColor: "white" }}>
-      <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+      <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 15 }}>
         Welcome {user.name}
       </Text>
 
-      <View
+      <Pressable
+        onPress={() => navigation.navigate("YourOrders")}
         style={{
           flexDirection: "row",
           alignItems: "center",
-          gap: 10,
-          marginTop: 12,
+          justifyContent: "space-between",
+          borderColor: "#D0D0D0",
+          borderWidth: 1,
+          borderLeftWidth: 0,
+          borderRightWidth: 0,
+          paddingVertical: 15,
+          paddingHorizontal: 5,
         }}
       >
-        <Pressable
-          style={{
-            padding: 10,
-            backgroundColor: "#E0E0E0",
-            borderRadius: 25,
-            flex: 1,
-          }}
-        >
-          <Text style={{ textAlign: "center" }}>Your Orders</Text>
-        </Pressable>
+        <View style={{ marginLeft: 10 }}>
+          <Text style={{ fontSize: 18, fontWeight: 500 }}>Your Orders</Text>
+        </View>
+        <MaterialIcons
+          style={{ marginRight: 20 }}
+          name="keyboard-arrow-right"
+          size={24}
+          color="black"
+        />
+      </Pressable>
 
-        <Pressable
-          onPress={() => navigation.navigate("UserAccount")}
-          style={{
-            padding: 10,
-            backgroundColor: "#E0E0E0",
-            borderRadius: 25,
-            flex: 1,
-          }}
-        >
-          <Text style={{ textAlign: "center" }}>Your Account</Text>
-        </Pressable>
-      </View>
-
-      <View
+      <Pressable
+        onPress={() => navigation.navigate("YourListings")}
         style={{
           flexDirection: "row",
           alignItems: "center",
-          gap: 10,
-          marginTop: 12,
+          justifyContent: "space-between",
+          borderColor: "#D0D0D0",
+          borderWidth: 1,
+          borderLeftWidth: 0,
+          borderRightWidth: 0,
+          paddingVertical: 15,
+          paddingHorizontal: 5,
         }}
       >
-        <Pressable
-          style={{
-            padding: 10,
-            backgroundColor: "#E0E0E0",
-            borderRadius: 25,
-            flex: 1,
-          }}
-        >
-          <Text style={{ textAlign: "center" }}>Buy Again</Text>
-        </Pressable>
+        <View style={{ marginLeft: 10 }}>
+          <Text style={{ fontSize: 18, fontWeight: 500 }}>Your Listings</Text>
+        </View>
+        <MaterialIcons
+          style={{ marginRight: 20 }}
+          name="keyboard-arrow-right"
+          size={24}
+          color="black"
+        />
+      </Pressable>
 
-        <Pressable
-          onPress={logout}
-          style={{
-            padding: 10,
-            backgroundColor: "#E0E0E0",
-            borderRadius: 25,
-            flex: 1,
-          }}
-        >
-          <Text style={{ textAlign: "center" }}>Log Out</Text>
-        </Pressable>
-      </View>
+      <Pressable
+        onPress={() => navigation.navigate("YourAccount")}
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          borderColor: "#D0D0D0",
+          borderWidth: 1,
+          borderLeftWidth: 0,
+          borderRightWidth: 0,
+          paddingVertical: 15,
+          paddingHorizontal: 5,
+        }}
+      >
+        <View style={{ marginLeft: 10 }}>
+          <Text style={{ fontSize: 18, fontWeight: 500 }}>Your Account</Text>
+        </View>
+        <MaterialIcons
+          style={{ marginRight: 20 }}
+          name="keyboard-arrow-right"
+          size={24}
+          color="black"
+        />
+      </Pressable>
+
+      <Pressable
+        onPress={logout}
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          borderColor: "#D0D0D0",
+          borderWidth: 1,
+          borderLeftWidth: 0,
+          borderRightWidth: 0,
+          paddingVertical: 15,
+          paddingHorizontal: 5,
+        }}
+      >
+        <View style={{ marginLeft: 10 }}>
+          <Text style={{ color: "red", fontSize: 18, fontWeight: 500 }}>Log Out</Text>
+        </View>
+        <MaterialIcons
+          style={{ marginRight: 20 }}
+          name="logout"
+          size={24}
+          color="red"
+        />
+      </Pressable>
 
       {/*dummy buttons*/}
-      <View style={{ marginTop: 50 }} />
+      <View style={{ alignItems: "center" }}>
+        <Text
+          style={{
+            fontSize: 17,
+            fontWeight: "bold",
+            marginTop: 50,
+            color: "#041E42",
+          }}
+        >
+          Dummy Buttons
+        </Text>
+      </View>
+
+      <View style={{ marginTop: 20 }} />
 
       <CustomButton
         onPress={() => navigation.navigate("Address")}

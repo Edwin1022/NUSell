@@ -44,7 +44,7 @@ const AddAddressScreen = () => {
         <Back
           name="arrow-back"
           size={30}
-          onPress={() => navigation.navigate("AddAddress")}
+          onPress={() => navigation.navigate("Address")}
           style={{ marginRight: 20, color: "white" }}
         />
       ),

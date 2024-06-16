@@ -42,6 +42,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  totalRating: {
+    type: Number,
+    default: 0,
+  },
+  numRatings: {
+    type: Number,
+    default: 0,
+  },
   rating: {
     type: Number,
     default: 0,

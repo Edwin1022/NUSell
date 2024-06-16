@@ -11,9 +11,13 @@ import Back from "react-native-vector-icons/Ionicons";
 import { Avatar } from "react-native-paper";
 import { UserContext } from "../UserContext";
 import axios from "axios";
+import CustomButton from "../components/CustomButton";
+import RatingModalScreen from "./RatingModalScreen";
 
 const UserProfileScreen = () => {
   const { user, setUser } = useContext(UserContext);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [buttonVisible, setButtonVisible] = useState(true);
   const navigation = useNavigation();
 
   // header
@@ -47,16 +51,20 @@ const UserProfileScreen = () => {
     });
   }, []);
 
+  const fetchUserData = async () => {
+    try {
+      const res = await axios.get(
+        `http://192.168.0.110:8000/users/getUserData?email=${user.email}`
+      );
+      setUser(res.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   // retrieve user data from the backend
   useEffect(() => {
-    axios
-      .get(`http://192.168.0.110:8000/users/getUserData?email=${user.email}`)
-      .then((res) => {
-        setUser(res.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    fetchUserData();
   }, []);
 
   return (
@@ -105,6 +113,24 @@ const UserProfileScreen = () => {
               source={{ uri: user.image }}
             />
           </View>
+
+          <View style={{ marginTop: 30 }} />
+
+          {buttonVisible && <CustomButton
+            onPress={() => setModalVisible(true)}
+            text={`Rate ${user.name}`}
+          />}
+
+          <RatingModalScreen
+            username={user.name}
+            userId={user.id}
+            isVisible={modalVisible}
+            onClose={() => {
+              setButtonVisible(false);
+              setModalVisible(false);
+              fetchUserData();
+            }}
+          />
 
           <View
             style={{
@@ -488,7 +514,7 @@ const UserProfileScreen = () => {
                   marginRight: 20,
                 }}
               >
-                {user.rating == 0 ? "-" : user.rating}
+                {user.rating == 0 ? "-" : user.rating} / 5
               </Text>
             </View>
 

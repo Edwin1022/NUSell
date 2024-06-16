@@ -1,70 +1,205 @@
-import { Pressable, StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native'
-import React from 'react'
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Alert,
+  SafeAreaView,
+  ActivityIndicator,
+} from "react-native";
+import React, { useContext, useLayoutEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { Button } from 'react-native-paper';
 import CustomButton from "../components/CustomButton";
-
+import Back from "react-native-vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
+import ModalScreen from "./ModalScreen";
+import axios from "axios";
+import { ProductContext } from "../ProductContext";
 
 const MorePhotosScreen = () => {
-  return (
-    <ScrollView style={styles.addPhotoScreen}>
-      <View style={styles.morePhotosContainer}>
-        <View style={styles.addPhotoRow}>
-          <TouchableOpacity style={styles.addPhoto}>
-            <Ionicons name='add-circle-outline' size={120} style={styles.icon}/>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.addPhoto}>
-            <Ionicons name='add-circle-outline' size={120} style={styles.icon}/>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.addPhotoRow}>
-          <TouchableOpacity style={styles.addPhoto}>
-            <Ionicons name='add-circle-outline' size={120} style={styles.icon}/>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.addPhoto}>
-            <Ionicons name='add-circle-outline' size={120} style={styles.icon}/>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.addPhotoRow}>
-          <TouchableOpacity style={styles.addPhoto}>
-            <Ionicons name='add-circle-outline' size={120} style={styles.icon}/>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.addPhoto}>
-            <Ionicons name='add-circle-outline' size={120} style={styles.icon}/>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.addPhotoRow}>
-          <TouchableOpacity style={styles.addPhoto}>
-            <Ionicons name='add-circle-outline' size={120} style={styles.icon}/>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.addPhoto}>
-            <Ionicons name='add-circle-outline' size={120} style={styles.icon}/>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.addPhotoRow}>
-          <TouchableOpacity style={styles.addPhoto}>
-            <Ionicons name='add-circle-outline' size={120} color={"black"} style={styles.icon}/>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.addPhoto}>
-            <Ionicons name='add-circle-outline' size={120} color={"black"} style={styles.icon}/>
-          </TouchableOpacity>
-        </View>
-        <CustomButton text="Confirm"></CustomButton>
-     </View>
-    </ScrollView>
-    
-  )
-}
+  const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [images, setImages] = useState(Array(8).fill(null));
+  const [loading, setLoading] = useState(false);
+  const { productId } = useContext(ProductContext);
 
-export default MorePhotosScreen
+  // Allow users to upload their profile pictures
+  const uploadImage = async (mode) => {
+    try {
+      let result = {};
+
+      if (mode === "gallery") {
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+        result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          aspect: [1, 1],
+          quality: 1,
+        });
+      } else {
+        await ImagePicker.requestCameraPermissionsAsync();
+        result = await ImagePicker.launchCameraAsync({
+          cameraType: ImagePicker.CameraType.back,
+          allowsEditing: true,
+          aspect: [1, 1],
+          quality: 1,
+        });
+      }
+
+      if (!result.canceled) {
+        const updatedImages = [...images];
+        updatedImages[selectedSlot] = result.assets[0].uri;
+        setImages(updatedImages);
+        setModalVisible(false);
+      }
+    } catch (error) {
+      Alert.alert("Error uploading image: " + error.message);
+      setModalVisible(false);
+    }
+  };
+
+  // Allow users to delete their profile pictures
+  const removeImage = () => {
+    const updatedImages = [...images];
+    updatedImages[selectedSlot] = null;
+    setImages(updatedImages);
+    setModalVisible(false);
+  };
+
+  const handleConfirm = async () => {
+    try {
+      const formData = new FormData();
+      const validImages = images.filter((image) => image != null);
+      validImages.forEach((image, index) => {
+        formData.append("images", {
+          uri: image,
+          name: `image_${index}.jpg`,
+          type: "image/jpeg",
+        });
+      });
+
+      setLoading(true);
+
+      // send a put request to the backend API
+      const response = await axios.put(
+        `http://192.168.0.110:8000/products/gallery-images/${productId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      setLoading(false);
+
+      Alert.alert(
+        "Product Listed Successful",
+        "You have listed your product successfully"
+      );
+
+      navigation.navigate("Home");
+    } catch (error) {
+      console.error("Error uploading images:", error);
+      Alert.alert(
+        "Images Uploading Error",
+        "An error occurred while uploading images"
+      );
+    }
+  };
+
+  // Header
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: "",
+      headerStyle: {
+        backgroundColor: "#007AFF",
+      },
+      headerLeft: () => <Text style={styles.headerLeft}>NUSell</Text>,
+      headerRight: () => (
+        <Back
+          name="arrow-back"
+          size={30}
+          onPress={() => navigation.goBack()}
+          style={{ marginRight: 20, color: "white" }}
+        />
+      ),
+    });
+  }, [navigation]);
+
+  return (
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
+    >
+      <ScrollView style={styles.addPhotoScreen}>
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#007AFF" />
+            <Text style={styles.loadingText}>Listing Item...</Text>
+          </View>
+        ) : (
+          <View>
+            <View style={{ alignItems: "center", marginTop: 10 }}>
+              <Text style={styles.headerText}>Add more photos</Text>
+            </View>
+
+            <View style={styles.morePhotosContainer}>
+              {images.map((image, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => {
+                    setSelectedSlot(index);
+                    setModalVisible(true);
+                  }}
+                  style={styles.addPhoto}
+                >
+                  {image ? (
+                    <Image source={{ uri: image }} style={styles.photo} />
+                  ) : (
+                    <Ionicons
+                      name="add-circle-outline"
+                      size={120}
+                      style={styles.icon}
+                    />
+                  )}
+                </TouchableOpacity>
+              ))}
+
+              <View style={{ margin: 40 }}>
+                <CustomButton onPress={handleConfirm} text="Publish" />
+              </View>
+            </View>
+
+            <ModalScreen
+              image={images[selectedSlot]}
+              isVisible={modalVisible}
+              onClose={() => setModalVisible(false)}
+              onCameraPress={() => uploadImage("camera")}
+              onImagePress={() => uploadImage("gallery")}
+              onDeletePress={removeImage}
+            />
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+export default MorePhotosScreen;
 
 const styles = StyleSheet.create({
-  
-
-  morePhotosContainer: {
-    padding: 20,
+  addPhotoScreen: {
     flex: 1,
-    alignItems: "center",
+  },
+  morePhotosContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    padding: 20,
   },
 
   addPhoto: {
@@ -72,18 +207,39 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "black",
     padding: 5,
-    borderRadius: 15
+    borderRadius: 15,
+    margin: 20,
   },
-
   icon: {
-    color: "gray"
+    color: "gray",
   },
-
-  addPhotoRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: 300,
-    marginBottom: 30
-  }
-
-})
+  headerLeft: {
+    fontFamily: "CustomFont",
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "white",
+    marginLeft: 20,
+  },
+  headerText: {
+    fontSize: 17,
+    fontWeight: "bold",
+    marginTop: 12,
+    color: "#041E42",
+  },
+  photo: {
+    width: 120,
+    height: 120,
+    borderRadius: 15,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#007AFF",
+  },
+});

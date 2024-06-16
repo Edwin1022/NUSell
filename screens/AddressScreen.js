@@ -133,7 +133,7 @@ const AddressScreen = () => {
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={{ padding: 10 }}>
         <Pressable
-          onPress={() => navigation.navigate("Address")}
+          onPress={() => navigation.navigate("AddAddress")}
           style={{
             flexDirection: "row",
             alignItems: "center",

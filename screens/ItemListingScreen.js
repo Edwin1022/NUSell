@@ -9,8 +9,9 @@ import {
   TextInput,
   TouchableOpacity,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useLayoutEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Back from "react-native-vector-icons/Ionicons";
 import CustomButton from "../components/CustomButton";
@@ -19,11 +20,13 @@ import { Dropdown } from "react-native-element-dropdown";
 import * as ImagePicker from "expo-image-picker";
 import ModalScreen from "./ModalScreen";
 import axios from "axios";
-import { createIconSetFromFontello } from "react-native-vector-icons";
+import { ProductContext } from "../ProductContext";
 
 const ItemListingScreen = () => {
   const navigation = useNavigation();
+  const { setProductId } = useContext(ProductContext);
   const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const placeholderImage = "";
 
@@ -146,8 +149,8 @@ const ItemListingScreen = () => {
     }
   };
 
-  //handle Publish logic
-  const handlePublish = async () => {
+  //handle Continue logic
+  const handleContinue = async () => {
     setErrorImage(null);
     setErrorItemName(null);
     setErrorItemDescription(null);
@@ -194,7 +197,7 @@ const ItemListingScreen = () => {
     }
 
     if (isValid) {
-      Alert.alert("Published successfully!");
+      Alert.alert("Now add more photos of your product!");
     } else {
       return;
     }
@@ -218,6 +221,8 @@ const ItemListingScreen = () => {
         name: "profile.jpg",
       });
 
+      setLoading(true);
+
       // send a post request to the backend API
       const response = await axios.post(
         "http://192.168.0.110:8000/products",
@@ -229,12 +234,11 @@ const ItemListingScreen = () => {
         }
       );
 
-      Alert.alert(
-        "Product Listed Successful",
-        "You have listed your product successfully"
-      );
+      setLoading(false);
 
-      navigation.navigate("Home");
+      setProductId(response.data.productId);
+
+      navigation.navigate("MorePhotos");
 
       setImage("");
       setItemName("");
@@ -246,13 +250,11 @@ const ItemListingScreen = () => {
     } catch (error) {
       console.log("product listed failed", error);
       Alert.alert(
-        "Profile Update Error",
+        "Product Listing Error",
         "An error occurred while listing product"
       );
     }
   };
-
-  console.log(value);
 
   // header
   useLayoutEffect(() => {
@@ -278,231 +280,223 @@ const ItemListingScreen = () => {
       style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
-        <KeyboardAvoidingView>
-          <View style={{ alignItems: "center", marginTop: 10 }}>
-            <Text
-              style={{
-                fontSize: 17,
-                fontWeight: "bold",
-                marginTop: 12,
-                color: "#041E42",
-              }}
-            >
-              List your item
-            </Text>
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#007AFF" />
+            <Text style={styles.loadingText}>Loading...</Text>
           </View>
-
-          <TouchableOpacity onPress={() => setModalVisible(true)}>
-            <ModalScreen
-              image={image}
-              placeholderImage={placeholderImage}
-              isVisible={modalVisible}
-              onClose={() => setModalVisible(false)}
-              onCameraPress={uploadImage}
-              onImagePress={() => uploadImage("gallery")}
-              onDeletePress={removeImage}
-            />
-
-            {image ? (
-              <View
+        ) : (
+          <KeyboardAvoidingView>
+            <View style={{ alignItems: "center", marginTop: 10 }}>
+              <Text
                 style={{
-                  alignItems: "center",
-                  marginTop: 20,
-                  flex: 1,
-                  width: 350,
-                  borderWidth: 1,
-                  borderRadius: 10,
+                  fontSize: 17,
+                  fontWeight: "bold",
+                  marginTop: 12,
+                  color: "#041E42",
                 }}
               >
-                <Image
-                  source={{
-                    uri: image,
-                  }}
+                List your item
+              </Text>
+            </View>
+
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+              <ModalScreen
+                image={image}
+                placeholderImage={placeholderImage}
+                isVisible={modalVisible}
+                onClose={() => setModalVisible(false)}
+                onCameraPress={uploadImage}
+                onImagePress={() => uploadImage("gallery")}
+                onDeletePress={removeImage}
+              />
+
+              {image ? (
+                <View
                   style={{
+                    alignItems: "center",
+                    marginTop: 20,
+                    flex: 1,
+                    width: 350,
                     borderWidth: 1,
                     borderRadius: 10,
-                    width: 350,
-                    height: 200,
                   }}
-                />
-              </View>
-            ) : (
-              <View style={styles.photoUpload}>
-                <View>
+                >
                   <Image
                     source={{
-                      uri: "https://static-00.iconduck.com/assets.00/camera-icon-512x417-vgmhgbfy.png",
+                      uri: image,
                     }}
-                    style={styles.itemPhoto}
+                    style={{
+                      borderWidth: 1,
+                      borderRadius: 10,
+                      width: 350,
+                      height: 200,
+                    }}
                   />
                 </View>
+              ) : (
+                <View style={styles.photoUpload}>
+                  <View>
+                    <Image
+                      source={{
+                        uri: "https://static-00.iconduck.com/assets.00/camera-icon-512x417-vgmhgbfy.png",
+                      }}
+                      style={styles.itemPhoto}
+                    />
+                  </View>
 
-                <Text style={{ fontSize: 20 }}>
-                  Add photo to start a listing
-                </Text>
-              </View>
-            )}
+                  <Text style={{ fontSize: 20 }}>
+                    Add photo to start a listing
+                  </Text>
+                </View>
+              )}
 
-            {!!errorImage && (
-              <Text style={styles.error}>{errorImage}</Text>
-            )}
-          </TouchableOpacity>
+              {!!errorCondition && (
+                <Text style={styles.error}>{errorImage}</Text>
+              )}
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Add More Photos")}
-            style={styles.sidePhotosUpload}
-          >
-            <View>
-              <Image
-                source={{
-                  uri: "https://static-00.iconduck.com/assets.00/camera-icon-512x417-vgmhgbfy.png",
-                }}
-                style={styles.sidePhotos}
-              />
-            </View>
-
-            <Text style={{ fontSize: 17, marginLeft: 10 }}>
-              Add more photos of your product
-            </Text>
-          </TouchableOpacity>
-
-          <View style={{ marginBottom: 20, marginTop: 20 }}>
-            <Text style={styles.Title}>Item Name</Text>
-            <TextInput
-              value={itemName}
-              onChangeText={setItemName}
-              style={styles.itemNameInput}
-              editable
-              multiline={true}
-              maxLength={100}
-              placeholder="What is this item?"
-            />
-            {!!errorItemName && (
-              <Text style={styles.error}>{errorItemName}</Text>
-            )}
-          </View>
-
-          <View>
-            <Text style={styles.Title}>Item Description</Text>
-            <TextInput
-              value={itemDescription}
-              onChangeText={setItemDescription}
-              style={styles.itemDescriptionInput}
-              editable
-              multiline={true}
-              maxLength={300}
-              placeholder="Give a brief description of your item"
-            />
-            {!!errorItemDescription && (
-              <Text style={styles.error}>{errorItemDescription}</Text>
-            )}
-          </View>
-
-          <View style={{ marginBottom: 20, marginTop: 20 }}>
-            <Text style={styles.Title}>Brand</Text>
-            <TextInput
-              value={brand}
-              onChangeText={setBrand}
-              style={styles.itemNameInput}
-              editable
-              multiline={true}
-              maxLength={100}
-              placeholder="What is the brand of this item?"
-            />
-            {!!errorBrand && <Text style={styles.error}>{errorBrand}</Text>}
-          </View>
-
-          <View style={styles.container}>
-            <Text style={styles.Title}>Category </Text>
-            <Dropdown
-              style={styles.dropdown}
-              data={data}
-              labelField="label"
-              valueField="value"
-              placeholder="Select a category"
-              value={value}
-              onChange={(item) => {
-                setValue(item.value);
-              }}
-            />
-            {!!errorCategory && (
-              <Text style={styles.error}>{errorCategory}</Text>
-            )}
-          </View>
-
-          <View>
-            <Text style={styles.Title}>Condition</Text>
-            <View style={styles.conditionButtonContainer}>
-              <Pressable
-                style={[
-                  {
-                    backgroundColor: condition === "Used" ? "#007FFF" : "white",
-                  },
-                  styles.usedButton,
-                ]}
-                onPress={() => setCondition("Used")}
-              >
-                <Text
-                  style={[
-                    { color: condition === "Used" ? "white" : "#007FFF" },
-                    styles.usedButtonText,
-                  ]}
-                >
-                  USED
-                </Text>
-              </Pressable>
-
-              <Pressable
-                style={[
-                  {
-                    backgroundColor:
-                      condition === "Brand New" ? "#007FFF" : "white",
-                  },
-                  styles.brandNewButton,
-                ]}
-                onPress={() => setCondition("Brand New")}
-              >
-                <Text
-                  style={[
-                    { color: condition === "Brand New" ? "white" : "#007FFF" },
-                    styles.brandNewButtonText,
-                  ]}
-                >
-                  BRAND NEW
-                </Text>
-              </Pressable>
-            </View>
-            {!!errorCondition && (
-              <Text style={styles.error}>{errorCondition}</Text>
-            )}
-          </View>
-
-          <View style={{ marginTop: 20 }}>
-            <Text style={styles.Title}> Price </Text>
-            <View style={styles.priceInputContainer}>
-              <Text>$ </Text>
+            <View style={{ marginBottom: 20, marginTop: 20 }}>
+              <Text style={styles.Title}>Item Name</Text>
               <TextInput
-                value={price}
-                onChangeText={setPrice}
-                style={styles.priceInput}
+                value={itemName}
+                onChangeText={setItemName}
+                style={styles.itemNameInput}
                 editable
                 multiline={true}
-                maxLength={200}
-                keyboardType="numeric"
-                placeholder="Price"
+                maxLength={100}
+                placeholder="What is this item?"
               />
-              {!!errorPrice && <Text style={styles.error}>{errorPrice}</Text>}
+              {!!errorItemName && (
+                <Text style={styles.error}>{errorItemName}</Text>
+              )}
             </View>
-          </View>
 
-          <View style={styles.publishButton}>
-            <CustomButton
-              onPress={handlePublish}
-              type="PRIMARY"
-              text={"Publish"}
-            />
-          </View>
-        </KeyboardAvoidingView>
+            <View>
+              <Text style={styles.Title}>Item Description</Text>
+              <TextInput
+                value={itemDescription}
+                onChangeText={setItemDescription}
+                style={styles.itemDescriptionInput}
+                editable
+                multiline={true}
+                maxLength={300}
+                placeholder="Give a brief description of your item"
+              />
+              {!!errorItemDescription && (
+                <Text style={styles.error}>{errorItemDescription}</Text>
+              )}
+            </View>
+
+            <View style={{ marginBottom: 20, marginTop: 20 }}>
+              <Text style={styles.Title}>Brand</Text>
+              <TextInput
+                value={brand}
+                onChangeText={setBrand}
+                style={styles.itemNameInput}
+                editable
+                multiline={true}
+                maxLength={100}
+                placeholder="What is the brand of this item?"
+              />
+              {!!errorBrand && <Text style={styles.error}>{errorBrand}</Text>}
+            </View>
+
+            <View style={styles.container}>
+              <Text style={styles.Title}>Category </Text>
+              <Dropdown
+                style={styles.dropdown}
+                data={data}
+                labelField="label"
+                valueField="value"
+                placeholder="Select a category"
+                value={value}
+                onChange={(item) => {
+                  setValue(item.value);
+                }}
+              />
+              {!!errorCategory && (
+                <Text style={styles.error}>{errorCategory}</Text>
+              )}
+            </View>
+
+            <View>
+              <Text style={styles.Title}>Condition</Text>
+              <View style={styles.conditionButtonContainer}>
+                <Pressable
+                  style={[
+                    {
+                      backgroundColor:
+                        condition === "Used" ? "#007FFF" : "white",
+                    },
+                    styles.usedButton,
+                  ]}
+                  onPress={() => setCondition("Used")}
+                >
+                  <Text
+                    style={[
+                      { color: condition === "Used" ? "white" : "#007FFF" },
+                      styles.usedButtonText,
+                    ]}
+                  >
+                    USED
+                  </Text>
+                </Pressable>
+
+                <Pressable
+                  style={[
+                    {
+                      backgroundColor:
+                        condition === "Brand New" ? "#007FFF" : "white",
+                    },
+                    styles.brandNewButton,
+                  ]}
+                  onPress={() => setCondition("Brand New")}
+                >
+                  <Text
+                    style={[
+                      {
+                        color: condition === "Brand New" ? "white" : "#007FFF",
+                      },
+                      styles.brandNewButtonText,
+                    ]}
+                  >
+                    BRAND NEW
+                  </Text>
+                </Pressable>
+              </View>
+              {!!errorCondition && (
+                <Text style={styles.error}>{errorCondition}</Text>
+              )}
+            </View>
+
+            <View style={{ marginTop: 20 }}>
+              <Text style={styles.Title}> Price </Text>
+              <View style={styles.priceInputContainer}>
+                <Text>$ </Text>
+                <TextInput
+                  value={price}
+                  onChangeText={setPrice}
+                  style={styles.priceInput}
+                  editable
+                  multiline={true}
+                  maxLength={200}
+                  keyboardType="numeric"
+                  placeholder="Price"
+                />
+                {!!errorPrice && <Text style={styles.error}>{errorPrice}</Text>}
+              </View>
+            </View>
+
+            <View style={styles.continueButton}>
+              <CustomButton
+                onPress={handleContinue}
+                type="PRIMARY"
+                text={"Continue"}
+              />
+            </View>
+          </KeyboardAvoidingView>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -587,7 +581,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
 
-  publishButton: {
+  continueButton: {
     marginTop: 30,
     marginBottom: 50,
     alignContent: "center",
@@ -689,6 +683,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
     marginLeft: 20,
+  },
+
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+  },
+
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#007AFF",
   },
 });
 
