@@ -7,11 +7,11 @@ import { jwtDecode } from "jwt-decode";
 import { Drawer } from 'react-native-drawer-layout';
 import { Ionicons } from "@expo/vector-icons";
 import { TextInput } from 'react-native-gesture-handler';
-
+import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
+  const navigation = useNavigation();
   const { setUserId } = useContext(UserContext);
-  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -179,7 +179,7 @@ const HomeScreen = () => {
             </Pressable >
             
             <View style={styles.searchBar}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={()=> navigation.navigate("Search")}>
                 <Ionicons
                 name="search"
                 size={24}
@@ -187,13 +187,14 @@ const HomeScreen = () => {
                 style={styles.icon}
                 />
               </TouchableOpacity>
-              <TextInput
-              style={styles.input}
-              placeholder="Search"
-              placeholderTextColor="white"
-              value={searchQuery}
-              onChangeText={(text) => setSearchQuery(text)}
-              />
+              <TouchableOpacity onPress={()=> navigation.navigate("Search")} style={styles.searchbox}>
+                <Text
+                style={styles.input}
+                >
+                  Search
+                </Text>
+              </TouchableOpacity>
+              
 
               <View style={styles.icons}>
                 <TouchableOpacity>
@@ -209,7 +210,7 @@ const HomeScreen = () => {
             </View>
           </View>
 
-          <View style={styles.title}>
+          <View style={styles.main}>
             <Text>Home Screen</Text>
           </View>
         </View>
@@ -223,6 +224,11 @@ const HomeScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  searchbox: {
+    flex: 1,
+    flexDirection: "row",
+  },
+
   icons: {
     flexDirection: "row",
     paddingRight: 10,
@@ -261,7 +267,7 @@ const styles = StyleSheet.create({
     paddingTop: 20
   },
 
-  title: {
+  main: {
      flex: 1, 
      justifyContent: 'center', 
      alignItems: 'center'
@@ -279,7 +285,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingLeft: 5,
     fontSize: 18,
-    color: '#333',
+    color: "white"
   },
 
   icon: {
