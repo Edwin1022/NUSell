@@ -1,7 +1,11 @@
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Pressable, Image, Button } from "react-native";
 import React, { useLayoutEffect } from "react";
 import Back from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
+import { SwipeRow } from 'react-native-swipe-list-view';
+import { Ionicons } from "@expo/vector-icons";
+import { CartComponent } from "../components/CartComponent";
+import { OrderComponent } from "../components/OrderComponent";
 
 const YourOrdersScreen = () => {
   const navigation = useNavigation();
@@ -38,9 +42,7 @@ const YourOrdersScreen = () => {
   }, []);
 
   return (
-    <View>
-      <Text>YourOrdersScreen</Text>
-    </View>
+    <OrderComponent/>
   );
 };
 
