@@ -2,6 +2,7 @@ import { View, Text } from "react-native";
 import React, { useLayoutEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Back from "react-native-vector-icons/Ionicons";
+import { CartComponent } from "../components/CartComponent";
 
 const CartScreen = () => {
   const navigation = useNavigation();
@@ -38,9 +39,7 @@ const CartScreen = () => {
   }, []);
 
   return (
-    <View>
-      <Text>CartScreen</Text>
-    </View>
+    <CartComponent/>
   );
 };
 

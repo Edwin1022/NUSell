@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import React, { useLayoutEffect } from "react";
 import Back from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
+import { ListingComponent } from "../components/ListingComponent";
 
 const YourListingsScreen = () => {
   const navigation = useNavigation();
@@ -38,9 +39,7 @@ const YourListingsScreen = () => {
   }, []);
 
   return (
-    <View>
-      <Text>YourListingsScreen</Text>
-    </View>
+    <ListingComponent/>
   );
 };
 

@@ -340,7 +340,7 @@ const ItemListingScreen = () => {
                 </View>
               )}
 
-              {!!errorCondition && (
+              {!!errorImage && (
                 <Text style={styles.error}>{errorImage}</Text>
               )}
             </TouchableOpacity>
