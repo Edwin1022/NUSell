@@ -154,38 +154,6 @@ const YourAccountScreen = () => {
     navigation.replace("ForgotPassword");
   };
 
-  // allow users to edit their genders
-  useEffect(() => {
-    const loadGender = async () => {
-      try {
-        const savedGender = await AsyncStorage.getItem("selectedGender");
-        if (savedGender !== null) {
-          setGender(savedGender);
-        }
-      } catch (error) {
-        console.error("Error loading gender:", error.message);
-      }
-    };
-
-    if (gender) {
-      loadGender();
-    }
-  }, []);
-
-  useEffect(() => {
-    const saveGender = async () => {
-      try {
-        await AsyncStorage.setItem("selectedGender", gender);
-      } catch (error) {
-        console.error("Error saving gender:", error.message);
-      }
-    };
-
-    if (gender) {
-      saveGender();
-    }
-  }, [gender]);
-
   const handleUpdateProfile = async () => {
     const updatedUser = {
       email: user.email,
@@ -211,8 +179,8 @@ const YourAccountScreen = () => {
       });
 
       // send a post request to the backend API
-      const response = await axios.post(
-        "http://192.168.0.115:8000/users/updateProfile",
+      const response = await axios.put(
+        "http://192.168.0.110:8000/users/updateProfile",
         formData,
         {
           headers: {

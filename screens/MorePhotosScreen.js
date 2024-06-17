@@ -27,6 +27,25 @@ const MorePhotosScreen = () => {
   const [loading, setLoading] = useState(false);
   const { productId } = useContext(ProductContext);
 
+  // Header
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: "",
+      headerStyle: {
+        backgroundColor: "#007AFF",
+      },
+      headerLeft: () => <Text style={styles.headerLeft}>NUSell</Text>,
+      headerRight: () => (
+        <Back
+          name="arrow-back"
+          size={30}
+          onPress={() => navigation.goBack()}
+          style={{ marginRight: 20, color: "white" }}
+        />
+      ),
+    });
+  }, [navigation]);
+
   // Allow users to upload their profile pictures
   const uploadImage = async (mode) => {
     try {
@@ -102,7 +121,7 @@ const MorePhotosScreen = () => {
         "You have listed your product successfully"
       );
 
-      navigation.navigate("Home");
+      navigation.navigate("YourListings");
     } catch (error) {
       console.error("Error uploading images:", error);
       Alert.alert(
@@ -111,25 +130,6 @@ const MorePhotosScreen = () => {
       );
     }
   };
-
-  // Header
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTitle: "",
-      headerStyle: {
-        backgroundColor: "#007AFF",
-      },
-      headerLeft: () => <Text style={styles.headerLeft}>NUSell</Text>,
-      headerRight: () => (
-        <Back
-          name="arrow-back"
-          size={30}
-          onPress={() => navigation.goBack()}
-          style={{ marginRight: 20, color: "white" }}
-        />
-      ),
-    });
-  }, [navigation]);
 
   return (
     <SafeAreaView

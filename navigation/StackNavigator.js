@@ -19,6 +19,9 @@ import CartScreen from "../screens/CartScreen";
 import MorePhotosScreen from "../screens/MorePhotosScreen";
 import YourOrdersScreen from "../screens/YourOrdersScreen";
 import YourListingsScreen from "../screens/YourListingsScreen";
+import ManageListingScreen from "../screens/ManageListingScreen";
+import ProductInfoScreen from "../screens/ProductInfoScreen";
+import EditOtherPhotosScreen from "../screens/EditOtherPhotosScreen";
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -94,6 +97,12 @@ const StackNavigator = () => {
         <Stack.Screen name="MorePhotos" component={MorePhotosScreen} />
         <Stack.Screen name="YourOrders" component={YourOrdersScreen} />
         <Stack.Screen name="YourListings" component={YourListingsScreen} />
+        <Stack.Screen name="ManageListing" component={ManageListingScreen} />
+        <Stack.Screen name="ProductInfo" component={ProductInfoScreen} />
+        <Stack.Screen
+          name="EditOtherPhotos"
+          component={EditOtherPhotosScreen}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

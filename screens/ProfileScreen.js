@@ -57,7 +57,7 @@ const ProfileScreen = () => {
     const fetchUserProfile = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.0.115:8000/users/profile/${userId}`
+          `http://192.168.0.110:8000/users/profile/${userId}`
         );
         const { user } = response.data;
         setUser(user);
@@ -175,7 +175,9 @@ const ProfileScreen = () => {
         }}
       >
         <View style={{ marginLeft: 10 }}>
-          <Text style={{ color: "red", fontSize: 18, fontWeight: 500 }}>Log Out</Text>
+          <Text style={{ color: "red", fontSize: 18, fontWeight: 500 }}>
+            Log Out
+          </Text>
         </View>
         <MaterialIcons
           style={{ marginRight: 20 }}
@@ -209,16 +211,25 @@ const ProfileScreen = () => {
       <View style={{ marginTop: 20 }} />
 
       <CustomButton
-        onPress={() => navigation.navigate("Purchase")}
-        text="PurchaseScreen"
+        onPress={() => navigation.navigate("UserProfile")}
+        text="UserProfileScreen"
       />
 
       <View style={{ marginTop: 20 }} />
 
       <CustomButton
-        onPress={() => navigation.navigate("UserProfile")}
-        text="UserProfileScreen"
+        onPress={() => navigation.navigate("ManageListing")}
+        text="ManageListingScreen"
       />
+
+      <View style={{ marginTop: 20 }} />
+
+      <CustomButton
+        onPress={() => navigation.navigate("ProductInfo")}
+        text="ProductInfoScreen"
+      />
+
+      <View style={{ marginTop: 20 }} />
     </ScrollView>
   );
 };

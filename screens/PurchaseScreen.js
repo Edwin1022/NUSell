@@ -17,7 +17,7 @@ const PurchaseScreen = () => {
   const [totalPrice, setTotalPrice] = useState(69);
   const [shippingFee, setShippingFee] = useState(0);
   const { userId } = useContext(UserContext);
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
 
   const fetchAddresses = async () => {
     try {
@@ -31,8 +31,21 @@ const PurchaseScreen = () => {
     }
   };
 
+  const fetchUserData = async () => {
+    try {
+      const res = await axios.get(
+        `http://192.168.0.110:8000/users/getUserData?email=${user.email}`
+      );
+      setUser(res.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     fetchAddresses();
+    fetchUserData();
+    setSelectedAddress(user.defaultAddress);
   }, []);
 
   // header
@@ -59,7 +72,7 @@ const PurchaseScreen = () => {
         <Back
           name="arrow-back"
           size={30}
-          onPress={() => navigation.navigate("Profile")}
+          onPress={() => navigation.goBack()}
           style={{ marginRight: 20, color: "white" }}
         />
       ),
@@ -74,7 +87,7 @@ const PurchaseScreen = () => {
   ];
 
   const handlePlaceOrder = async () => {
-    navigation.navigate("Order");
+    navigation.navigate("YourOrders");
   };
 
   /*const pay = async () => {

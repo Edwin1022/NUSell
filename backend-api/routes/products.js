@@ -71,6 +71,7 @@ router.post(`/`, uploadOptions.single("image"), async (req, res) => {
     richDescription: productData.richDescription,
     image: `${basePath}${fileName}`,
     brand: productData.brand,
+    condition: productData.condition,
     price: productData.price,
     category: productData.category,
     countInStock: productData.countInStock,
@@ -83,27 +84,34 @@ router.post(`/`, uploadOptions.single("image"), async (req, res) => {
   res.send({ productId: product.id });
 });
 
-router.put(`/:id`, async (req, res) => {
+router.put(`/:id`, uploadOptions.single("image"), async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(400).send("Invalid Product Id");
   }
 
-  const category = await Category.findById(req.body.category);
+  const productData = JSON.parse(req.body.product);
+
+  const category = await Category.findById(productData.category);
   if (!category) return res.status(400).send("Invalid Category");
+
+  const file = req.file;
+  if (!file) return res.status(400).send("No image in the request");
+
+  const fileName = req.file.filename;
+  const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
 
   const product = await Product.findByIdAndUpdate(
     req.params.id,
     {
-      name: req.body.name,
-      description: req.body.description,
-      richDescription: req.body.richDescription,
-      image: req.body.image,
-      brand: req.body.brand,
-      price: req.body.price,
-      category: req.body.category,
-      countInStock: req.body.countInStock,
-      rating: req.body.rating,
-      numReviews: req.body.numReviews,
+      name: productData.name,
+      description: productData.description,
+      richDescription: productData.richDescription,
+      image: `${basePath}${fileName}`,
+      brand: productData.brand,
+      condition: productData.condition,
+      price: productData.price,
+      category: productData.category,
+      countInStock: productData.countInStock,
       isFeatured: req.body.isFeatured,
     },
     { new: true }

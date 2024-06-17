@@ -28,8 +28,6 @@ const ItemListingScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const placeholderImage = "";
-
   //category states
   const [value, setValue] = useState(null);
   const data = [
@@ -94,7 +92,7 @@ const ItemListingScreen = () => {
   const [itemDescription, setItemDescription] = useState("");
   const [brand, setBrand] = useState("");
   const [condition, setCondition] = useState("");
-  const [price, setPrice] = useState("");
+  const [price, setPrice] = useState(0);
 
   const [errorImage, setErrorImage] = useState();
   const [errorItemName, setErrorItemName] = useState("");
@@ -103,6 +101,25 @@ const ItemListingScreen = () => {
   const [errorCategory, setErrorCategory] = useState("");
   const [errorCondition, setErrorCondition] = useState("");
   const [errorPrice, setErrorPrice] = useState("");
+
+  // header
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: "",
+      headerStyle: {
+        backgroundColor: "#007AFF",
+      },
+      headerLeft: () => <Text style={styles.headerLeft}>NUSell</Text>,
+      headerRight: () => (
+        <Back
+          name="arrow-back"
+          size={30}
+          onPress={() => navigation.navigate("Home")}
+          style={{ marginRight: 20, color: "white" }}
+        />
+      ),
+    });
+  }, []);
 
   // allow users to upload their profile pictures
   const uploadImage = async (mode) => {
@@ -141,7 +158,7 @@ const ItemListingScreen = () => {
   // allow users to delete their profile pictures
   const removeImage = async () => {
     try {
-      setImage(placeholderImage);
+      setImage(null);
       setModalVisible(false);
     } catch ({ message }) {
       Alert.alert(message);
@@ -218,7 +235,7 @@ const ItemListingScreen = () => {
       formData.append("image", {
         uri: image,
         type: "image/jpeg",
-        name: "profile.jpg",
+        name: "product.jpg",
       });
 
       setLoading(true);
@@ -239,14 +256,6 @@ const ItemListingScreen = () => {
       setProductId(response.data.productId);
 
       navigation.navigate("MorePhotos");
-
-      setImage("");
-      setItemName("");
-      setItemDescription("");
-      setBrand("");
-      setValue("");
-      setCondition("");
-      setPrice(0);
     } catch (error) {
       console.log("product listed failed", error);
       Alert.alert(
@@ -255,25 +264,6 @@ const ItemListingScreen = () => {
       );
     }
   };
-
-  // header
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTitle: "",
-      headerStyle: {
-        backgroundColor: "#007AFF",
-      },
-      headerLeft: () => <Text style={styles.headerLeft}>NUSell</Text>,
-      headerRight: () => (
-        <Back
-          name="arrow-back"
-          size={30}
-          onPress={() => navigation.navigate("Home")}
-          style={{ marginRight: 20, color: "white" }}
-        />
-      ),
-    });
-  }, []);
 
   return (
     <SafeAreaView
@@ -303,7 +293,6 @@ const ItemListingScreen = () => {
             <TouchableOpacity onPress={() => setModalVisible(true)}>
               <ModalScreen
                 image={image}
-                placeholderImage={placeholderImage}
                 isVisible={modalVisible}
                 onClose={() => setModalVisible(false)}
                 onCameraPress={uploadImage}
@@ -388,7 +377,7 @@ const ItemListingScreen = () => {
               )}
             </View>
 
-            <View style={{ marginBottom: 20, marginTop: 20 }}>
+            <View style={{ marginBottom: 10, marginTop: 20 }}>
               <Text style={styles.Title}>Brand</Text>
               <TextInput
                 value={brand}
@@ -470,7 +459,7 @@ const ItemListingScreen = () => {
               )}
             </View>
 
-            <View style={{ marginTop: 20 }}>
+            <View style={{ marginTop: 10 }}>
               <Text style={styles.Title}> Price </Text>
               <View style={styles.priceInputContainer}>
                 <Text>$ </Text>
@@ -503,33 +492,10 @@ const ItemListingScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  photoItem: {
-    height: 40,
-    width: 40,
-    resizeMode: "contain",
-    tintColor: "black",
-    opacity: 0.5,
-  },
-
-  morePhotosContainer: {
-    backgroundColor: "#D0D0D0",
-    marginRight: 10,
-    borderRadius: 5,
-    padding: 10,
-  },
-
   itemPhoto: {
     height: 50,
     width: 50,
     resizeMode: "contain",
-  },
-
-  sidePhotos: {
-    height: 30,
-    width: 30,
-    resizeMode: "contain",
-    marginVertical: 10,
-    marginHorizontal: 10,
   },
 
   photoUpload: {
@@ -539,19 +505,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     padding: 50,
-    width: 350,
-    borderColor: "gray",
-    borderWidth: 1,
-    borderRadius: 10,
-    borderStyle: "solid",
-  },
-
-  sidePhotosUpload: {
-    alignItems: "center",
-    marginTop: 20,
-    backgroundColor: "#D0D0D0",
-    flex: 1,
-    flexDirection: "row",
     width: 350,
     borderColor: "gray",
     borderWidth: 1,

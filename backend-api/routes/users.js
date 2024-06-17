@@ -308,7 +308,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // endpoint to update user profile
-router.post("/updateProfile", upload.single("image"), async (req, res) => {
+router.put("/updateProfile", upload.single("image"), async (req, res) => {
   try {
     const userData = JSON.parse(req.body.user);
 
