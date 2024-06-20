@@ -1,60 +1,71 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Pressable, Image, Button } from "react-native";
-import React, { useLayoutEffect } from "react";
-import Back from "react-native-vector-icons/Ionicons";
-import { useNavigation } from "@react-navigation/native";
-import { SwipeRow } from 'react-native-swipe-list-view';
-import { Ionicons } from "@expo/vector-icons";
-
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  Image,
+} from "react-native";
+import React from "react";
 
 export const OrderComponent = () => {
   return (
     <ScrollView>
-    <View style={styles.OrderScreenContainer}>
-      <View style={styles.itemSummaryComponent}>
-        <View style={styles.usernameBox}>
-          <Pressable>
-             <Image style={styles.userProfile} source={{uri: "https://cdn.britannica.com/70/234870-050-D4D024BB/Orange-colored-cat-yawns-displaying-teeth.jpg"}}/>
-          </Pressable>
-          <Pressable>
-            <Text style={styles.username}>Username</Text>
-          </Pressable>
-          <Pressable style={styles.checkoutButton}>
-            <Text style={styles.buttonText}>STATUS</Text>
-          </Pressable>
-        </View>
-        <Pressable>
-          <View style= {styles.swipable}>
-            <View style={styles.visibleRow}>
-              <View>
-                <Image style={styles.itemImage} source={{uri:"https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg"}}/>
-              </View>
-              
-              <View>
-                <View style= {styles.itemNameBox}>
-                  <Text style={styles.itemName}>An example of a very long item name </Text>
-                </View>
-                <View style={styles.conditionBox}>
-                  <Text style={styles.condition}>Condition</Text>
-                </View>
-                <Text style={styles.itemText}>1 item(s)</Text>
-              </View>
-            </View>
+      <View style={styles.OrderScreenContainer}>
+        <View style={styles.itemSummaryComponent}>
+          <View style={styles.usernameBox}>
+            <Pressable>
+              <Image
+                style={styles.userProfile}
+                source={{
+                  uri: "https://cdn.britannica.com/70/234870-050-D4D024BB/Orange-colored-cat-yawns-displaying-teeth.jpg",
+                }}
+              />
+            </Pressable>
+            <Pressable>
+              <Text style={styles.username}>Username</Text>
+            </Pressable>
+            <Pressable style={styles.checkoutButton}>
+              <Text style={styles.buttonText}>STATUS</Text>
+            </Pressable>
           </View>
-        </Pressable>
-        
-        <View style={styles.bottomContainer}>
-          <Text style={styles.amount}>Total: $100</Text>
+
+          <View style={styles.swipable}>
+            <Pressable>
+              <View style={styles.visibleRow}>
+                <View>
+                  <Image
+                    style={styles.itemImage}
+                    source={{
+                      uri: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg",
+                    }}
+                  />
+                </View>
+
+                <View>
+                  <View style={styles.itemNameBox}>
+                    <Text style={styles.itemName}>
+                      An example of a very long item name{" "}
+                    </Text>
+                  </View>
+                  <View style={styles.conditionBox}>
+                    <Text style={styles.condition}>Condition</Text>
+                  </View>
+                  <Text style={styles.itemText}>1 item(s)</Text>
+                </View>
+              </View>
+            </Pressable>
+          </View>
+
+          <View style={styles.bottomContainer}>
+            <Text style={styles.amount}>Total: $100</Text>
+          </View>
         </View>
       </View>
-
-      
-    </View>
-  </ScrollView>
-
+    </ScrollView>
   );
 };
 const styles = StyleSheet.create({
-
   checkoutButton: {
     borderStyle: "solid",
     borderWidth: 1,
@@ -66,14 +77,14 @@ const styles = StyleSheet.create({
   },
   amount: {
     fontSize: 18,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   buttonText: {
     color: "green",
     fontWeight: "bold",
-    fontSize: 14
+    fontSize: 14,
   },
-  
+
   itemText: {
     color: "gray",
   },
@@ -86,11 +97,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: 80,
     marginTop: 5,
-    marginBottom: 5
+    marginBottom: 5,
   },
-  
+
   condition: {
-    color: "gray"
+    color: "gray",
   },
   itemNameBox: {
     flexDirection: "row",
@@ -99,7 +110,7 @@ const styles = StyleSheet.create({
   },
   itemName: {
     fontSize: 16,
-    flexWrap: "wrap"  
+    flexWrap: "wrap",
   },
   itemImage: {
     height: 80,
@@ -109,40 +120,40 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   hiddenRow: {
-    alignItems: 'center',
-    backgroundColor: '#DDD',
+    alignItems: "center",
+    backgroundColor: "#DDD",
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: "row",
     justifyContent: "flex-end",
     paddingLeft: 15,
     height: 110,
   },
   hiddenButton: {
-    alignItems: 'center',
+    alignItems: "center",
     bottom: 0,
-    justifyContent: 'center',
-    position: 'absolute',
+    justifyContent: "center",
+    position: "absolute",
     top: 0,
     width: 75,
   },
-  
+
   editButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: "#007bff",
     right: 80,
-    height: "100%"
+    height: "100%",
   },
   deleteButton: {
-    backgroundColor: '#dc3545',
+    backgroundColor: "#dc3545",
     right: 0,
     width: 80,
-    height: "100%"
+    height: "100%",
   },
   visibleRow: {
-    backgroundColor: '#FFF',
+    backgroundColor: "#FFF",
     height: 110,
     paddingLeft: 15,
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
   },
   userProfile: {
     height: 30,
@@ -167,7 +178,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingTop: 10,
     paddingBottom: 10,
-    overflow: "hidden"
+    overflow: "hidden",
   },
 
   OrderScreenContainer: {
@@ -182,9 +193,9 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingLeft: 15,
     paddingBottom: 0,
-    height: 50
+    height: 50,
   },
-  
+
   bottomContainer: {
     backgroundColor: "white",
     borderTopWidth: 1,
@@ -193,5 +204,5 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 10,
-  }
-})
+  },
+});

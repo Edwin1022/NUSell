@@ -24,6 +24,7 @@ const connection = process.env.CONNECTION;
 const usersRoutes = require("./routes/users");
 const categoriesRoutes = require("./routes/categories");
 const productsRoutes = require("./routes/products");
+const orderItemsRoutes = require("./routes/order-items");
 const ordersRoutes = require("./routes/orders");
 const googleCloudVisionRoutes = require("./routes/googleCloudVision");
 
@@ -31,6 +32,7 @@ const googleCloudVisionRoutes = require("./routes/googleCloudVision");
 app.use(`/users`, usersRoutes);
 app.use(`/categories`, categoriesRoutes);
 app.use(`/products`, productsRoutes);
+app.use(`/order-items`, orderItemsRoutes);
 app.use(`/orders`, ordersRoutes);
 app.use(`/googleCloudVision`, googleCloudVisionRoutes);
 

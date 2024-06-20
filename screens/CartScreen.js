@@ -1,11 +1,28 @@
-import { View, Text } from "react-native";
-import React, { useLayoutEffect } from "react";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  ScrollView,
+  KeyboardAvoidingView,
+  StyleSheet,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
+import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Back from "react-native-vector-icons/Ionicons";
 import { CartComponent } from "../components/CartComponent";
+import { ProductContext } from "../ProductContext";
+import { UserContext } from "../UserContext";
+import axios from "axios";
 
 const CartScreen = () => {
   const navigation = useNavigation();
+  const { setSelectedItem } = useContext(ProductContext);
+  const [cartItems, setCartItems] = useState("");
+  const { userId } = useContext(UserContext);
+  const { setSelectedUser } = useContext(UserContext);
+  const [loading, setLoading] = useState(false);
 
   // header
   useLayoutEffect(() => {
@@ -38,9 +55,104 @@ const CartScreen = () => {
     });
   }, []);
 
+  const fetchCartItems = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(
+        `http://192.168.0.110:8000/order-items/byBuyers?users=${userId}`
+      );
+      setLoading(false);
+      setCartItems(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchCartItems();
+  }, []);
+
+  const handleUserPressed = (userId) => {
+    setSelectedUser(userId);
+    navigation.navigate("UserProfile");
+  };
+
+  const handleItemPressed = (productId) => {
+    setSelectedItem(productId);
+    navigation.navigate("ProductInfo");
+  };
+
+  const handleDelete = (itemId) => {
+    axios
+      .delete(`http://192.168.0.110:8000/order-items/${itemId}`)
+      .then((response) => {
+        fetchCartItems();
+        Alert.alert("Success", "Item removed from cart successfully");
+      })
+      .catch((error) => {
+        Alert.alert("Error", "Failed to remove item from cart");
+        console.log(error);
+      });
+  };
+
+  const handleCheckout = (productId) => {
+    setSelectedItem(productId);
+    navigation.navigate("Purchase");
+  };
+
   return (
-    <CartComponent/>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
+    >
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={{ alignItems: "center", marginTop: 10 }}></View>
+        <KeyboardAvoidingView>
+          {loading ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#007AFF" />
+              <Text style={styles.loadingText}>Loading...</Text>
+            </View>
+          ) : (
+            <View>
+              {cartItems &&
+                cartItems.length > 0 &&
+                cartItems.map((item, index) => (
+                  <View key={index} style={{ marginVertical: 10 }}>
+                    <CartComponent
+                      pfp={item.product.user.image}
+                      username={item.product.user.name}
+                      image={item.product.image}
+                      name={item.product.name}
+                      condition={item.product.condition}
+                      price={item.product.price}
+                      onUser={() => handleUserPressed(item.product.user)}
+                      onItem={() => handleItemPressed(item.product.id)}
+                      onDelete={() => handleDelete(item.id)}
+                      onCheckout={() => handleCheckout(item.product.id)}
+                    />
+                  </View>
+                ))}
+            </View>
+          )}
+        </KeyboardAvoidingView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 export default CartScreen;
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+  },
+
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#007AFF",
+  },
+});

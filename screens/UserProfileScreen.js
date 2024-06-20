@@ -4,6 +4,10 @@ import {
   SafeAreaView,
   KeyboardAvoidingView,
   ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  Modal,
+  Image,
 } from "react-native";
 import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -15,8 +19,10 @@ import CustomButton from "../components/CustomButton";
 import RatingModalScreen from "./RatingModalScreen";
 
 const UserProfileScreen = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { selectedUser } = useContext(UserContext);
+  const [seller, setSeller] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const [imageModalVisible, setImageModalVisible] = useState(false);
   const [buttonVisible, setButtonVisible] = useState(true);
   const navigation = useNavigation();
 
@@ -44,19 +50,19 @@ const UserProfileScreen = () => {
         <Back
           name="arrow-back"
           size={30}
-          onPress={() => navigation.navigate("Profile")}
+          onPress={() => navigation.goBack()}
           style={{ marginRight: 20, color: "white" }}
         />
       ),
     });
   }, []);
 
-  const fetchUserData = async () => {
+  const fetchSellerData = async () => {
     try {
       const res = await axios.get(
-        `http://192.168.0.110:8000/users/getUserData?email=${user.email}`
+        `http://192.168.0.110:8000/users/getUserData?email=${selectedUser.email}`
       );
-      setUser(res.data.data);
+      setSeller(res.data.data);
     } catch (err) {
       console.log(err);
     }
@@ -64,7 +70,7 @@ const UserProfileScreen = () => {
 
   // retrieve user data from the backend
   useEffect(() => {
-    fetchUserData();
+    fetchSellerData();
   }, []);
 
   return (
@@ -72,7 +78,7 @@ const UserProfileScreen = () => {
       style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{ alignItems: "center", marginTop: 20 }}></View>
+        <View style={{ alignItems: "center", marginTop: 20 }} />
 
         <KeyboardAvoidingView>
           <View style={{ alignItems: "center" }}>
@@ -84,11 +90,12 @@ const UserProfileScreen = () => {
                 color: "#041E42",
               }}
             >
-              {user.name}'s Profile
+              {seller.name}'s Profile
             </Text>
           </View>
 
-          <View
+          <TouchableOpacity
+            onPress={() => setImageModalVisible(true)}
             style={{
               justifyContent: "center",
               alignItems: "center",
@@ -110,25 +117,27 @@ const UserProfileScreen = () => {
                 justifyContent: "center",
                 alignItems: "center",
               }}
-              source={{ uri: user.image }}
+              source={{ uri: seller.image }}
             />
-          </View>
+          </TouchableOpacity>
 
           <View style={{ marginTop: 30 }} />
 
-          {buttonVisible && <CustomButton
-            onPress={() => setModalVisible(true)}
-            text={`Rate ${user.name}`}
-          />}
+          {buttonVisible && (
+            <CustomButton
+              onPress={() => setModalVisible(true)}
+              text={`Rate ${seller.name}`}
+            />
+          )}
 
           <RatingModalScreen
-            username={user.name}
-            userId={user.id}
+            username={seller.name}
+            userId={seller.id}
             isVisible={modalVisible}
             onClose={() => {
               setButtonVisible(false);
               setModalVisible(false);
-              fetchUserData();
+              fetchSellerData();
             }}
           />
 
@@ -164,7 +173,7 @@ const UserProfileScreen = () => {
                   marginRight: 20,
                 }}
               >
-                {user.name}
+                {seller.name}
               </Text>
             </View>
           </View>
@@ -197,7 +206,7 @@ const UserProfileScreen = () => {
                   marginRight: 20,
                 }}
               >
-                {user.gender}
+                {seller.gender}
               </Text>
             </View>
           </View>
@@ -230,7 +239,7 @@ const UserProfileScreen = () => {
                   marginRight: 20,
                 }}
               >
-                {user.studentId}
+                {seller.studentId}
               </Text>
             </View>
           </View>
@@ -248,7 +257,12 @@ const UserProfileScreen = () => {
               }}
             >
               <Text
-                style={{ color: "#7d7c7c", fontSize: 16, fontWeight: "400" }}
+                style={{
+                  color: "#7d7c7c",
+                  fontSize: 16,
+                  fontWeight: "400",
+                  marginRight: 20,
+                }}
               >
                 Faculty
               </Text>
@@ -263,7 +277,7 @@ const UserProfileScreen = () => {
                   marginRight: 20,
                 }}
               >
-                {user.faculty}
+                {seller.faculty}
               </Text>
             </View>
           </View>
@@ -296,7 +310,7 @@ const UserProfileScreen = () => {
                   marginRight: 20,
                 }}
               >
-                {user.major}
+                {seller.major}
               </Text>
             </View>
           </View>
@@ -341,7 +355,7 @@ const UserProfileScreen = () => {
                     marginRight: 20,
                   }}
                 >
-                  {user.defaultAddress?.blockNo} {user.defaultAddress?.street}
+                  {seller.defaultAddress?.blockNo} {seller.defaultAddress?.street}
                 </Text>
 
                 <Text
@@ -355,7 +369,7 @@ const UserProfileScreen = () => {
                     marginRight: 20,
                   }}
                 >
-                  {user.defaultAddress?.unit} {user.defaultAddress?.building}
+                  {seller.defaultAddress?.unit} {seller.defaultAddress?.building}
                 </Text>
 
                 <Text
@@ -369,7 +383,7 @@ const UserProfileScreen = () => {
                     marginRight: 20,
                   }}
                 >
-                  Singapore {user.defaultAddress?.postalCode}
+                  Singapore {seller.defaultAddress?.postalCode}
                 </Text>
               </View>
             </View>
@@ -407,7 +421,7 @@ const UserProfileScreen = () => {
                   marginRight: 20,
                 }}
               >
-                {user.mobileNo}
+                {seller.mobileNo}
               </Text>
             </View>
           </View>
@@ -444,7 +458,7 @@ const UserProfileScreen = () => {
                   marginRight: 20,
                 }}
               >
-                {user.teleHandle}
+                {seller.teleHandle}
               </Text>
             </View>
           </View>
@@ -481,7 +495,7 @@ const UserProfileScreen = () => {
                   marginRight: 20,
                 }}
               >
-                {user.email}
+                {seller.email}
               </Text>
             </View>
           </View>
@@ -514,7 +528,7 @@ const UserProfileScreen = () => {
                   marginRight: 20,
                 }}
               >
-                {user.rating == 0 ? "-" : user.rating} / 5
+                {seller.rating == 0 ? "-" : seller.rating} / 5
               </Text>
             </View>
 
@@ -522,8 +536,47 @@ const UserProfileScreen = () => {
           </View>
         </KeyboardAvoidingView>
       </ScrollView>
+
+      <Modal
+        visible={imageModalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setImageModalVisible(false)}
+      >
+        <View style={styles.modalBackground}>
+          <TouchableOpacity
+            style={styles.modalContainer}
+            onPress={() => setImageModalVisible(false)}
+          >
+            <Image
+              source={{ uri: seller.image }}
+              style={styles.fullImage}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
 
 export default UserProfileScreen;
+
+const styles = StyleSheet.create({
+  modalBackground: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContainer: {
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  fullImage: {
+    width: "90%",
+    height: "90%",
+  },
+});

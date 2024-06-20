@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Modal,
+  Alert,
 } from "react-native";
 import React, { useState, useLayoutEffect, useContext, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -16,16 +17,16 @@ import Back from "react-native-vector-icons/Ionicons";
 import { StyleSheet } from "react-native";
 import axios from "axios";
 import { ProductContext } from "../ProductContext";
+import { UserContext } from "../UserContext";
 
 const ProductInfoScreen = () => {
   const navigation = useNavigation();
-  // const { productId } = useContext(ProductContext);
+  const { selectedItem } = useContext(ProductContext);
+  const { userId } = useContext(UserContext);
   const [product, setProduct] = useState("");
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState();
-
-  const productId = "666f1d91ccf97b4fd2de4b7f";
 
   // header
   useLayoutEffect(() => {
@@ -39,7 +40,7 @@ const ProductInfoScreen = () => {
         <Back
           name="arrow-back"
           size={30}
-          onPress={() => navigation.navigate("Home")}
+          onPress={() => navigation.goBack()}
           style={{ marginRight: 20, color: "white" }}
         />
       ),
@@ -50,7 +51,7 @@ const ProductInfoScreen = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://192.168.0.110:8000/products/${productId}`
+        `http://192.168.0.110:8000/products/${selectedItem}`
       );
       setLoading(false);
       setProduct(res.data);
@@ -63,13 +64,25 @@ const ProductInfoScreen = () => {
     fetchProductData();
   }, []);
 
+  const handleAddToCart = () => {
+    axios
+      .post("http://192.168.0.110:8000/order-items", { productId: selectedItem, userId })
+      .then((response) => {
+        Alert.alert("Success", "Item added to cart successfully");
+      })
+      .catch((error) => {
+        Alert.alert("Error", "Failed to add item to cart");
+        console.log(error);
+      });
+  };
+
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
     >
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={{ marginLeft: 20 }}
+        style={{ marginLeft: 10 }}
       >
         {loading ? (
           <View style={styles.loadingContainer}>
@@ -188,7 +201,10 @@ const ProductInfoScreen = () => {
                   <Text style={styles.buttonText}>Buy Now</Text>
                 </Pressable>
 
-                <Pressable style={styles.addToCartButton}>
+                <Pressable
+                  onPress={handleAddToCart}
+                  style={styles.addToCartButton}
+                >
                   <Text style={styles.buttonText}>Add to Cart</Text>
                 </Pressable>
               </View>
@@ -298,9 +314,8 @@ const styles = StyleSheet.create({
     width: 360,
     paddingLeft: 0,
     paddingRight: 10,
-    marginBottom: 40,
     alignItems: "center",
-    marginTop: 50,
+    marginVertical: 40,
   },
 
   headerLeft: {

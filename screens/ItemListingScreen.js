@@ -20,10 +20,12 @@ import { Dropdown } from "react-native-element-dropdown";
 import * as ImagePicker from "expo-image-picker";
 import ModalScreen from "./ModalScreen";
 import axios from "axios";
+import { UserContext } from "../UserContext";
 import { ProductContext } from "../ProductContext";
 
 const ItemListingScreen = () => {
   const navigation = useNavigation();
+  const { userId } = useContext(UserContext);
   const { setProductId } = useContext(ProductContext);
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -227,6 +229,7 @@ const ItemListingScreen = () => {
       price: price,
       category: value,
       condition: condition,
+      user: userId,
     };
 
     try {
@@ -253,6 +256,14 @@ const ItemListingScreen = () => {
 
       setLoading(false);
 
+      setImage(null);
+      setItemName("");
+      setItemDescription("");
+      setBrand("");
+      setValue("");
+      setCondition("");
+      setPrice(0);
+
       setProductId(response.data.productId);
 
       navigation.navigate("MorePhotos");
@@ -269,7 +280,10 @@ const ItemListingScreen = () => {
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
     >
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ marginLeft: 10 }}
+      >
         {loading ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#007AFF" />
@@ -286,7 +300,7 @@ const ItemListingScreen = () => {
                   color: "#041E42",
                 }}
               >
-                List your item
+                List Your Item
               </Text>
             </View>
 
@@ -340,9 +354,7 @@ const ItemListingScreen = () => {
                 </View>
               )}
 
-              {!!errorImage && (
-                <Text style={styles.error}>{errorImage}</Text>
-              )}
+              {!!errorImage && <Text style={styles.error}>{errorImage}</Text>}
             </TouchableOpacity>
 
             <View style={{ marginBottom: 20, marginTop: 20 }}>

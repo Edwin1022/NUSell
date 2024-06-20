@@ -209,27 +209,6 @@ const ProfileScreen = () => {
       />
 
       <View style={{ marginTop: 20 }} />
-
-      <CustomButton
-        onPress={() => navigation.navigate("UserProfile")}
-        text="UserProfileScreen"
-      />
-
-      <View style={{ marginTop: 20 }} />
-
-      <CustomButton
-        onPress={() => navigation.navigate("ManageListing")}
-        text="ManageListingScreen"
-      />
-
-      <View style={{ marginTop: 20 }} />
-
-      <CustomButton
-        onPress={() => navigation.navigate("ProductInfo")}
-        text="ProductInfoScreen"
-      />
-
-      <View style={{ marginTop: 20 }} />
     </ScrollView>
   );
 };

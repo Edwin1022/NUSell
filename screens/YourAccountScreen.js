@@ -207,7 +207,7 @@ const YourAccountScreen = () => {
       style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{ alignItems: "center", marginTop: 20 }}></View>
+        <View style={{ alignItems: "center", marginTop: 20 }} />
 
         <KeyboardAvoidingView>
           <View style={{ alignItems: "center" }}>

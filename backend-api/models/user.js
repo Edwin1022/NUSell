@@ -81,30 +81,12 @@ const userSchema = new mongoose.Schema({
     },
   ],
   defaultAddress: {
-    _id: {
-      type: String,
-      required: true,
-    },
-    blockNo: {
-      type: String,
-      required: true,
-    },
-    street: {
-      type: String,
-      required: true,
-    },
-    unit: {
-      type: String,
-      default: "",
-    },
-    building: {
-      type: String,
-      default: "",
-    },
-    postalCode: {
-      type: String,
-      required: true,
-    },
+    _id: String,
+    blockNo: String,
+    street: String,
+    unit: String,
+    building: String,
+    postalCode: String,
   },
   orders: [
     {

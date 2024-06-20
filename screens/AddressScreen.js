@@ -98,7 +98,7 @@ const AddressScreen = () => {
         updatedAddresses,
       })
       .then((response) => {
-        Alert.alert("Success", "Addresses deleted successfully");
+        Alert.alert("Success", "Address deleted successfully");
       })
       .catch((error) => {
         Alert.alert("Error", "Failed to delete address");

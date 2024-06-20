@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
 const { Product } = require("../models/product");
+const { User } = require("../models/user");
 const { Category } = require("../models/category");
 const multer = require("multer");
 
@@ -30,7 +31,7 @@ const storage = multer.diskStorage({
 
 const uploadOptions = multer({ storage: storage });
 
-router.get(`/`, async (req, res) => {
+router.get(`/byCategories`, async (req, res) => {
   let filter = {};
   if (req.query.categories) {
     filter = { category: req.query.categories.split(",") };
@@ -44,8 +45,22 @@ router.get(`/`, async (req, res) => {
   res.send(productList);
 });
 
+router.get(`/bySellers`, async (req, res) => {
+  let filter = {};
+  if (req.query.users) {
+    filter = { user: req.query.users.split(",") };
+  }
+
+  const productList = await Product.find(filter).populate("user").sort({ dateCreated: -1 });;
+
+  if (!productList) {
+    res.status(500).json({ success: false });
+  }
+  res.send(productList);
+});
+
 router.get(`/:id`, async (req, res) => {
-  const product = await Product.findById(req.params.id).populate("category");
+  const product = await Product.findById(req.params.id).populate("user category");
 
   if (!product) {
     res.status(500).json({ success: false });
@@ -55,6 +70,9 @@ router.get(`/:id`, async (req, res) => {
 
 router.post(`/`, uploadOptions.single("image"), async (req, res) => {
   const productData = JSON.parse(req.body.product);
+
+  const user = await User.findById(productData.user);
+  if (!user) return res.status(404).send("Invalid User");
 
   const category = await Category.findById(productData.category);
   if (!category) return res.status(400).send("Invalid Category");
@@ -74,6 +92,7 @@ router.post(`/`, uploadOptions.single("image"), async (req, res) => {
     condition: productData.condition,
     price: productData.price,
     category: productData.category,
+    user: productData.user,
     countInStock: productData.countInStock,
     isFeatured: productData.isFeatured,
   });
@@ -90,6 +109,9 @@ router.put(`/:id`, uploadOptions.single("image"), async (req, res) => {
   }
 
   const productData = JSON.parse(req.body.product);
+
+  const user = await User.findById(productData.user);
+  if (!user) return res.status(404).send("Invalid User");
 
   const category = await Category.findById(productData.category);
   if (!category) return res.status(400).send("Invalid Category");
@@ -111,6 +133,7 @@ router.put(`/:id`, uploadOptions.single("image"), async (req, res) => {
       condition: productData.condition,
       price: productData.price,
       category: productData.category,
+      user: productData.user,
       countInStock: productData.countInStock,
       isFeatured: req.body.isFeatured,
     },

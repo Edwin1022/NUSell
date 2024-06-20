@@ -24,12 +24,10 @@ import { ProductContext } from "../ProductContext";
 
 const ManageListingScreen = () => {
   const navigation = useNavigation();
-  // const { productId, setProductId } = useContext(ProductContext);
+  const { selectedItem } = useContext(ProductContext);
   const [product, setProduct] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const productId = "666f1d91ccf97b4fd2de4b7f";
 
   //category states
   const [value, setValue] = useState(null);
@@ -109,7 +107,7 @@ const ManageListingScreen = () => {
         <Back
           name="arrow-back"
           size={30}
-          onPress={() => navigation.navigate("Home")}
+          onPress={() => navigation.goBack()}
           style={{ marginRight: 20, color: "white" }}
         />
       ),
@@ -120,7 +118,7 @@ const ManageListingScreen = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://192.168.0.110:8000/products/${productId}`
+        `http://192.168.0.110:8000/products/${selectedItem}`
       );
       setLoading(false);
       setProduct(res.data);
@@ -190,6 +188,7 @@ const ManageListingScreen = () => {
       price: price || product.price,
       category: value,
       condition: condition,
+      user: product.user,
     };
 
     try {
@@ -232,7 +231,7 @@ const ManageListingScreen = () => {
     >
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={{ marginLeft: 20 }}
+        style={{ marginLeft: 10 }}
       >
         {loading ? (
           <View style={styles.loadingContainer}>
