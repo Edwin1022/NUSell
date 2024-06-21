@@ -9,7 +9,10 @@ export const HomeScreenComponent = () => {
         <Image style={styles.productPic} source={{uri: "https://static1.srcdn.com/wordpress/wp-content/uploads/2022/01/Minecraft-How-To-Get-Invisible-Item-Frames.webp-.jpg"}} />
       </View>
       <View style={styles.itemInfo}>
-        <Text style={styles.itemName}>Item Name</Text>
+        <View style={styles.itemNameBox}>
+          <Text style={styles.itemName}>Testing with a v long item name</Text>
+        </View>
+        
         <Text style={styles.priceCondition}>$500 &#x2022; <Text>Brand New</Text></Text>
         <Pressable style={styles.usernameBox}>
           <Image style={styles.userProfile} source={{uri: "https://people.com/thmb/n6EdTmvAL3TkkAqrT47caD6tUu8=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(723x121:725x123)/wisp-the-cat-from-tiktok-092823-1-74797b02afe7475295e1478b2cdf2883.jpg"}}/>
@@ -22,6 +25,9 @@ export const HomeScreenComponent = () => {
 };
 
 const styles = StyleSheet.create({
+  itemNameBox: {
+    maxWidth: 200
+  },
   usernameBox: {
     flexDirection: "row",
     alignItems: "center",
