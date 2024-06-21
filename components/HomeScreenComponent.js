@@ -4,7 +4,7 @@ import { Text, View, StyleSheet, Button, Pressable, TouchableOpacity, Image} fro
 export const HomeScreenComponent = () => {
 
   return (
-    <View style={styles.component}>
+    <Pressable style={styles.component}>
       <View style={styles.picContainer}>
         <Image style={styles.productPic} source={{uri: "https://static1.srcdn.com/wordpress/wp-content/uploads/2022/01/Minecraft-How-To-Get-Invisible-Item-Frames.webp-.jpg"}} />
       </View>
@@ -19,7 +19,7 @@ export const HomeScreenComponent = () => {
           <Text style={styles.username}>Username</Text>
         </Pressable>
       </View>
-    </View>
+    </Pressable>
   );
 
 };
