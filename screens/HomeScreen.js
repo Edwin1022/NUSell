@@ -38,7 +38,7 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <DetectObject />
+      <Text>Home Screen</Text>
     </View>
   );
 };

@@ -18,6 +18,7 @@ import CustomButton from "../components/CustomButton";
 import { StyleSheet } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
 import ModalScreen from "./ModalScreen";
 import axios from "axios";
 import { UserContext } from "../UserContext";
@@ -29,6 +30,7 @@ const ItemListingScreen = () => {
   const { setProductId } = useContext(ProductContext);
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [identifying, setIdentifying] = useState(false);
 
   //category states
   const [value, setValue] = useState(null);
@@ -123,6 +125,57 @@ const ItemListingScreen = () => {
     });
   }, []);
 
+  // Function to convert image to base64
+  const convertImageToBase64 = async (uri) => {
+    const base64 = await FileSystem.readAsStringAsync(uri, {
+      encoding: "base64",
+    });
+    return base64;
+  };
+
+  const identifyImage = async (imageBase64) => {
+    const apiKey = "AIzaSyAqBqreiW6HBvrw5rlznRmBmYopfGXgCY0";
+    const body = {
+      requests: [
+        {
+          image: {
+            content: imageBase64,
+          },
+          features: [
+            {
+              type: "LABEL_DETECTION",
+              maxResults: 5,
+            },
+          ],
+        },
+      ],
+    };
+
+    try {
+      setIdentifying(true);
+      const response = await fetch(
+        `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      );
+
+      const result = await response.json();
+
+      setItemName(result.responses[0].labelAnnotations[0].description);
+    } catch (error) {
+      console.error(error);
+      setErrorImage("Failed to identify image");
+    } finally {
+      setIdentifying(false);
+    }
+  };
+
   // allow users to upload their profile pictures
   const uploadImage = async (mode) => {
     try {
@@ -148,6 +201,8 @@ const ItemListingScreen = () => {
 
       if (!result.canceled) {
         // save image
+        const base64 = await convertImageToBase64(result.assets[0].uri);
+        identifyImage(base64);
         setImage(result.assets[0].uri);
         setModalVisible(false);
       }
@@ -156,6 +211,8 @@ const ItemListingScreen = () => {
       setModalVisible(false);
     }
   };
+
+  console.log(itemName);
 
   // allow users to delete their profile pictures
   const removeImage = async () => {
@@ -314,7 +371,12 @@ const ItemListingScreen = () => {
                 onDeletePress={removeImage}
               />
 
-              {image ? (
+              {identifying ? (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="large" color="#007AFF" />
+                  <Text style={styles.loadingText}>Identify Item Image...</Text>
+                </View>
+              ) : image ? (
                 <View
                   style={{
                     alignItems: "center",
