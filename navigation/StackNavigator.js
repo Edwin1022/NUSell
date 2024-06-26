@@ -1,16 +1,12 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Entypo, AntDesign, Ionicons } from "@expo/vector-icons";
+import { BottomTabs } from './BottomTabs';
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
-import HomeScreen from "../screens/HomeScreen";
 import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
 import ConfirmationScreen from "../screens/ConfirmationScreen";
-import ProfileScreen from "../screens/ProfileScreen";
 import YourAccountScreen from "../screens/YourAccountScreen";
-import ItemListingScreen from "../screens/ItemListingScreen";
 import AddAddressScreen from "../screens/AddAddressScreen";
 import AddressScreen from "../screens/AddressScreen";
 import PurchaseScreen from "../screens/PurchaseScreen";
@@ -27,57 +23,6 @@ import UpdateListingScreen from "../screens/UpdateListingScreen";
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
-  const Tab = createBottomTabNavigator();
-  function BottomTabs() {
-    return (
-      <Tab.Navigator>
-        <Tab.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{
-            tabBarLabel: "Home",
-            tabBarLabelStyle: { color: "#007FFF" },
-            headerShown: false,
-            tabBarIcon: ({ focused }) =>
-              focused ? (
-                <Entypo name="home" size={24} color="#007FFF" />
-              ) : (
-                <AntDesign name="home" size={24} color="black" />
-              ),
-          }}
-        />
-        <Tab.Screen
-          name="Sell"
-          component={ItemListingScreen}
-          options={{
-            tabBarLabel: "Sell",
-            tabBarLabelStyle: { color: "#007FFF" },
-            //headerShown: false,
-            tabBarIcon: ({ focused }) =>
-              focused ? (
-                <Ionicons name="add-circle" size={24} color="#007FFF" />
-              ) : (
-                <Ionicons name="add-circle" size={24} color="black" />
-              ),
-          }}
-        />
-        <Tab.Screen
-          name="Profile"
-          component={ProfileScreen}
-          options={{
-            tabBarLabel: "Profile",
-            tabBarLabelStyle: { color: "#007FFF" },
-            tabBarIcon: ({ focused }) =>
-              focused ? (
-                <Ionicons name="person" size={24} color="#007FFF" />
-              ) : (
-                <Ionicons name="person-outline" size={24} color="black" />
-              ),
-          }}
-        />
-      </Tab.Navigator>
-    );
-  }
   return (
     <NavigationContainer>
       <Stack.Navigator>
