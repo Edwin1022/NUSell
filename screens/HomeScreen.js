@@ -1,13 +1,14 @@
 import 'react-native-gesture-handler';
-import { Text, View, StyleSheet, Button, Pressable, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, Button, Pressable, TouchableOpacity, Image, BackHandler} from "react-native";
 import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { UserContext } from "../UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import { Drawer } from 'react-native-drawer-layout';
 import { Ionicons } from "@expo/vector-icons";
-import { TextInput } from 'react-native-gesture-handler';
+import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import { HomeScreenComponent } from '../components/HomeScreenComponent';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -169,54 +170,63 @@ const HomeScreen = () => {
               </View>;
       }}
     >
-      <View style={styles.homeScreenContainer}>
-        <View style={styles.headerContainer}>
-          <View style={{flex: 1, flexDirection: "row", alignItems: "center"}}>
-            <Pressable 
-              onPress={() => setOpen((prevOpen) => !prevOpen)} 
-              style={styles.menuIcon} >
-              <Ionicons size={30} color="black" name='menu-outline'/>
-            </Pressable >
-            
-            <View style={styles.searchBar}>
-              <TouchableOpacity onPress={()=> navigation.navigate("Search")}>
-                <Ionicons
-                name="search"
-                size={24}
+  
+      <View style={styles.headerContainer}>
+        <Pressable 
+          onPress={() => setOpen((prevOpen) => !prevOpen)} 
+          style={styles.menuIcon} >
+          <Ionicons size={30} color="black" name='menu-outline'/>
+        </Pressable >
+        
+        <View style={styles.searchBar}>
+          <TouchableOpacity onPress={()=> navigation.navigate("Search")}>
+            <Ionicons
+            name="search"
+            size={24}
+            color="white"
+            style={styles.icon}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=> navigation.navigate("Search")} style={styles.searchbox}>
+            <Text
+            style={styles.input}
+            >
+              Search
+            </Text>
+          </TouchableOpacity>
+          <View style={styles.icons}>
+            <TouchableOpacity>
+              <Ionicons
+                name="camera-outline"
+                size={27}
                 color="white"
                 style={styles.icon}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={()=> navigation.navigate("Search")} style={styles.searchbox}>
-                <Text
-                style={styles.input}
-                >
-                  Search
-                </Text>
-              </TouchableOpacity>
-              
-
-              <View style={styles.icons}>
-                <TouchableOpacity>
-                  <Ionicons
-                    name="camera-outline"
-                    size={27}
-                    color="white"
-                    style={styles.icon}
-                  />
-                </TouchableOpacity>
-              </View>
-             
-            </View>
-          </View>
-
-          <View style={styles.main}>
-            <Text>Home Screen</Text>
+              />
+            </TouchableOpacity>
           </View>
         </View>
-
       </View>
-      
+
+      <ScrollView>
+
+        <View style={styles.main}>
+          <View style={styles.componentRow}>
+            <HomeScreenComponent></HomeScreenComponent>
+            <HomeScreenComponent></HomeScreenComponent>
+          </View>
+          <View style={styles.componentRow}>
+            <HomeScreenComponent></HomeScreenComponent>
+            <HomeScreenComponent></HomeScreenComponent>
+          </View>
+          <View style={styles.componentRow}>
+            <HomeScreenComponent></HomeScreenComponent>
+            <HomeScreenComponent></HomeScreenComponent>
+          </View>
+        </View>
+        
+
+
+      </ScrollView>
       
     </Drawer>
     
@@ -224,6 +234,66 @@ const HomeScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  usernameBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingBottom: 0,
+    height: 40,
+  },
+  userProfile: {
+    height: 30,
+    width: 30,
+    borderRadius: 15,
+    marginRight: 10,
+  },
+
+  username: {
+    fontSize: 16,
+  },
+
+  itemInfo: {
+    paddingLeft: 5
+  },
+
+  itemName: {
+    fontSize: 18,
+    flexWrap: "wrap",
+    fontWeight: "bold"
+  },
+
+  priceCondition: {
+    fontSize: 16
+  },
+
+  picContainer: {
+    backgroundColor: "black",
+    height: 190,
+    width: 190,
+    alignItems: "center",
+    overflow: "hidden",
+    borderRadius: 10
+  },
+
+  productPic: {
+    height: 190,
+    width: 190,
+    resizeMode: "cover",
+    borderRadius: 10
+  },
+  
+  componentRow: {
+    backgroundColor: "white",
+    padding: 10,
+    flexDirection: "row",
+  },
+
+  component: {
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderColor: "white",
+    margin: 5
+  },
+
   searchbox: {
     flex: 1,
     flexDirection: "row",
@@ -270,7 +340,7 @@ const styles = StyleSheet.create({
   main: {
      flex: 1, 
      justifyContent: 'center', 
-     alignItems: 'center'
+     alignItems: 'center',
   },
 
   headerContainer: {
@@ -278,7 +348,9 @@ const styles = StyleSheet.create({
     height: 100,
     paddingRight: 10,
     paddingTop: 5,
-    paddingBottom: 5
+    marginTop: 40,
+    flexDirection: "row", 
+    alignItems: "center"
   },
   input: {
     flex: 1,
