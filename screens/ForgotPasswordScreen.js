@@ -54,7 +54,7 @@ const ForgotPasswordScreen = () => {
 
     // send a post request to the backend API
     axios
-      .post("http://192.168.1.100:8000/users/resetPassword", user)
+      .post("http://192.168.0.110:8000/users/resetPassword", user)
       .then((response) => {
         console.log(response);
         Alert.alert(

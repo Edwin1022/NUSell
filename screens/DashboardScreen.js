@@ -133,7 +133,7 @@ const DashboardScreen = () => {
   const fetchSimilarProducts = async () => {
     try {
       const response = await axios.post(
-        "http://192.168.1.100:8000/products/search",
+        "http://192.168.0.110:8000/products/search",
         {
           itemName,
           brand,

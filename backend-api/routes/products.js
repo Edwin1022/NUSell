@@ -4,6 +4,7 @@ const router = express.Router();
 const { Product } = require("../models/product");
 const { User } = require("../models/user");
 const { Category } = require("../models/category");
+const { OrderItem } = require("../models/order-item");
 const multer = require("multer");
 
 const FILE_TYPE_MAP = {
@@ -196,9 +197,18 @@ router.delete(`/:id`, (req, res) => {
   Product.findByIdAndDelete(req.params.id)
     .then((product) => {
       if (product) {
-        return res
-          .status(200)
-          .json({ success: true, message: "the product is deleted" });
+        OrderItem.findOneAndDelete({ product: req.params.id })
+          .then(() => {
+            return res
+              .status(200)
+              .json({
+                success: true,
+                message: "the product and associated order item are deleted",
+              });
+          })
+          .catch((err) => {
+            return res.status(400).json({ success: false, error: err });
+          });
       } else {
         return res
           .status(404)

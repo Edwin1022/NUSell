@@ -397,7 +397,7 @@ const ItemListingScreen = () => {
 
       // send a post request to the backend API
       const response = await axios.post(
-        "http://192.168.1.100:8000/products",
+        "http://192.168.0.110:8000/products",
         formData,
         {
           headers: {

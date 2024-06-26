@@ -59,7 +59,7 @@ const YourListingsScreen = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://192.168.1.100:8000/products/bySellers?users=${userId}`
+        `http://192.168.0.110:8000/products/bySellers?users=${userId}`
       );
       setLoading(false);
       setProducts(res.data);
@@ -79,7 +79,7 @@ const YourListingsScreen = () => {
 
   const handleDelete = (itemId) => {
     axios
-      .delete(`http://192.168.1.100:8000/products/${itemId}`)
+      .delete(`http://192.168.0.110:8000/products/${itemId}`)
       .then((response) => {
         fetchListedItems();
         Alert.alert("Success", "Product deleted successfully");
