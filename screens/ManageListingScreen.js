@@ -118,7 +118,7 @@ const ManageListingScreen = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://192.168.0.110:8000/products/${selectedItem}`
+        `http://192.168.1.100:8000/products/${selectedItem}`
       );
       setLoading(false);
       setProduct(res.data);
@@ -204,7 +204,7 @@ const ManageListingScreen = () => {
 
       // send a post request to the backend API
       const response = await axios.put(
-        `http://192.168.0.110:8000/products/${productId}`,
+        `http://192.168.1.100:8000/products/${selectedItem}`,
         formData,
         {
           headers: {
@@ -434,20 +434,45 @@ const ManageListingScreen = () => {
               </View>
             </View>
 
-            <View style={{ marginTop: 10 }}>
+            <View style={{ marginTop: 30 }}>
               <Text style={styles.Title}> Price </Text>
-              <View style={styles.priceInputContainer}>
-                <Text>$ </Text>
-                <TextInput
-                  value={price}
-                  onChangeText={setPrice}
-                  style={styles.priceInput}
-                  editable
-                  multiline={true}
-                  maxLength={200}
-                  keyboardType="numeric"
-                  placeholder={`${product.price}`}
-                />
+              <View style={styles.priceInputRow}>
+                <View style={styles.priceInputColumn}>
+                  <View style={styles.priceInputContainer}>
+                    <Text>$ </Text>
+                    <TextInput
+                      value={price}
+                      onChangeText={setPrice}
+                      style={styles.priceInput}
+                      editable
+                      multiline={true}
+                      maxLength={200}
+                      keyboardType="numeric"
+                      placeholder={`${product.price}`}
+                    />
+                  </View>
+                </View>
+                <Pressable
+                  style={styles.priceDataButton}
+                  onPress={() =>
+                    navigation.navigate("Dashboard", {
+                      itemName: itemName || product.name,
+                      brand: brand || product.brand,
+                      condition: condition || product.condition,
+                    })
+                  }
+                >
+                  <Text
+                    style={[
+                      {
+                        color: "white",
+                      },
+                      styles.brandNewButtonText,
+                    ]}
+                  >
+                    View Price Data
+                  </Text>
+                </Pressable>
               </View>
             </View>
 
@@ -511,6 +536,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
 
+  priceDataButton: {
+    marginLeft: 60,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: "#007FFF",
+    borderRadius: 20,
+  },
+
   nextButton: {
     marginTop: 30,
     marginBottom: 50,
@@ -526,6 +559,16 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     padding: 5,
     marginLeft: 10,
+  },
+
+  priceInputRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  priceInputColumn: {
+    flexDirection: "column",
+    alignItems: "center",
   },
 
   priceInputContainer: {

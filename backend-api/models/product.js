@@ -50,6 +50,10 @@ const productSchema = mongoose.Schema({
     type: String,
     default: "",
   },
+  priceChangeType: {
+    type: String,
+    default: "",
+  },
   isFeatured: {
     type: Boolean,
     default: false,

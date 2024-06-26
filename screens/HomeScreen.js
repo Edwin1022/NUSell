@@ -25,7 +25,7 @@ const HomeScreen = () => {
     const fetchUserData = async () => {
       try {
         const res = await axios.get(
-          `http://192.168.0.110:8000/users/getUserData?email=${user.email}`
+          `http://192.168.1.100:8000/users/getUserData?email=${user.email}`
         );
         setUser(res.data.data);
       } catch (err) {

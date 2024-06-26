@@ -19,7 +19,7 @@ const RatingModal = ({ username, userId, isVisible, onClose }) => {
 
   const handleSubmit = () => {
     axios
-      .post("http://192.168.0.110:8000/users/rateUser", {
+      .post("http://192.168.1.100:8000/users/rateUser", {
         userId,
         rating,
       })

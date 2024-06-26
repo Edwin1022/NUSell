@@ -61,7 +61,7 @@ const AddAddressScreen = () => {
     };
 
     axios
-      .post("http://192.168.0.110:8000/users/addresses", { userId, address })
+      .post("http://192.168.1.100:8000/users/addresses", { userId, address })
       .then((response) => {
         Alert.alert("Success", "Addresses added successfully");
         setTimeout(() => {

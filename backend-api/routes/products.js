@@ -51,7 +51,9 @@ router.get(`/bySellers`, async (req, res) => {
     filter = { user: req.query.users.split(",") };
   }
 
-  const productList = await Product.find(filter).populate("user").sort({ dateCreated: -1 });;
+  const productList = await Product.find(filter)
+    .populate("user")
+    .sort({ dateCreated: -1 });
 
   if (!productList) {
     res.status(500).json({ success: false });
@@ -60,12 +62,36 @@ router.get(`/bySellers`, async (req, res) => {
 });
 
 router.get(`/:id`, async (req, res) => {
-  const product = await Product.findById(req.params.id).populate("user category");
+  const product = await Product.findById(req.params.id).populate(
+    "user category"
+  );
 
   if (!product) {
     res.status(500).json({ success: false });
   }
   res.send(product);
+});
+
+router.post("/search", async (req, res) => {
+  const { itemName, brand, condition } = req.body;
+  try {
+    const itemNamePattern = itemName.replace(/\s/g, "\\s?");
+    const brandPattern = brand.replace(/\s/g, "\\s?");
+
+    const query = {
+      name: { $regex: itemNamePattern, $options: "i" },
+      brand: { $regex: brandPattern, $options: "i" },
+      condition,
+    };
+
+    const results = await Product.find(query)
+      .populate("user")
+      .sort({ price: 1 });
+    res.json(results);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 router.post(`/`, uploadOptions.single("image"), async (req, res) => {
@@ -122,7 +148,14 @@ router.put(`/:id`, uploadOptions.single("image"), async (req, res) => {
   const fileName = req.file.filename;
   const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
 
-  const product = await Product.findByIdAndUpdate(
+  // Retrieve the current product
+  const currentProduct = await Product.findById(req.params.id);
+  if (!currentProduct) return res.status(404).send("Product not found");
+
+  // Store the old price
+  const oldPrice = currentProduct.price;
+
+  let product = await Product.findByIdAndUpdate(
     req.params.id,
     {
       name: productData.name,
@@ -139,6 +172,20 @@ router.put(`/:id`, uploadOptions.single("image"), async (req, res) => {
     },
     { new: true }
   );
+
+  if (!product) return res.status(500).send("the product cannot be updated");
+
+  // Check if the price has changed
+  const newPrice = product.price;
+  if (newPrice !== oldPrice) {
+    product = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        priceChangeType: newPrice > oldPrice ? "increased" : "decreased",
+      },
+      { new: true }
+    );
+  }
 
   if (!product) return res.status(500).send("the product cannot be updated");
 

@@ -12,14 +12,13 @@ import React, { useContext, useLayoutEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import CustomButton from "../components/CustomButton";
 import Back from "react-native-vector-icons/Ionicons";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import ModalScreen from "./ModalScreen";
 import { ProductContext } from "../ProductContext";
 
 const MorePhotosScreen = () => {
   const navigation = useNavigation();
-  const route = useRoute();
   const { productId } = useContext(ProductContext);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
