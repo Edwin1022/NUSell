@@ -16,15 +16,49 @@ import axios from "axios";
 import { ProductContext } from "../ProductContext";
 import { UserContext } from "../UserContext";
 
+export const fetchListedItems = async (userId, setProducts, setLoading) => {
+  try {
+    setLoading(true);
+    const res = await axios.get(
+      `http://192.168.0.115:8000/products/bySellers?users=${userId}`
+    );
+    setLoading(false);
+    setProducts(res.data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const handleEdit = (navigation, setSelectedItem, itemId) => {
+  setSelectedItem(itemId);
+  navigation.navigate("ManageListing");
+};
+
+export const handleDelete = async (itemId, fetchListedItems, Alert) => {
+  try {
+    await axios.delete(`http://192.168.0.115:8000/products/${itemId}`);
+    await fetchListedItems();
+    Alert.alert("Success", "Product deleted successfully");
+  } catch (error) {
+    Alert.alert("Error", "Failed to delete product");
+    console.log(error);
+  }
+};
+
 const YourListingsScreen = () => {
+
   const navigation = useNavigation();
   const { setSelectedItem } = useContext(ProductContext);
   const [products, setProducts] = useState("");
   const { user } = useContext(UserContext);
   const { userId } = useContext(UserContext);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);  
 
-  // header
+  useEffect(() => {
+    fetchListedItems(userId, setProducts, setLoading);
+  }, [userId]);
+
+    // header
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: "",
@@ -55,41 +89,6 @@ const YourListingsScreen = () => {
     });
   }, []);
 
-  const fetchListedItems = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.get(
-        `http://192.168.0.110:8000/products/bySellers?users=${userId}`
-      );
-      setLoading(false);
-      setProducts(res.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    fetchListedItems();
-  }, []);
-
-  const handleEdit = (itemId) => {
-    setSelectedItem(itemId);
-    navigation.navigate("ManageListing");
-  };
-
-  const handleDelete = (itemId) => {
-    axios
-      .delete(`http://192.168.0.110:8000/products/${itemId}`)
-      .then((response) => {
-        fetchListedItems();
-        Alert.alert("Success", "Product deleted successfully");
-      })
-      .catch((error) => {
-        Alert.alert("Error", "Failed to delete product");
-        console.log(error);
-      });
-  };
-
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
@@ -114,8 +113,8 @@ const YourListingsScreen = () => {
                       image={item.image}
                       name={item.name}
                       condition={item.condition}
-                      onEdit={() => handleEdit(item.id)}
-                      onDelete={() => handleDelete(item.id)}
+                      onEdit={() => handleEdit(navigation, setSelectedItem, item.id)}
+                      onDelete={() => handleDelete(item.id, () => fetchListedItems(userId, setProducts, setLoading), Alert)}
                     />
                   </View>
                 ))}
