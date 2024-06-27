@@ -397,7 +397,7 @@ const ItemListingScreen = () => {
 
       // send a post request to the backend API
       const response = await axios.post(
-        "http://192.168.0.110:8000/products",
+        "http://192.168.0.115:8000/products",
         formData,
         {
           headers: {
@@ -666,7 +666,7 @@ const ItemListingScreen = () => {
                       styles.brandNewButtonText,
                     ]}
                   >
-                    View Price Data
+                    Recommend Listing Price 
                   </Text>
                 </Pressable>
               </View>
@@ -734,7 +734,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
     backgroundColor: "#007FFF",
-    borderRadius: 20,
+    borderRadius: 75,
+    width: 150,
+    alignItems: "center"
   },
 
   continueButton: {
@@ -779,6 +781,8 @@ const styles = StyleSheet.create({
 
   brandNewButtonText: {
     fontWeight: "bold",
+    flexWrap: "wrap",
+    fontSize: 16
   },
 
   brandNewButton: {

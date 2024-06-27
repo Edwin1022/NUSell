@@ -51,7 +51,7 @@ const ProductInfoScreen = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://192.168.0.110:8000/products/${selectedItem}`
+        `http://192.168.0.115:8000/products/${selectedItem}`
       );
       setLoading(false);
       setProduct(res.data);
@@ -66,7 +66,7 @@ const ProductInfoScreen = () => {
 
   const handleAddToCart = () => {
     axios
-      .post("http://192.168.0.110:8000/order-items", { productId: selectedItem, userId })
+      .post("http://192.168.0.115:8000/order-items", { productId: selectedItem, userId })
       .then((response) => {
         Alert.alert("Success", "Item added to cart successfully");
       })

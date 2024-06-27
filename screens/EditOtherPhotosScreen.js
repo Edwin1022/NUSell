@@ -50,7 +50,7 @@ const EditOtherPhotosScreen = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://192.168.0.110:8000/products/${selectedItem}`
+        `http://192.168.0.115:8000/products/${selectedItem}`
       );
       setLoading(false);
       const fetchedImages = res.data.images;
@@ -127,7 +127,7 @@ const EditOtherPhotosScreen = () => {
 
       // send a put request to the backend API
       const response = await axios.put(
-        `http://192.168.0.110:8000/products/gallery-images/${selectedItem}`,
+        `http://192.168.0.115:8000/products/gallery-images/${selectedItem}`,
         formData,
         {
           headers: {

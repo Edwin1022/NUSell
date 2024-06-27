@@ -133,7 +133,7 @@ const DashboardScreen = () => {
   const fetchSimilarProducts = async () => {
     try {
       const response = await axios.post(
-        "http://192.168.0.110:8000/products/search",
+        "http://192.168.0.115:8000/products/search",
         {
           itemName,
           brand,
@@ -232,6 +232,7 @@ const DashboardScreen = () => {
                   backgroundColor={"transparent"}
                   absolute
                 />
+                <Text style={styles.viewSimilarProducts}> View Similar Products </Text>
               </Pressable>
             </View>
 
@@ -259,6 +260,11 @@ const chartConfig = {
 };
 
 const styles = StyleSheet.create({
+  viewSimilarProducts: {
+    marginLeft: 40,
+    color: "blue",
+    textDecorationLine: "underline"
+  },
   headerLeft: {
     fontFamily: "CustomFont",
     fontSize: 24,
