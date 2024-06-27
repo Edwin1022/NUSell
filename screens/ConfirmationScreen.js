@@ -60,7 +60,7 @@ const ConfirmationScreen = () => {
 
     // send a post request to the backend API
     axios
-      .post("http://192.168.0.115:8000/users/resetPasswordConfirm", user)
+      .post("http://192.168.0.110:8000/users/resetPasswordConfirm", user)
       .then((response) => {
         console.log(response);
         Alert.alert(
@@ -86,7 +86,7 @@ const ConfirmationScreen = () => {
 
     // send a post request to the backend API
     axios
-      .post("http://192.168.0.115:8000/users/resetPassword", user)
+      .post("http://192.168.0.110:8000/users/resetPassword", user)
       .then((response) => {
         console.log(response);
         Alert.alert(

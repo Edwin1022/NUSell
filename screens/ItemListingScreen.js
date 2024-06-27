@@ -11,7 +11,7 @@ import {
   Pressable,
   ActivityIndicator,
 } from "react-native";
-import React, { useState, useLayoutEffect, useContext, useEffect } from "react";
+import React, { useState, useLayoutEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Back from "react-native-vector-icons/Ionicons";
 import CustomButton from "../components/CustomButton";
@@ -397,7 +397,7 @@ const ItemListingScreen = () => {
 
       // send a post request to the backend API
       const response = await axios.post(
-        "http://192.168.0.115:8000/products",
+        "http://192.168.0.110:8000/products",
         formData,
         {
           headers: {
@@ -663,7 +663,7 @@ const ItemListingScreen = () => {
                       {
                         color: "white",
                       },
-                      styles.brandNewButtonText,
+                      styles.priceDataButtonText,
                     ]}
                   >
                     Recommend Listing Price 
@@ -729,6 +729,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
 
+  priceDataButtonText: {
+    fontWeight: "bold",
+    flexWrap: "wrap",
+    fontSize: 16
+  },
+
   priceDataButton: {
     marginLeft: 60,
     paddingVertical: 10,
@@ -781,8 +787,6 @@ const styles = StyleSheet.create({
 
   brandNewButtonText: {
     fontWeight: "bold",
-    flexWrap: "wrap",
-    fontSize: 16
   },
 
   brandNewButton: {

@@ -54,6 +54,10 @@ const productSchema = mongoose.Schema({
     type: String,
     default: "",
   },
+  priceChanged: {
+    type: Number,
+    default: 0,
+  },
   isFeatured: {
     type: Boolean,
     default: false,

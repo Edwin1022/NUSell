@@ -44,7 +44,7 @@ const SimilarProductsScreen = () => {
   const fetchSimilarProducts = async () => {
     try {
       const response = await axios.post(
-        "http://192.168.0.115:8000/products/search",
+        "http://192.168.0.110:8000/products/search",
         {
           itemName,
           brand,
@@ -91,6 +91,8 @@ const SimilarProductsScreen = () => {
                     name={product.name}
                     condition={product.condition}
                     price={product.price}
+                    priceChangeType={product.priceChangeType}
+                    priceChanged={product.priceChanged}
                     onUser={() => handleUserPressed(product.user)}
                     onItem={() => handleItemPressed(product.id)}
                   />

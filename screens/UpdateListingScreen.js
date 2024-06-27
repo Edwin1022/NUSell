@@ -120,7 +120,7 @@ const UpdateListingScreen = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://192.168.0.115:8000/products/${productId}`
+        `http://192.168.0.110:8000/products/${productId}`
       );
       setLoading(false);
       setProduct(res.data);
@@ -206,7 +206,7 @@ const UpdateListingScreen = () => {
 
       // send a post request to the backend API
       const response = await axios.put(
-        `http://192.168.0.115:8000/products/${productId}`,
+        `http://192.168.0.110:8000/products/${productId}`,
         formData,
         {
           headers: {
@@ -338,7 +338,18 @@ const UpdateListingScreen = () => {
             </View>
 
             <View style={{ marginBottom: 20, marginTop: 20 }}>
-              <Text style={styles.Title}>Item Name</Text>
+              <Text style={styles.Title}>
+                Item Name{"\n"}
+                <Text
+                  style={{
+                    fontWeight: "normal",
+                    fontSize: 15,
+                    color: "#007FFF",
+                  }}
+                >
+                  (keep your item name short and clear)
+                </Text>
+              </Text>
               <TextInput
                 value={itemName}
                 onChangeText={setItemName}
@@ -471,10 +482,10 @@ const UpdateListingScreen = () => {
                       {
                         color: "white",
                       },
-                      styles.brandNewButtonText,
+                      styles.priceDataButtonText,
                     ]}
                   >
-                    View Price Data
+                    Recommend Listing Price
                   </Text>
                 </Pressable>
               </View>
@@ -544,12 +555,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
 
+  priceDataButtonText: {
+    fontWeight: "bold",
+    flexWrap: "wrap",
+    fontSize: 16
+  },
+
   priceDataButton: {
     marginLeft: 60,
     paddingVertical: 10,
     paddingHorizontal: 15,
     backgroundColor: "#007FFF",
-    borderRadius: 20,
+    borderRadius: 75,
+    width: 150,
+    alignItems: "center"
   },
 
   continueButton: {

@@ -59,7 +59,7 @@ const CartScreen = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://192.168.0.115:8000/order-items/byBuyers?users=${userId}`
+        `http://192.168.0.110:8000/order-items/byBuyers?users=${userId}`
       );
       setLoading(false);
       setCartItems(res.data);
@@ -84,7 +84,7 @@ const CartScreen = () => {
 
   const handleDelete = (itemId) => {
     axios
-      .delete(`http://192.168.0.115:8000/order-items/${itemId}`)
+      .delete(`http://192.168.0.110:8000/order-items/${itemId}`)
       .then((response) => {
         fetchCartItems();
         Alert.alert("Success", "Item removed from cart successfully");

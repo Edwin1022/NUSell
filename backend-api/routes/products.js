@@ -76,7 +76,9 @@ router.get(`/bySellers`, async (req, res) => {
 });
 
 router.get(`/:id`, async (req, res) => {
-  const product = await Product.findById(req.params.id).populate("user category")
+  const product = await Product.findById(req.params.id).populate(
+    "user category"
+  );
 
   if (!product) {
     res.status(500).json({ success: false });
@@ -194,6 +196,7 @@ router.put(`/:id`, uploadOptions.single("image"), async (req, res) => {
       req.params.id,
       {
         priceChangeType: newPrice > oldPrice ? "increased" : "decreased",
+        priceChanged: newPrice - oldPrice,
       },
       { new: true }
     );
@@ -210,12 +213,10 @@ router.delete(`/:id`, (req, res) => {
       if (product) {
         OrderItem.findOneAndDelete({ product: req.params.id })
           .then(() => {
-            return res
-              .status(200)
-              .json({
-                success: true,
-                message: "the product and associated order item are deleted",
-              });
+            return res.status(200).json({
+              success: true,
+              message: "the product and associated order item are deleted",
+            });
           })
           .catch((err) => {
             return res.status(400).json({ success: false, error: err });

@@ -111,48 +111,6 @@ const EditOtherPhotosScreen = () => {
     setModalVisible(false);
   };
 
-  /*const handleUpdate = async () => {
-    try {
-      const formData = new FormData();
-      const validImages = images.filter((image) => image != null);
-      validImages.forEach((image, index) => {
-        formData.append("images", {
-          uri: image,
-          name: `image_${index}.jpg`,
-          type: "image/jpeg",
-        });
-      });
-
-      setLoading(true);
-
-      // send a put request to the backend API
-      const response = await axios.put(
-        `http://192.168.0.110:8000/products/gallery-images/${selectedItem}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      setLoading(false);
-
-      Alert.alert(
-        "Listing Updated Successful",
-        "You have updated your listing successfully"
-      );
-
-      navigation.navigate("YourListings");
-    } catch (error) {
-      console.error("Error uploading images:", error);
-      Alert.alert(
-        "Images Uploading Error",
-        "An error occurred while uploading images"
-      );
-    }
-  };*/
-
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
@@ -198,10 +156,6 @@ const EditOtherPhotosScreen = () => {
                   const validImages = images.filter((image) => image != null);
                   navigation.navigate("ListingSummary", {productId: selectedItem, validImages})
                 }} text="Update" />
-              </View>
-
-              <View style={{ marginTop: 20 }}>
-                <CustomButton onPress={() => navigation.navigate("ListingSummar")} text="Save" />
               </View>
             </View>
 
