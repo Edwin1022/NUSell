@@ -303,6 +303,7 @@ const YourAccountScreen = () => {
                 onChangeText={(text) => setName(text)}
                 placeholder={user.name}
                 placeholderTextColor={"#999797"}
+                maxLength={24}
                 style={{
                   color: "black",
                   fontStyle: "normal",

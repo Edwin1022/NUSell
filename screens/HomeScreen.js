@@ -219,26 +219,29 @@ const HomeScreen = () => {
       </View>
 
       <ScrollView>
-        <View style={styles.main}>
-          {products &&
-            products.length > 0 &&
-            products.map((product, index) => (
-              <View key={index} style={styles.itemContainer}>
-                <HomeScreenComponent
-                  pfp={product.user.image}
-                  username={product.user.name}
-                  image={product.image}
-                  name={product.name}
-                  condition={product.condition}
-                  price={product.price}
-                  onPress={() => {
-                    setSelectedItem(product.id);
-                    navigation.navigate("ProductInfo");
-                  }}
-                />
-              </View>
-            ))}
-        </View>
+        <SafeAreaView>
+          <View style={styles.main}>
+            {products &&
+              products.length > 0 &&
+              products.map((product, index) => (
+                <View key={index} style={styles.itemContainer}>
+                  <HomeScreenComponent
+                    pfp={product.user.image}
+                    username={product.user.name}
+                    image={product.image}
+                    name={product.name}
+                    condition={product.condition}
+                    price={product.price}
+                    onPress={() => {
+                      setSelectedItem(product.id);
+                      navigation.navigate("ProductInfo");
+                    }}
+                  />
+                </View>
+              ))}
+          </View>
+        </SafeAreaView>
+        
       </ScrollView>
     </Drawer>
   );
@@ -290,12 +293,6 @@ const styles = StyleSheet.create({
     width: 190,
     resizeMode: "cover",
     borderRadius: 10,
-  },
-
-  componentRow: {
-    backgroundColor: "white",
-    padding: 10,
-    flexDirection: "row",
   },
 
   component: {
@@ -352,15 +349,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
+    padding: 2,
+    backgroundColor: "white",
   },
 
   itemContainer: {
     borderStyle: "solid",
     borderWidth: 1,
     borderColor: "black",
-    padding: 5,
     borderRadius: 15,
-    margin: 10,
+    margin: 8,
+    width: "44%",
+    alignItems: "center"
   },
 
   headerContainer: {

@@ -469,7 +469,7 @@ const ItemListingScreen = () => {
               {identifying ? (
                 <View style={styles.loadingContainer}>
                   <ActivityIndicator size="large" color="#007AFF" />
-                  <Text style={styles.loadingText}>Identify Item Image...</Text>
+                  <Text style={styles.loadingText}>Identifying Item...</Text>
                 </View>
               ) : image ? (
                 <View
@@ -522,7 +522,7 @@ const ItemListingScreen = () => {
                 </Text>
               </Text>
               <TextInput
-                value={itemName}
+                value={itemName.trim()}
                 onChangeText={setItemName}
                 style={styles.itemNameInput}
                 editable
@@ -666,7 +666,15 @@ const ItemListingScreen = () => {
                       styles.priceDataButtonText,
                     ]}
                   >
-                    Recommend Listing Price 
+                    Recommend
+                  </Text>
+                  <Text style={[
+                      {
+                        color: "white",
+                      },
+                      styles.priceDataButtonText,
+                    ]}>
+                      Listing Price
                   </Text>
                 </Pressable>
               </View>
@@ -700,7 +708,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     padding: 50,
-    width: 350,
+    width: "95%",
     borderColor: "gray",
     borderWidth: 1,
     borderRadius: 10,
@@ -727,6 +735,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 8,
+    width: "99%"
   },
 
   priceDataButtonText: {
@@ -818,15 +827,14 @@ const styles = StyleSheet.create({
   },
 
   conditionButtonContainer: {
-    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     backgroundColor: "white",
-    width: 360,
     paddingLeft: 0,
     paddingRight: 10,
     marginBottom: 10,
     alignItems: "center",
+    width: "95%"
   },
 
   itemDescriptionInput: {
@@ -837,7 +845,7 @@ const styles = StyleSheet.create({
     height: 100,
     textAlignVertical: "top",
     padding: 10,
-    width: 350,
+    width: "95%",
   },
 
   itemNameInput: {
@@ -848,7 +856,7 @@ const styles = StyleSheet.create({
     height: 50,
     textAlignVertical: "top",
     padding: 10,
-    width: 350,
+    width: "95%",
   },
 
   headerLeft: {

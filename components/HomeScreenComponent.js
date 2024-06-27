@@ -56,16 +56,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingBottom: 0,
     height: 40,
+    width: "80%",
   },
+
   userProfile: {
-    height: 30,
-    width: 30,
-    borderRadius: 15,
-    marginRight: 10,
+    width: "20%",
+    aspectRatio: 1,
+    borderRadius: 999,
+    marginRight: 5,
   },
 
   username: {
-    fontSize: 16,
+    fontSize: 14,
   },
 
   itemInfo: {
@@ -83,29 +85,22 @@ const styles = StyleSheet.create({
   },
 
   picContainer: {
-    backgroundColor: "black",
-    height: 150,
-    width: 150,
     alignItems: "center",
     overflow: "hidden",
     borderRadius: 10,
+    paddingTop: 10
   },
 
   productPic: {
-    height: 150,
-    width: 150,
+    height: 130,
+    width: 130,
     resizeMode: "cover",
     borderRadius: 10,
   },
 
-  componentRow: {
-    backgroundColor: "white",
-    padding: 10,
-    flexDirection: "row",
-  },
-
   component: {
-    width: 150,
+    width: "90%",
     margin: 5,
+    
   },
 });
