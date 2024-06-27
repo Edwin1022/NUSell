@@ -22,85 +22,67 @@ export const ListingComponent = ({
 }) => {
   return (
     <ScrollView>
-      <View style={styles.OrderScreenContainer}>
-        <View style={styles.itemSummaryComponent}>
-          <View style={styles.usernameBox}>
-            <Pressable>
-              <Image
-                style={styles.userProfile}
-                source={{
-                  uri: pfp,
-                }}
-              />
-            </Pressable>
-            <Pressable>
-              <Text style={styles.username}>{username}</Text>
-            </Pressable>
+      
+      <View style={styles.itemSummaryComponent}>
+        <View style={styles.usernameBox}>
+          <Pressable>
+            <Image
+              style={styles.userProfile}
+              source={{
+                uri: pfp,
+              }}
+            />
+          </Pressable>
+          <Pressable>
+            <Text style={styles.username}>{username}</Text>
+          </Pressable>
+        </View>
+
+        <SwipeRow
+          leftOpenValue={0}
+          rightOpenValue={-155}
+          style={styles.swipable}
+        >
+          <View style={styles.hiddenRow}>
+            <TouchableOpacity
+              onPress={onEdit}
+              style={[styles.hiddenButton, styles.editButton]}
+            >
+              <Ionicons name="pencil" size={24} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={onDelete}
+              style={[styles.hiddenButton, styles.deleteButton]}
+            >
+              <Ionicons name="trash" size={24} color="white" />
+            </TouchableOpacity>
           </View>
 
-          <SwipeRow
-            leftOpenValue={0}
-            rightOpenValue={-155}
-            style={styles.swipable}
-          >
-            <View style={styles.hiddenRow}>
-              <TouchableOpacity
-                onPress={onEdit}
-                style={[styles.hiddenButton, styles.editButton]}
-              >
-                <Ionicons name="pencil" size={24} color="white" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={onDelete}
-                style={[styles.hiddenButton, styles.deleteButton]}
-              >
-                <Ionicons name="trash" size={24} color="white" />
-              </TouchableOpacity>
-            </View>
-
-            <Pressable>
-              <View style={styles.visibleRow}>
-                <View>
-                  <Image style={styles.itemImage} source={{ uri: image }} />
-                </View>
-
-                <View>
-                  <View style={styles.itemNameBox}>
-                    <Text style={styles.itemName}>{name}</Text>
-                  </View>
-                  <View style={styles.conditionBox}>
-                    <Text style={styles.condition}>{condition}</Text>
-                  </View>
-                  <Text style={styles.itemText}>1 item(s)</Text>
-                </View>
+          <Pressable>
+            <View style={styles.visibleRow}>
+              <View>
+                <Image style={styles.itemImage} source={{ uri: image }} />
               </View>
-            </Pressable>
-          </SwipeRow>
-        </View>
+
+              <View>
+                <View style={styles.itemNameBox}>
+                  <Text style={styles.itemName}>{name}</Text>
+                </View>
+                <View style={styles.conditionBox}>
+                  <Text style={styles.condition}>{condition}</Text>
+                </View>
+                <Text style={styles.itemText}>1 item(s)</Text>
+              </View>
+            </View>
+          </Pressable>
+        </SwipeRow>
       </View>
+      
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  checkoutButton: {
-    borderStyle: "solid",
-    borderWidth: 1,
-    backgroundColor: "#007FFF",
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 5,
-    borderColor: "#D0D0D0",
-  },
-  amount: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 17,
-  },
 
   itemText: {
     color: "gray",
@@ -137,12 +119,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   hiddenRow: {
-    alignItems: "center",
-    backgroundColor: "#DDD",
-    flex: 1,
     flexDirection: "row",
-    justifyContent: "flex-end",
-    paddingLeft: 15,
     height: 110,
   },
   hiddenButton: {
@@ -185,8 +162,6 @@ const styles = StyleSheet.create({
   },
 
   itemSummaryComponent: {
-    flex: 1,
-    width: 380,
     borderWidth: 1,
     borderStyle: "solid",
     borderColor: "black",

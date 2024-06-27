@@ -374,10 +374,10 @@ const ItemListingScreen = () => {
     }
 
     const product = {
-      name: itemName,
-      description: itemDescription,
+      name: itemName.trim(),
+      description: itemDescription.trim(),
       image: image,
-      brand: brand,
+      brand: brand.trim(),
       price: price,
       category: value,
       condition: condition,
@@ -522,7 +522,7 @@ const ItemListingScreen = () => {
                 </Text>
               </Text>
               <TextInput
-                value={itemName.trim()}
+                value={itemName}
                 onChangeText={setItemName}
                 style={styles.itemNameInput}
                 editable
