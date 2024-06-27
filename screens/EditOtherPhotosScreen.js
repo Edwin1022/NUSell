@@ -26,9 +26,7 @@ const EditOtherPhotosScreen = () => {
   const [images, setImages] = useState(Array(8).fill(null));
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState("");
-  // const { productId } = useContext(ProductContext);
-
-  const productId = "666f1d91ccf97b4fd2de4b7f";
+  const { selectedItem } = useContext(ProductContext);
 
   // Header
   useLayoutEffect(() => {
@@ -53,7 +51,7 @@ const EditOtherPhotosScreen = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://192.168.0.110:8000/products/${productId}`
+        `http://192.168.0.110:8000/products/${selectedItem}`
       );
       setLoading(false);
       setProduct(res.data);
@@ -131,7 +129,7 @@ const EditOtherPhotosScreen = () => {
 
       // send a put request to the backend API
       const response = await axios.put(
-        `http://192.168.0.110:8000/products/gallery-images/${productId}`,
+        `http://192.168.0.110:8000/products/gallery-images/${selectedItem}`,
         formData,
         {
           headers: {

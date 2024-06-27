@@ -1,32 +1,55 @@
-import 'react-native-gesture-handler';
-import { Text, View, StyleSheet, Button, Pressable, TouchableOpacity, Image} from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Pressable,
+  Image,
+} from "react-native";
 
-export const HomeScreenComponent = () => {
-
+export const HomeScreenComponent = ({
+  pfp,
+  username,
+  image,
+  name,
+  condition,
+  price,
+  onPress
+}) => {
   return (
-    <Pressable style={styles.component}>
+    <Pressable onPress={onPress} style={styles.component}>
       <View style={styles.picContainer}>
-        <Image style={styles.productPic} source={{uri: "https://static1.srcdn.com/wordpress/wp-content/uploads/2022/01/Minecraft-How-To-Get-Invisible-Item-Frames.webp-.jpg"}} />
+        <Image
+          style={styles.productPic}
+          source={{
+            uri: image,
+          }}
+        />
       </View>
       <View style={styles.itemInfo}>
         <View style={styles.itemNameBox}>
-          <Text style={styles.itemName}>Testing with a v long item name</Text>
+          <Text style={styles.itemName}>{name}</Text>
         </View>
-        
-        <Text style={styles.priceCondition}>$500 &#x2022; <Text>Brand New</Text></Text>
+
+        <Text style={styles.priceCondition}>
+          ${price} &#x2022; <Text>{condition}</Text>
+        </Text>
         <Pressable style={styles.usernameBox}>
-          <Image style={styles.userProfile} source={{uri: "https://people.com/thmb/n6EdTmvAL3TkkAqrT47caD6tUu8=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(723x121:725x123)/wisp-the-cat-from-tiktok-092823-1-74797b02afe7475295e1478b2cdf2883.jpg"}}/>
-          <Text style={styles.username}>Username</Text>
+          <Image
+            style={styles.userProfile}
+            source={{
+              uri: pfp,
+            }}
+          />
+          <Text style={styles.username}>{username}</Text>
         </Pressable>
       </View>
     </Pressable>
   );
-
 };
 
 const styles = StyleSheet.create({
   itemNameBox: {
-    maxWidth: 200
+    maxWidth: 200,
   },
   usernameBox: {
     flexDirection: "row",
@@ -46,35 +69,35 @@ const styles = StyleSheet.create({
   },
 
   itemInfo: {
-    paddingLeft: 5
+    paddingLeft: 5,
   },
 
   itemName: {
     fontSize: 18,
     flexWrap: "wrap",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
 
   priceCondition: {
-    fontSize: 16
+    fontSize: 16,
   },
 
   picContainer: {
     backgroundColor: "black",
-    height: 190,
-    width: 190,
+    height: 150,
+    width: 150,
     alignItems: "center",
     overflow: "hidden",
-    borderRadius: 10
+    borderRadius: 10,
   },
 
   productPic: {
-    height: 190,
-    width: 190,
+    height: 150,
+    width: 150,
     resizeMode: "cover",
-    borderRadius: 10
+    borderRadius: 10,
   },
-  
+
   componentRow: {
     backgroundColor: "white",
     padding: 10,
@@ -82,11 +105,7 @@ const styles = StyleSheet.create({
   },
 
   component: {
-    borderStyle: "solid",
-    borderWidth: 1,
-    borderColor: "white",
-    margin: 5
+    width: 150,
+    margin: 5,
   },
- 
-}
-)
+});

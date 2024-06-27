@@ -2,28 +2,30 @@ import {
   Text,
   View,
   StyleSheet,
-  Button,
   Pressable,
   TouchableOpacity,
-  Image,
-  BackHandler,
+  SafeAreaView,
 } from "react-native";
-import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
-import "react-native-gesture-handler";
 import { Drawer } from "react-native-drawer-layout";
 import { Ionicons } from "@expo/vector-icons";
-import { ScrollView, TextInput } from "react-native-gesture-handler";
-import { useNavigation } from "@react-navigation/native";
+import { ScrollView } from "react-native-gesture-handler";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { HomeScreenComponent } from "../components/HomeScreenComponent";
 import axios from "axios";
+import { ProductContext } from "../ProductContext";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const [open, setOpen] = useState(false);
   const { setUserId } = useContext(UserContext);
+  const { setSelectedItem } = useContext(ProductContext);
   const { user, setUser } = useContext(UserContext);
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -52,7 +54,59 @@ const HomeScreen = () => {
     fetchUserData();
   }, []);
 
-  const [open, setOpen] = React.useState(false);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axios.get(`http://192.168.0.110:8000/categories`);
+        setCategories(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const res = await axios.get(`http://192.168.0.110:8000/products`);
+      setProducts(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchProducts();
+    }, [])
+  );
+
+  const browseByCategories = async (category) => {
+    try {
+      const res = await axios.get(
+        `http://192.168.0.110:8000/products/ByCategories?categories=${category.id}`
+      );
+      setProducts(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const browseOtherCategories = async () => {
+    try {
+      const res = await axios.get(
+        `http://192.168.0.110:8000/products/ByCategories?categories=666c025badffbb04e4c808cb`
+      );
+      setProducts(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <Drawer
@@ -61,139 +115,70 @@ const HomeScreen = () => {
       onClose={() => setOpen(false)}
       renderDrawerContent={() => {
         return (
-          <View style={styles.drawer}>
-            <Text style={styles.category}>Browse by Categories</Text>
-            <TouchableOpacity style={styles.categoryBox}>
-              <Text style={styles.category}>Category 1</Text>
+          <SafeAreaView>
+            <ScrollView
+              style={styles.drawer}
+              showsVerticalScrollIndicator={false}
+            >
+              <Text style={[styles.category, { marginLeft: 15 }]}>
+                Browse by Categories
+              </Text>
+              {categories &&
+                categories.length > 0 &&
+                categories.map((category, index) => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      browseByCategories(category);
+                      setOpen(false);
+                    }}
+                    style={styles.categoryBox}
+                  >
+                    <Text style={styles.category}>{category.name}</Text>
 
-              <Ionicons
-                name="chevron-forward-outline"
-                size={24}
-                color="gray"
-                style={styles.arrowIcon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.categoryBox}>
-              <Text style={styles.category}>Category 1</Text>
+                    <Ionicons
+                      name="chevron-forward-outline"
+                      size={24}
+                      color="gray"
+                      style={styles.arrowIcon}
+                    />
+                  </TouchableOpacity>
+                ))}
 
-              <Ionicons
-                name="chevron-forward-outline"
-                size={24}
-                color="gray"
-                style={styles.arrowIcon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.categoryBox}>
-              <Text style={styles.category}>Category 1</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  browseOtherCategories();
+                  setOpen(false);
+                }}
+                style={styles.categoryBox}
+              >
+                <Text style={styles.category}>Others</Text>
 
-              <Ionicons
-                name="chevron-forward-outline"
-                size={24}
-                color="gray"
-                style={styles.arrowIcon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.categoryBox}>
-              <Text style={styles.category}>Category 1</Text>
+                <Ionicons
+                  name="chevron-forward-outline"
+                  size={24}
+                  color="gray"
+                  style={styles.arrowIcon}
+                />
+              </TouchableOpacity>
 
-              <Ionicons
-                name="chevron-forward-outline"
-                size={24}
-                color="gray"
-                style={styles.arrowIcon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.categoryBox}>
-              <Text style={styles.category}>Category 1</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  fetchProducts();
+                  setOpen(false);
+                }}
+                style={styles.categoryBox}
+              >
+                <Text style={[styles.category, {fontWeight:"bold", color: "#007FFF"}]}>ALL ITEMS</Text>
 
-              <Ionicons
-                name="chevron-forward-outline"
-                size={24}
-                color="gray"
-                style={styles.arrowIcon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.categoryBox}>
-              <Text style={styles.category}>Category 1</Text>
-
-              <Ionicons
-                name="chevron-forward-outline"
-                size={24}
-                color="gray"
-                style={styles.arrowIcon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.categoryBox}>
-              <Text style={styles.category}>Category 1</Text>
-
-              <Ionicons
-                name="chevron-forward-outline"
-                size={24}
-                color="gray"
-                style={styles.arrowIcon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.categoryBox}>
-              <Text style={styles.category}>Category 1</Text>
-
-              <Ionicons
-                name="chevron-forward-outline"
-                size={24}
-                color="gray"
-                style={styles.arrowIcon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.categoryBox}>
-              <Text style={styles.category}>Category 1</Text>
-
-              <Ionicons
-                name="chevron-forward-outline"
-                size={24}
-                color="gray"
-                style={styles.arrowIcon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.categoryBox}>
-              <Text style={styles.category}>Category 1</Text>
-
-              <Ionicons
-                name="chevron-forward-outline"
-                size={24}
-                color="gray"
-                style={styles.arrowIcon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.categoryBox}>
-              <Text style={styles.category}>Category 1</Text>
-
-              <Ionicons
-                name="chevron-forward-outline"
-                size={24}
-                color="gray"
-                style={styles.arrowIcon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.categoryBox}>
-              <Text style={styles.category}>Category 1</Text>
-
-              <Ionicons
-                name="chevron-forward-outline"
-                size={24}
-                color="gray"
-                style={styles.arrowIcon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.categoryBox}>
-              <Text style={styles.category}>Category 1</Text>
-
-              <Ionicons
-                name="chevron-forward-outline"
-                size={24}
-                color="gray"
-                style={styles.arrowIcon}
-              />
-            </TouchableOpacity>
-          </View>
+                <Ionicons
+                  name="chevron-forward-outline"
+                  size={24}
+                  color="#007FFF"
+                  style={styles.arrowIcon}
+                />
+              </TouchableOpacity>
+            </ScrollView>
+          </SafeAreaView>
         );
       }}
     >
@@ -235,18 +220,24 @@ const HomeScreen = () => {
 
       <ScrollView>
         <View style={styles.main}>
-          <View style={styles.componentRow}>
-            <HomeScreenComponent></HomeScreenComponent>
-            <HomeScreenComponent></HomeScreenComponent>
-          </View>
-          <View style={styles.componentRow}>
-            <HomeScreenComponent></HomeScreenComponent>
-            <HomeScreenComponent></HomeScreenComponent>
-          </View>
-          <View style={styles.componentRow}>
-            <HomeScreenComponent></HomeScreenComponent>
-            <HomeScreenComponent></HomeScreenComponent>
-          </View>
+          {products &&
+            products.length > 0 &&
+            products.map((product, index) => (
+              <View key={index} style={styles.itemContainer}>
+                <HomeScreenComponent
+                  pfp={product.user.image}
+                  username={product.user.name}
+                  image={product.image}
+                  name={product.name}
+                  condition={product.condition}
+                  price={product.price}
+                  onPress={() => {
+                    setSelectedItem(product.id);
+                    navigation.navigate("ProductInfo");
+                  }}
+                />
+              </View>
+            ))}
         </View>
       </ScrollView>
     </Drawer>
@@ -342,7 +333,7 @@ const styles = StyleSheet.create({
   },
 
   category: {
-    fontSize: 18,
+    fontSize: 16,
   },
 
   arrowIcon: {
@@ -358,9 +349,18 @@ const styles = StyleSheet.create({
   },
 
   main: {
-    flex: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
     justifyContent: "center",
-    alignItems: "center",
+  },
+
+  itemContainer: {
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderColor: "black",
+    padding: 5,
+    borderRadius: 15,
+    margin: 10,
   },
 
   headerContainer: {

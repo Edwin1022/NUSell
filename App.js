@@ -11,7 +11,7 @@ export default function App() {
     <Provider store={store}>
       <UserProvider>
         <ProductProvider>
-          <StackNavigator />
+            <StackNavigator />
         </ProductProvider>
       </UserProvider>
     </Provider>

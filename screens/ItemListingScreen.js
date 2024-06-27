@@ -212,8 +212,6 @@ const ItemListingScreen = () => {
     }
   };
 
-  console.log(itemName);
-
   // allow users to delete their profile pictures
   const removeImage = async () => {
     try {

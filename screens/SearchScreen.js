@@ -15,30 +15,33 @@ import React, { useState, useLayoutEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from "react-native-vector-icons/Ionicons";
 
-export const SearchScreen = ()=> {
-
+export const SearchScreen = () => {
   const navigate = useNavigation();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <View style={styles.searchScreenContainer}>
-      <View style={styles.headerContainer}>
-          <View style={{flex: 1, flexDirection: "row", alignItems: "center"}}>
-            <Pressable 
-              onPress={() => navigate.navigate("Home")} 
-              style={styles.backIcon} >
-              <Ionicons size={30} color="black" name='arrow-back-outline'/>
-            </Pressable >
-            
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
+    >
+      <ScrollView style={styles.searchScreenContainer}>
+        <View style={styles.headerContainer}>
+          <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+            <Pressable
+              onPress={() => navigate.navigate("Home")}
+              style={styles.backIcon}
+            >
+              <Ionicons size={30} color="black" name="arrow-back-outline" />
+            </Pressable>
+
             <View style={styles.searchBar}>
               <TouchableOpacity>
                 <Ionicons
-                name="search"
-                size={24}
-                color="white"
-                style={styles.icon}
+                  name="search"
+                  size={24}
+                  color="white"
+                  style={styles.icon}
                 />
               </TouchableOpacity>
               <TextInput
@@ -48,52 +51,47 @@ export const SearchScreen = ()=> {
                 value={searchQuery}
                 onChangeText={(text) => setSearchQuery(text)}
               />
-
             </View>
           </View>
-      </View>
-      <View style={styles.main}>
-        <View style={styles.buttonRow}>
-          <View>
-            <Icon.Button 
-              name="location-outline" 
-              borderRadius={30} 
-              style={styles.button} 
-              iconStyle={styles.buttonIcon}
-              onPress={() => navigate.navigate("SearchNearby")}
+        </View>
+        <View style={styles.main}>
+          <View style={styles.buttonRow}>
+            <View>
+              <Icon.Button
+                name="location-outline"
+                borderRadius={30}
+                style={styles.button}
+                iconStyle={styles.buttonIcon}
+                onPress={() => navigate.navigate("SearchNearby")}
               >
-              <Text style={styles.buttonText}>
-                Search Nearby
-              </Text>
-            </Icon.Button>
-          </View>
-          
-          <View>
-            <Icon.Button 
-              name="person-outline" 
-              borderRadius={30} 
-              style={styles.button} 
-              iconStyle={styles.buttonIcon}
-              onPress={() => navigate.navigate("SearchByUser")}
+                <Text style={styles.buttonText}>Search Nearby</Text>
+              </Icon.Button>
+            </View>
+
+            <View>
+              <Icon.Button
+                name="person-outline"
+                borderRadius={30}
+                style={styles.button}
+                iconStyle={styles.buttonIcon}
+                onPress={() => navigate.navigate("SearchByUser")}
               >
-              <Text style={styles.buttonText}>
-                Search by User
-              </Text>
-            </Icon.Button>
+                <Text style={styles.buttonText}>Search by User</Text>
+              </Icon.Button>
+            </View>
           </View>
         </View>
-        
-      </View>
-    </View>
-   );
-}
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     padding: 10,
-    width: 380
+    width: 380,
   },
 
   button: {
@@ -103,23 +101,22 @@ const styles = StyleSheet.create({
 
   buttonIcon: {
     color: "black",
-      
   },
 
   buttonText: {
-    fontFamily: 'Arial', 
+    fontFamily: "Arial",
     fontSize: 16,
   },
   searchScreenContainer: {
     flex: 1,
     backgroundColor: "white",
-    alignContent: "center"
+    alignContent: "center",
   },
 
   main: {
     flex: 1,
-    alignItems: 'center',
- },
+    alignItems: "center",
+  },
 
   searchBar: {
     borderWidth: 1,
@@ -140,11 +137,11 @@ const styles = StyleSheet.create({
   },
 
   headerContainer: {
-    backgroundColor: "white", 
+    backgroundColor: "white",
     height: 100,
     paddingRight: 10,
     paddingTop: 5,
-    paddingBottom: 5
+    paddingBottom: 5,
   },
 
   input: {
@@ -152,12 +149,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingLeft: 5,
     fontSize: 18,
-    color: "white"
+    color: "white",
   },
 
   icon: {
     padding: 10,
   },
-
-
-})
+});

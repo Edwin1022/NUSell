@@ -161,6 +161,31 @@ const ProfileScreen = () => {
       </Pressable>
 
       <Pressable
+        onPress={() => navigation.navigate("Address")}
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          borderColor: "#D0D0D0",
+          borderWidth: 1,
+          borderLeftWidth: 0,
+          borderRightWidth: 0,
+          paddingVertical: 15,
+          paddingHorizontal: 5,
+        }}
+      >
+        <View style={{ marginLeft: 10 }}>
+          <Text style={{ fontSize: 18, fontWeight: 500 }}>Your Addresses</Text>
+        </View>
+        <MaterialIcons
+          style={{ marginRight: 20 }}
+          name="keyboard-arrow-right"
+          size={24}
+          color="black"
+        />
+      </Pressable>
+
+      <Pressable
         onPress={logout}
         style={{
           flexDirection: "row",
@@ -186,29 +211,6 @@ const ProfileScreen = () => {
           color="red"
         />
       </Pressable>
-
-      {/*dummy buttons*/}
-      <View style={{ alignItems: "center" }}>
-        <Text
-          style={{
-            fontSize: 17,
-            fontWeight: "bold",
-            marginTop: 50,
-            color: "#041E42",
-          }}
-        >
-          Dummy Buttons
-        </Text>
-      </View>
-
-      <View style={{ marginTop: 20 }} />
-
-      <CustomButton
-        onPress={() => navigation.navigate("Address")}
-        text="AddressScreen"
-      />
-
-      <View style={{ marginTop: 20 }} />
     </ScrollView>
   );
 };

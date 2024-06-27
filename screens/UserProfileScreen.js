@@ -40,7 +40,7 @@ const UserProfileScreen = () => {
             fontSize: 24,
             fontWeight: "bold",
             color: "white",
-            marginLeft: 10,
+            marginLeft: 20,
           }}
         >
           User Profile

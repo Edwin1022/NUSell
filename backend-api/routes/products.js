@@ -31,13 +31,26 @@ const storage = multer.diskStorage({
 
 const uploadOptions = multer({ storage: storage });
 
+router.get(`/`, async (req, res) => {
+  const productList = await Product.find()
+    .populate("user")
+    .sort({ dateCreated: -1 });
+
+  if (!productList) {
+    res.status(500).json({ success: false });
+  }
+  res.status(200).send(productList);
+});
+
 router.get(`/byCategories`, async (req, res) => {
   let filter = {};
   if (req.query.categories) {
     filter = { category: req.query.categories.split(",") };
   }
 
-  const productList = await Product.find(filter).populate("category");
+  const productList = await Product.find(filter)
+    .populate("user category")
+    .sort({ dateCreated: -1 });
 
   if (!productList) {
     res.status(500).json({ success: false });
@@ -51,7 +64,9 @@ router.get(`/bySellers`, async (req, res) => {
     filter = { user: req.query.users.split(",") };
   }
 
-  const productList = await Product.find(filter).populate("user").sort({ dateCreated: -1 });;
+  const productList = await Product.find(filter)
+    .populate("user")
+    .sort({ dateCreated: -1 });
 
   if (!productList) {
     res.status(500).json({ success: false });
@@ -60,7 +75,7 @@ router.get(`/bySellers`, async (req, res) => {
 });
 
 router.get(`/:id`, async (req, res) => {
-  const product = await Product.findById(req.params.id).populate("user category");
+  const product = await Product.findById(req.params.id).populate("user category")
 
   if (!product) {
     res.status(500).json({ success: false });

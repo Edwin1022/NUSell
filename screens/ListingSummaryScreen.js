@@ -220,7 +220,14 @@ const ListingSummaryScreen = () => {
             </View>
 
             <View style={{ marginVertical: 30 }}>
-              <CustomButton onPress={handleUploadSideImages} text="Publish" />
+              <CustomButton
+                onPress={
+                  validImages.length > 0
+                    ? () => handleUploadSideImages()
+                    : () => navigation.navigate("Home")
+                }
+                text="Publish"
+              />
             </View>
           </KeyboardAvoidingView>
         )}

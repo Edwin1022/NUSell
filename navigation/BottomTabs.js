@@ -56,22 +56,6 @@ export const BottomTabs = () => {
             ),
         }}
       />
-      <Tab.Screen
-        name="Cart"
-        //insert a stackNav containing Home
-        component={HomeScreen}
-        options={{
-          tabBarLabel: "Cart",
-          tabBarLabelStyle: { color: "#007FFF" },
-          headerShown: false,
-          tabBarIcon: ({ focused }) =>
-            focused ? (
-              <AntDesign name="shoppingcart" size={24} color="#007FFF" />
-            ) : (
-              <AntDesign name="shoppingcart" size={24} color="black" />
-            ),
-        }}
-      />
     </Tab.Navigator>
   
   );

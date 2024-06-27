@@ -21,9 +21,11 @@ import { UserContext } from "../UserContext";
 
 const ProductInfoScreen = () => {
   const navigation = useNavigation();
+  const { setSelectedUser } = useContext(UserContext);
   const { selectedItem } = useContext(ProductContext);
   const { userId } = useContext(UserContext);
   const [product, setProduct] = useState("");
+  const [seller, setSeller] = useState("");
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState();
@@ -55,6 +57,7 @@ const ProductInfoScreen = () => {
       );
       setLoading(false);
       setProduct(res.data);
+      setSeller(res.data.user);
     } catch (err) {
       console.log(err);
     }
@@ -64,9 +67,17 @@ const ProductInfoScreen = () => {
     fetchProductData();
   }, []);
 
+  const handleUserPressed = () => {
+    setSelectedUser(seller);
+    navigation.navigate("UserProfile");
+  };
+
   const handleAddToCart = () => {
     axios
-      .post("http://192.168.0.110:8000/order-items", { productId: selectedItem, userId })
+      .post("http://192.168.0.110:8000/order-items", {
+        productId: selectedItem,
+        userId,
+      })
       .then((response) => {
         Alert.alert("Success", "Item added to cart successfully");
       })
@@ -91,6 +102,20 @@ const ProductInfoScreen = () => {
           </View>
         ) : (
           <KeyboardAvoidingView>
+            <View style={styles.usernameBox}>
+              <Pressable onPress={handleUserPressed}>
+                <Image
+                  style={styles.userProfile}
+                  source={{
+                    uri: seller.image,
+                  }}
+                />
+              </Pressable>
+              <Pressable onPress={handleUserPressed}>
+                <Text style={styles.username}>{seller.name}</Text>
+              </Pressable>
+            </View>
+
             <TouchableOpacity
               onPress={() => {
                 setSelectedImage(product.image);
@@ -217,6 +242,28 @@ const ProductInfoScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  userProfile: {
+    height: 40,
+    width: 40,
+    borderRadius: 25,
+    marginRight: 10,
+  },
+
+  username: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+
+  usernameBox: {
+    backgroundColor: "white",
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+    paddingLeft: 15,
+    marginTop: 10,
+    height: 50,
+  },
+
   photoItem: {
     height: 40,
     width: 40,
