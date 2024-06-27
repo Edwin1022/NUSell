@@ -249,7 +249,7 @@ const ManageListingScreen = () => {
                   color: "#041E42",
                 }}
               >
-                Manage Your Listing
+                Edit Product Information
               </Text>
             </View>
 
@@ -269,7 +269,7 @@ const ManageListingScreen = () => {
                     alignItems: "center",
                     marginTop: 20,
                     flex: 1,
-                    width: 350,
+                    width: "95%",
                     borderWidth: 1,
                     borderRadius: 10,
                   }}
@@ -281,8 +281,8 @@ const ManageListingScreen = () => {
                     style={{
                       borderWidth: 1,
                       borderRadius: 10,
-                      width: 350,
                       height: 200,
+                      
                     }}
                   />
                 </View>
@@ -292,9 +292,10 @@ const ManageListingScreen = () => {
                     alignItems: "center",
                     marginTop: 20,
                     flex: 1,
-                    width: 350,
+                    width: "95%",
                     borderWidth: 1,
                     borderRadius: 10,
+                    overflow: "hidden"
                   }}
                 >
                   <Image
@@ -303,9 +304,9 @@ const ManageListingScreen = () => {
                     }}
                     style={{
                       borderWidth: 1,
-                      borderRadius: 10,
-                      width: 350,
+                      width: "100%",
                       height: 200,
+                      objectFit: "cover",
                     }}
                   />
                 </View>
@@ -481,7 +482,15 @@ const ManageListingScreen = () => {
                       styles.priceDataButtonText,
                     ]}
                   >
-                    Recommend Listing Price
+                    Recommend
+                  </Text>
+                  <Text style={[
+                      {
+                        color: "white",
+                      },
+                      styles.priceDataButtonText,
+                    ]}>
+                      Listing Price
                   </Text>
                 </Pressable>
               </View>
@@ -523,8 +532,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     backgroundColor: "#D0D0D0",
     flex: 1,
-    flexDirection: "row",
-    width: 350,
+    width: "95%",
     borderColor: "gray",
     borderWidth: 1,
     borderRadius: 10,
@@ -545,6 +553,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 8,
+    width: "99%",
   },
 
   priceDataButtonText: {
@@ -636,11 +645,10 @@ const styles = StyleSheet.create({
   },
 
   conditionButtonContainer: {
-    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     backgroundColor: "white",
-    width: 360,
+    width: "95%",
     paddingLeft: 0,
     paddingRight: 10,
     marginBottom: 10,
@@ -655,7 +663,7 @@ const styles = StyleSheet.create({
     height: 100,
     textAlignVertical: "top",
     padding: 10,
-    width: 350,
+    width: "95%",
   },
 
   itemNameInput: {
@@ -666,7 +674,7 @@ const styles = StyleSheet.create({
     height: 50,
     textAlignVertical: "top",
     padding: 10,
-    width: 350,
+    width: "95%",
   },
 
   headerLeft: {

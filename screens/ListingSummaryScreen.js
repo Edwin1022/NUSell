@@ -129,9 +129,10 @@ const ListingSummaryScreen = () => {
                   alignItems: "center",
                   marginTop: 20,
                   flex: 1,
-                  width: 350,
+                  width: "95%",
                   borderWidth: 1,
                   borderRadius: 10,
+                  overflow: "hidden"
                 }}
               >
                 <Image
@@ -141,8 +142,9 @@ const ListingSummaryScreen = () => {
                   style={{
                     borderWidth: 1,
                     borderRadius: 10,
-                    width: 350,
                     height: 200,
+                    width: 350,
+                    objectFit: "cover"
                   }}
                 />
               </View>

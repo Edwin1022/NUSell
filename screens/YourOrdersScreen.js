@@ -24,7 +24,7 @@ const YourOrdersScreen = () => {
             marginLeft: 20,
           }}
         >
-          Your Orders
+          Your Orders (ongoing)
         </Text>
       ),
       headerRight: () => (
