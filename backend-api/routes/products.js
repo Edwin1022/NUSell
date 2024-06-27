@@ -4,6 +4,7 @@ const router = express.Router();
 const { Product } = require("../models/product");
 const { User } = require("../models/user");
 const { Category } = require("../models/category");
+const { OrderItem } = require("../models/order-item");
 const multer = require("multer");
 
 const FILE_TYPE_MAP = {
@@ -83,6 +84,28 @@ router.get(`/:id`, async (req, res) => {
   res.send(product);
 });
 
+router.post("/search", async (req, res) => {
+  const { itemName, brand, condition } = req.body;
+  try {
+    const itemNamePattern = itemName.replace(/\s/g, "\\s?");
+    const brandPattern = brand.replace(/\s/g, "\\s?");
+
+    const query = {
+      name: { $regex: itemNamePattern, $options: "i" },
+      brand: { $regex: brandPattern, $options: "i" },
+      condition,
+    };
+
+    const results = await Product.find(query)
+      .populate("user")
+      .sort({ price: 1 });
+    res.json(results);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 router.post(`/`, uploadOptions.single("image"), async (req, res) => {
   const productData = JSON.parse(req.body.product);
 
@@ -137,7 +160,14 @@ router.put(`/:id`, uploadOptions.single("image"), async (req, res) => {
   const fileName = req.file.filename;
   const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
 
-  const product = await Product.findByIdAndUpdate(
+  // Retrieve the current product
+  const currentProduct = await Product.findById(req.params.id);
+  if (!currentProduct) return res.status(404).send("Product not found");
+
+  // Store the old price
+  const oldPrice = currentProduct.price;
+
+  let product = await Product.findByIdAndUpdate(
     req.params.id,
     {
       name: productData.name,
@@ -157,6 +187,20 @@ router.put(`/:id`, uploadOptions.single("image"), async (req, res) => {
 
   if (!product) return res.status(500).send("the product cannot be updated");
 
+  // Check if the price has changed
+  const newPrice = product.price;
+  if (newPrice !== oldPrice) {
+    product = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        priceChangeType: newPrice > oldPrice ? "increased" : "decreased",
+      },
+      { new: true }
+    );
+  }
+
+  if (!product) return res.status(500).send("the product cannot be updated");
+
   res.send(product);
 });
 
@@ -164,9 +208,18 @@ router.delete(`/:id`, (req, res) => {
   Product.findByIdAndDelete(req.params.id)
     .then((product) => {
       if (product) {
-        return res
-          .status(200)
-          .json({ success: true, message: "the product is deleted" });
+        OrderItem.findOneAndDelete({ product: req.params.id })
+          .then(() => {
+            return res
+              .status(200)
+              .json({
+                success: true,
+                message: "the product and associated order item are deleted",
+              });
+          })
+          .catch((err) => {
+            return res.status(400).json({ success: false, error: err });
+          });
       } else {
         return res
           .status(404)

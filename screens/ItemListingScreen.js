@@ -11,7 +11,7 @@ import {
   Pressable,
   ActivityIndicator,
 } from "react-native";
-import React, { useState, useLayoutEffect, useContext } from "react";
+import React, { useState, useLayoutEffect, useContext, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Back from "react-native-vector-icons/Ionicons";
 import CustomButton from "../components/CustomButton";
@@ -97,6 +97,7 @@ const ItemListingScreen = () => {
   const [brand, setBrand] = useState("");
   const [condition, setCondition] = useState("");
   const [price, setPrice] = useState(0);
+  const [estimatedPrices, setEstimatedPrices] = useState([]);
 
   const [errorImage, setErrorImage] = useState();
   const [errorItemName, setErrorItemName] = useState("");
@@ -124,6 +125,72 @@ const ItemListingScreen = () => {
       ),
     });
   }, []);
+
+  /*useEffect(() => {
+    if (itemName) {
+      fetchPricingData(itemName).then((prices) => setEstimatedPrices(prices));
+    }
+  }, [itemName]);
+
+  const fetchPricingData = async (itemName) => {
+    const endpoint =
+      "https://svcs.sandbox.ebay.com/services/search/FindingService/v1";
+    const appId = "EdwinWon-NUSell-SBX-8345aa0ff-dda4a11b"; // Replace with your App ID
+  
+    const params = {
+      "OPERATION-NAME": "findCompletedItems",
+      "SERVICE-VERSION": "1.0.0",
+      "SECURITY-APPNAME": appId,
+      "RESPONSE-DATA-FORMAT": "JSON", // Change this to XML if you prefer XML response
+      "REST-PAYLOAD": "",
+      keywords: itemName, // No need to encodeURIComponent here, axios handles it
+      "itemFilter(0).name": "Condition",
+      "itemFilter(0).value": "Used", // Assuming you want used items, change as necessary
+      "itemFilter(1).name": "SoldItemsOnly",
+      "itemFilter(1).value": "true",
+      "paginationInput.entriesPerPage": "10", // Adjust as necessary
+      "paginationInput.pageNumber": "1", // Adjust as necessary
+      "sortOrder": "EndTimeSoonest" // Example sort order
+    };
+  
+    try {
+      const response = await axios.get(endpoint, { params });
+      const findCompletedItemsResponse = response.data.findCompletedItemsResponse;
+  
+      if (!findCompletedItemsResponse || findCompletedItemsResponse.length === 0) {
+        console.warn("No response from API.");
+        return [];
+      }
+  
+      const searchResult = findCompletedItemsResponse[0].searchResult;
+  
+      if (!searchResult || searchResult.length === 0 || !searchResult[0].item) {
+        console.warn("No search results found.");
+        return [];
+      }
+  
+      const items = searchResult[0].item;
+  
+      return items.map((item) => ({
+        title: item.title ? item.title[0] : "N/A",
+        price:
+          item.sellingStatus && item.sellingStatus[0].currentPrice
+            ? item.sellingStatus[0].currentPrice[0].__value__
+            : "N/A",
+        currency:
+          item.sellingStatus && item.sellingStatus[0].currentPrice
+            ? item.sellingStatus[0].currentPrice[0]["@currencyId"]
+            : "N/A",
+        listingUrl: item.viewItemURL ? item.viewItemURL[0] : "N/A" // Adding URL
+      }));
+    } catch (error) {
+      console.error(
+        "Error fetching data from eBay API:",
+        error.response ? error.response.data : error.message
+      );
+      return [];
+    }
+  };*/
 
   // Function to convert image to base64
   const convertImageToBase64 = async (uri) => {
@@ -223,6 +290,36 @@ const ItemListingScreen = () => {
     }
   };
 
+  //handle View Price Data logic
+  const handleViewPriceData = () => {
+    setErrorItemName(null);
+    setErrorBrand(null);
+    setErrorCondition(null);
+
+    let isValid = true;
+
+    if (!itemName.trim()) {
+      setErrorItemName("Please provide an item name");
+      isValid = false;
+    }
+
+    if (!brand.trim()) {
+      setErrorBrand("Please provide the item brand");
+      isValid = false;
+    }
+
+    if (!condition) {
+      setErrorCondition("Please select a condition");
+      isValid = false;
+    }
+
+    if (isValid) {
+      navigation.navigate("Dashboard", { itemName, brand, condition });
+    } else {
+      return;
+    }
+  };
+
   //handle Continue logic
   const handleContinue = async () => {
     setErrorImage(null);
@@ -265,7 +362,7 @@ const ItemListingScreen = () => {
       isValid = false;
     }
 
-    if (!price.trim()) {
+    if (!price) {
       setErrorPrice("Please indicate a price");
       isValid = false;
     }
@@ -300,7 +397,7 @@ const ItemListingScreen = () => {
 
       // send a post request to the backend API
       const response = await axios.post(
-        "http://192.168.0.110:8000/products",
+        "http://192.168.0.115:8000/products",
         formData,
         {
           headers: {
@@ -418,7 +515,12 @@ const ItemListingScreen = () => {
             </TouchableOpacity>
 
             <View style={{ marginBottom: 20, marginTop: 20 }}>
-              <Text style={styles.Title}>Item Name</Text>
+              <Text style={styles.Title}>
+                Item Name{"\n"}
+                <Text style={{ fontWeight: "normal", fontSize: 15, color: "#007FFF" }}>
+                  (keep your item name short and clear)
+                </Text>
+              </Text>
               <TextInput
                 value={itemName}
                 onChangeText={setItemName}
@@ -426,7 +528,7 @@ const ItemListingScreen = () => {
                 editable
                 multiline={true}
                 maxLength={100}
-                placeholder="What is this item?"
+                placeholder="What is this item?  Eg. Portable Aircon"
               />
               {!!errorItemName && (
                 <Text style={styles.error}>{errorItemName}</Text>
@@ -458,7 +560,7 @@ const ItemListingScreen = () => {
                 editable
                 multiline={true}
                 maxLength={100}
-                placeholder="What is the brand of this item?"
+                placeholder="What is the brand of this item?  Eg. Midea"
               />
               {!!errorBrand && <Text style={styles.error}>{errorBrand}</Text>}
             </View>
@@ -531,21 +633,42 @@ const ItemListingScreen = () => {
               )}
             </View>
 
-            <View style={{ marginTop: 10 }}>
+            <View style={{ marginTop: 30 }}>
               <Text style={styles.Title}> Price </Text>
-              <View style={styles.priceInputContainer}>
-                <Text>$ </Text>
-                <TextInput
-                  value={price}
-                  onChangeText={setPrice}
-                  style={styles.priceInput}
-                  editable
-                  multiline={true}
-                  maxLength={200}
-                  keyboardType="numeric"
-                  placeholder="Price"
-                />
-                {!!errorPrice && <Text style={styles.error}>{errorPrice}</Text>}
+              <View style={styles.priceInputRow}>
+                <View style={styles.priceInputColumn}>
+                  <View style={styles.priceInputContainer}>
+                    <Text>$ </Text>
+                    <TextInput
+                      value={price}
+                      onChangeText={setPrice}
+                      style={styles.priceInput}
+                      editable
+                      multiline={true}
+                      maxLength={200}
+                      keyboardType="numeric"
+                      placeholder="Price"
+                    />
+                  </View>
+                  {!!errorPrice && (
+                    <Text style={styles.error}>{errorPrice}</Text>
+                  )}
+                </View>
+                <Pressable
+                  style={styles.priceDataButton}
+                  onPress={handleViewPriceData}
+                >
+                  <Text
+                    style={[
+                      {
+                        color: "white",
+                      },
+                      styles.brandNewButtonText,
+                    ]}
+                  >
+                    Recommend Listing Price 
+                  </Text>
+                </Pressable>
               </View>
             </View>
 
@@ -606,6 +729,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
 
+  priceDataButton: {
+    marginLeft: 60,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: "#007FFF",
+    borderRadius: 75,
+    width: 150,
+    alignItems: "center"
+  },
+
   continueButton: {
     marginTop: 30,
     marginBottom: 50,
@@ -623,6 +756,16 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 
+  priceInputRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  priceInputColumn: {
+    flexDirection: "column",
+    alignItems: "center",
+  },
+
   priceInputContainer: {
     paddingLeft: 10,
     flex: 1,
@@ -638,6 +781,8 @@ const styles = StyleSheet.create({
 
   brandNewButtonText: {
     fontWeight: "bold",
+    flexWrap: "wrap",
+    fontSize: 16
   },
 
   brandNewButton: {

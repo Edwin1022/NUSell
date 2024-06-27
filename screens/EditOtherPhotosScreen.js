@@ -25,7 +25,6 @@ const EditOtherPhotosScreen = () => {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [images, setImages] = useState(Array(8).fill(null));
   const [loading, setLoading] = useState(false);
-  const [product, setProduct] = useState("");
   const { selectedItem } = useContext(ProductContext);
 
   // Header
@@ -54,7 +53,6 @@ const EditOtherPhotosScreen = () => {
         `http://192.168.0.110:8000/products/${selectedItem}`
       );
       setLoading(false);
-      setProduct(res.data);
       const fetchedImages = res.data.images;
       const updatedImages = Array(8).fill(null);
       for (let i = 0; i < fetchedImages.length; i++) {
@@ -113,7 +111,7 @@ const EditOtherPhotosScreen = () => {
     setModalVisible(false);
   };
 
-  const handleUpdate = async () => {
+  /*const handleUpdate = async () => {
     try {
       const formData = new FormData();
       const validImages = images.filter((image) => image != null);
@@ -145,7 +143,7 @@ const EditOtherPhotosScreen = () => {
         "You have updated your listing successfully"
       );
 
-      navigation.navigate("Home");
+      navigation.navigate("YourListings");
     } catch (error) {
       console.error("Error uploading images:", error);
       Alert.alert(
@@ -153,7 +151,7 @@ const EditOtherPhotosScreen = () => {
         "An error occurred while uploading images"
       );
     }
-  };
+  };*/
 
   return (
     <SafeAreaView
@@ -196,11 +194,14 @@ const EditOtherPhotosScreen = () => {
                 ))}
 
               <View style={{ marginTop: 40 }}>
-                <CustomButton onPress={handleUpdate} text="Update" />
+                <CustomButton onPress={() => {
+                  const validImages = images.filter((image) => image != null);
+                  navigation.navigate("ListingSummary", {productId: selectedItem, validImages})
+                }} text="Update" />
               </View>
 
               <View style={{ marginTop: 20 }}>
-                <CustomButton onPress={() => navigation.navigate("YourListings")} text="Save" />
+                <CustomButton onPress={() => navigation.navigate("ListingSummar")} text="Save" />
               </View>
             </View>
 

@@ -20,6 +20,8 @@ import ProductInfoScreen from "../screens/ProductInfoScreen";
 import EditOtherPhotosScreen from "../screens/EditOtherPhotosScreen";
 import ListingSummaryScreen from "../screens/ListingSummaryScreen";
 import UpdateListingScreen from "../screens/UpdateListingScreen";
+import DashboardScreen from "../screens/DashboardScreen";
+import SimilarProductsScreen from "../screens/SimilarProductsScreen";
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -52,6 +54,8 @@ const StackNavigator = () => {
         />
         <Stack.Screen name="ListingSummary" component={ListingSummaryScreen} />
         <Stack.Screen name="UpdateListing" component={UpdateListingScreen} />
+        <Stack.Screen name="Dashboard" component={DashboardScreen} />
+        <Stack.Screen name="SimilarProducts" component={SimilarProductsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

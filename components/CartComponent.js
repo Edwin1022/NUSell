@@ -20,7 +20,6 @@ export const CartComponent = ({
   price,
   onUser,
   onItem,
-  onEdit,
   onDelete,
   onCheckout
 }) => {
