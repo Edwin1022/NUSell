@@ -44,7 +44,7 @@ const SimilarProductsScreen = () => {
   const fetchSimilarProducts = async () => {
     try {
       const response = await axios.post(
-        "http://192.168.0.110:8000/products/search",
+        "https://nusell.onrender.com/products/search",
         {
           itemName,
           brand,

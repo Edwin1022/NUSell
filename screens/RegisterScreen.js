@@ -63,7 +63,7 @@ const RegisterScreen = () => {
 
     // send a post request to the backend API
     axios
-      .post("http://192.168.0.110:8000/users/register", user)
+      .post("https://nusell.onrender.com/users/register", user)
       .then((response) => {
         console.log(response);
         Alert.alert(

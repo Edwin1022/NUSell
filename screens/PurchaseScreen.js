@@ -27,7 +27,7 @@ const PurchaseScreen = () => {
   const fetchAddresses = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.0.110:8000/users/addresses/${userId}`
+        `https://nusell.onrender.com/users/addresses/${userId}`
       );
       const { addresses } = response.data;
       setAddresses(addresses);
@@ -39,7 +39,7 @@ const PurchaseScreen = () => {
   const fetchUserData = async () => {
     try {
       const res = await axios.get(
-        `http://192.168.0.110:8000/users/getUserData?email=${user.email}`
+        `https://nusell.onrender.com/users/getUserData?email=${user.email}`
       );
       setUser(res.data.data);
     } catch (err) {
@@ -50,7 +50,7 @@ const PurchaseScreen = () => {
   const fetchProductData = async () => {
     try {
       const res = await axios.get(
-        `http://192.168.0.110:8000/products/${selectedItem}`
+        `https://nusell.onrender.com/products/${selectedItem}`
       );
       setTotalPrice(res.data.price);
     } catch (err) {

@@ -52,7 +52,7 @@ const AddressScreen = () => {
   const fetchAddresses = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.0.110:8000/users/addresses/${userId}`
+        `https://nusell.onrender.com/users/addresses/${userId}`
       );
       const { addresses } = response.data;
       setAddresses(addresses);
@@ -64,7 +64,7 @@ const AddressScreen = () => {
   const fetchDefaultAddress = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.0.110:8000/users/getDefaultAddress/${userId}`
+        `https://nusell.onrender.com/users/getDefaultAddress/${userId}`
       );
       const { defaultAddress } = response.data;
       setDefaultAddress(defaultAddress);
@@ -93,7 +93,7 @@ const AddressScreen = () => {
     setAddresses(updatedAddresses);
 
     axios
-      .put("http://192.168.0.110:8000/users/addresses", {
+      .put("https://nusell.onrender.com/users/addresses", {
         userId,
         updatedAddresses,
       })
@@ -115,7 +115,7 @@ const AddressScreen = () => {
     setDefaultAddress(defaultAddress);
 
     axios
-      .post("http://192.168.0.110:8000/users/setDefaultAddress", {
+      .post("https://nusell.onrender.com/users/setDefaultAddress", {
         userId,
         defaultAddressId,
         defaultAddress,

@@ -57,7 +57,7 @@ const ProfileScreen = () => {
     const fetchUserProfile = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.0.110:8000/users/profile/${userId}`
+          `https://nusell.onrender.com/users/profile/${userId}`
         );
         const { user } = response.data;
         setUser(user);

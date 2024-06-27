@@ -120,7 +120,7 @@ const UpdateListingScreen = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://192.168.0.110:8000/products/${productId}`
+        `https://nusell.onrender.com/products/${productId}`
       );
       setLoading(false);
       setProduct(res.data);
@@ -206,7 +206,7 @@ const UpdateListingScreen = () => {
 
       // send a post request to the backend API
       const response = await axios.put(
-        `http://192.168.0.110:8000/products/${productId}`,
+        `https://nusell.onrender.com/products/${productId}`,
         formData,
         {
           headers: {

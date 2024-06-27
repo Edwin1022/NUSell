@@ -73,7 +73,7 @@ const YourAccountScreen = () => {
     const fetchUserData = async () => {
       try {
         const res = await axios.get(
-          `http://192.168.0.110:8000/users/getUserData?email=${user.email}`
+          `https://nusell.onrender.com/users/getUserData?email=${user.email}`
         );
         setUser(res.data.data);
       } catch (err) {
@@ -180,7 +180,7 @@ const YourAccountScreen = () => {
 
       // send a post request to the backend API
       const response = await axios.put(
-        "http://192.168.0.110:8000/users/updateProfile",
+        "https://nusell.onrender.com/users/updateProfile",
         formData,
         {
           headers: {

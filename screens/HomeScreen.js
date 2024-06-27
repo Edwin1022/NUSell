@@ -43,7 +43,7 @@ const HomeScreen = () => {
     const fetchUserData = async () => {
       try {
         const res = await axios.get(
-          `http://192.168.0.110:8000/users/getUserData?email=${user.email}`
+          `https://nusell.onrender.com/users/getUserData?email=${user.email}`
         );
         setUser(res.data.data);
       } catch (err) {
@@ -57,7 +57,7 @@ const HomeScreen = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get(`http://192.168.0.110:8000/categories`);
+        const res = await axios.get(`https://nusell.onrender.com/categories`);
         setCategories(res.data);
       } catch (err) {
         console.log(err);
@@ -69,7 +69,7 @@ const HomeScreen = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get(`http://192.168.0.110:8000/products`);
+      const res = await axios.get(`https://nusell.onrender.com/products`);
       setProducts(res.data);
     } catch (err) {
       console.log(err);
@@ -89,7 +89,7 @@ const HomeScreen = () => {
   const browseByCategories = async (category) => {
     try {
       const res = await axios.get(
-        `http://192.168.0.110:8000/products/ByCategories?categories=${category.id}`
+        `https://nusell.onrender.com/products/ByCategories?categories=${category.id}`
       );
       setProducts(res.data);
     } catch (err) {
@@ -100,7 +100,7 @@ const HomeScreen = () => {
   const browseOtherCategories = async () => {
     try {
       const res = await axios.get(
-        `http://192.168.0.110:8000/products/ByCategories?categories=666c025badffbb04e4c808cb`
+        `https://nusell.onrender.com/products/ByCategories?categories=666c025badffbb04e4c808cb`
       );
       setProducts(res.data);
     } catch (err) {

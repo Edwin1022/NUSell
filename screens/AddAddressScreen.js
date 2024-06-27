@@ -61,7 +61,7 @@ const AddAddressScreen = () => {
     };
 
     axios
-      .post("http://192.168.0.110:8000/users/addresses", { userId, address })
+      .post("https://nusell.onrender.com/users/addresses", { userId, address })
       .then((response) => {
         Alert.alert("Success", "Addresses added successfully");
         setTimeout(() => {

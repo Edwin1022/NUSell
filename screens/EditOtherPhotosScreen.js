@@ -50,7 +50,7 @@ const EditOtherPhotosScreen = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://192.168.0.110:8000/products/${selectedItem}`
+        `https://nusell.onrender.com/products/${selectedItem}`
       );
       setLoading(false);
       const fetchedImages = res.data.images;
