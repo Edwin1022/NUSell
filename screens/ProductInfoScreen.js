@@ -132,7 +132,6 @@ const ProductInfoScreen = () => {
                   marginTop: 20,
                   flex: 1,
                   width: "95%",
-                  borderWidth: 1,
                   borderRadius: 10,
                   overflow: "hidden",
                 }}
