@@ -92,7 +92,7 @@ const YourListingsScreen = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
+      style={{ flex: 1, backgroundColor: "white", paddingLeft: 20 }}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ alignItems: "center", marginTop: 10 }}></View>

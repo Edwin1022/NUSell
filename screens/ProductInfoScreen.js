@@ -127,9 +127,10 @@ const ProductInfoScreen = () => {
                   alignItems: "center",
                   marginTop: 20,
                   flex: 1,
-                  width: 350,
+                  width: "95%",
                   borderWidth: 1,
                   borderRadius: 10,
+                  overflow: "hidden"
                 }}
               >
                 <Image
@@ -141,6 +142,7 @@ const ProductInfoScreen = () => {
                     borderRadius: 10,
                     width: 350,
                     height: 200,
+                    objectFit: "cover"
                   }}
                 />
               </View>
@@ -358,7 +360,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     backgroundColor: "white",
-    width: 360,
+    width: "95%",
     paddingLeft: 0,
     paddingRight: 10,
     alignItems: "center",

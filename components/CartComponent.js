@@ -25,73 +25,68 @@ export const CartComponent = ({
 }) => {
   return (
     <ScrollView>
-      <View style={styles.OrderScreenContainer}>
-        <View style={styles.itemSummaryComponent}>
-          <View style={styles.usernameBox}>
-            <Pressable onPress={onUser}>
-              <Image
-                style={styles.userProfile}
-                source={{
-                  uri: pfp,
-                }}
-              />
-            </Pressable>
-            <Pressable onPress={onUser}>
-              <Text style={styles.username}>{username}</Text>
-            </Pressable>
+      
+      <View style={styles.itemSummaryComponent}>
+        <View style={styles.usernameBox}>
+          <Pressable onPress={onUser}>
+            <Image
+              style={styles.userProfile}
+              source={{
+                uri: pfp,
+              }}
+            />
+          </Pressable>
+          <Pressable onPress={onUser}>
+            <Text style={styles.username}>{username}</Text>
+          </Pressable>
+        </View>
+
+        <SwipeRow
+          leftOpenValue={0}
+          rightOpenValue={-80}
+          style={styles.swipable}
+        >
+          <View style={styles.hiddenRow}>
+            <TouchableOpacity
+              onPress={onDelete}
+              style={[styles.hiddenButton, styles.deleteButton]}
+            >
+              <Ionicons name="trash" size={24} color="white" />
+            </TouchableOpacity>
           </View>
 
-          <SwipeRow
-            leftOpenValue={0}
-            rightOpenValue={-155}
-            style={styles.swipable}
-          >
-            <View style={styles.hiddenRow}>
-              <TouchableOpacity
-                style={[styles.hiddenButton, styles.editButton]}
-              >
-                <Ionicons name="pencil" size={24} color="white" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={onDelete}
-                style={[styles.hiddenButton, styles.deleteButton]}
-              >
-                <Ionicons name="trash" size={24} color="white" />
-              </TouchableOpacity>
-            </View>
-
-            <Pressable onPress={onItem}>
-              <View style={styles.visibleRow}>
-                <View>
-                  <Image
-                    style={styles.itemImage}
-                    source={{
-                      uri: image,
-                    }}
-                  />
-                </View>
-
-                <View>
-                  <View style={styles.itemNameBox}>
-                    <Text style={styles.itemName}>{name}</Text>
-                  </View>
-                  <View style={styles.conditionBox}>
-                    <Text style={styles.condition}>{condition}</Text>
-                  </View>
-                  <Text style={styles.itemText}>1 item(s)</Text>
-                </View>
+          <Pressable onPress={onItem}>
+            <View style={styles.visibleRow}>
+              <View>
+                <Image
+                  style={styles.itemImage}
+                  source={{
+                    uri: image,
+                  }}
+                />
               </View>
-            </Pressable>
-          </SwipeRow>
 
-          <View style={styles.bottomContainer}>
-            <Text style={styles.amount}>Total: ${price}</Text>
-            <Pressable onPress={onCheckout} style={styles.checkoutButton}>
-              <Text style={styles.buttonText}>CHECKOUT</Text>
-            </Pressable>
-          </View>
+              <View>
+                <View style={styles.itemNameBox}>
+                  <Text style={styles.itemName}>{name}</Text>
+                </View>
+                <View style={styles.conditionBox}>
+                  <Text style={styles.condition}>{condition}</Text>
+                </View>
+                <Text style={styles.itemText}>1 item(s)</Text>
+              </View>
+            </View>
+          </Pressable>
+        </SwipeRow>
+
+        <View style={styles.bottomContainer}>
+          <Text style={styles.amount}>Total: ${price}</Text>
+          <Pressable onPress={onCheckout} style={styles.checkoutButton}>
+            <Text style={styles.buttonText}>CHECKOUT</Text>
+          </Pressable>
         </View>
       </View>
+    
     </ScrollView>
   );
 };
@@ -151,12 +146,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   hiddenRow: {
-    alignItems: "center",
-    backgroundColor: "#DDD",
-    flex: 1,
     flexDirection: "row",
-    justifyContent: "flex-end",
-    paddingLeft: 15,
     height: 110,
   },
   hiddenButton: {
@@ -168,11 +158,6 @@ const styles = StyleSheet.create({
     width: 75,
   },
 
-  editButton: {
-    backgroundColor: "#007bff",
-    right: 80,
-    height: "100%",
-  },
   deleteButton: {
     backgroundColor: "#dc3545",
     right: 0,
@@ -180,7 +165,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   visibleRow: {
-    backgroundColor: "#FFF",
+    backgroundColor: "white",
     height: 110,
     paddingLeft: 15,
     flexDirection: "row",
@@ -199,24 +184,19 @@ const styles = StyleSheet.create({
   },
 
   itemSummaryComponent: {
-    flex: 1,
-    width: 380,
     borderWidth: 1,
     borderStyle: "solid",
     borderColor: "black",
     padding: 20,
     borderRadius: 10,
     backgroundColor: "white",
-    paddingTop: 10,
+    paddingTop: 5,
     paddingBottom: 10,
     overflow: "hidden",
+    width: "95%"
   },
 
-  OrderScreenContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  
   usernameBox: {
     backgroundColor: "white",
     flexDirection: "row",

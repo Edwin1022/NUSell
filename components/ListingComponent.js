@@ -171,13 +171,9 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 10,
     overflow: "hidden",
+    width: "95%"
   },
 
-  OrderScreenContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
   usernameBox: {
     backgroundColor: "white",
     flexDirection: "row",

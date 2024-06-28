@@ -11,57 +11,57 @@ import React from "react";
 export const OrderComponent = () => {
   return (
     <ScrollView>
-      <View style={styles.OrderScreenContainer}>
-        <View style={styles.itemSummaryComponent}>
-          <View style={styles.usernameBox}>
-            <Pressable>
-              <Image
-                style={styles.userProfile}
-                source={{
-                  uri: "https://cdn.britannica.com/70/234870-050-D4D024BB/Orange-colored-cat-yawns-displaying-teeth.jpg",
-                }}
-              />
-            </Pressable>
-            <Pressable>
-              <Text style={styles.username}>Username</Text>
-            </Pressable>
-            <Pressable style={styles.checkoutButton}>
-              <Text style={styles.buttonText}>STATUS</Text>
-            </Pressable>
-          </View>
+      
+      <View style={styles.itemSummaryComponent}>
+        <View style={styles.usernameBox}>
+          <Pressable>
+            <Image
+              style={styles.userProfile}
+              source={{
+                uri: "https://cdn.britannica.com/70/234870-050-D4D024BB/Orange-colored-cat-yawns-displaying-teeth.jpg",
+              }}
+            />
+          </Pressable>
+          <Pressable>
+            <Text style={styles.username}>Username</Text>
+          </Pressable>
+          <Pressable style={styles.checkoutButton}>
+            <Text style={styles.buttonText}>STATUS</Text>
+          </Pressable>
+        </View>
 
-          <View style={styles.swipable}>
-            <Pressable>
-              <View style={styles.visibleRow}>
-                <View>
-                  <Image
-                    style={styles.itemImage}
-                    source={{
-                      uri: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg",
-                    }}
-                  />
-                </View>
-
-                <View>
-                  <View style={styles.itemNameBox}>
-                    <Text style={styles.itemName}>
-                      An example of a very long item name{" "}
-                    </Text>
-                  </View>
-                  <View style={styles.conditionBox}>
-                    <Text style={styles.condition}>Condition</Text>
-                  </View>
-                  <Text style={styles.itemText}>1 item(s)</Text>
-                </View>
+        <View style={styles.swipable}>
+          <Pressable>
+            <View style={styles.visibleRow}>
+              <View>
+                <Image
+                  style={styles.itemImage}
+                  source={{
+                    uri: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg",
+                  }}
+                />
               </View>
-            </Pressable>
-          </View>
 
-          <View style={styles.bottomContainer}>
-            <Text style={styles.amount}>Total: $100</Text>
-          </View>
+              <View>
+                <View style={styles.itemNameBox}>
+                  <Text style={styles.itemName}>
+                    An example of a very long item name{" "}
+                  </Text>
+                </View>
+                <View style={styles.conditionBox}>
+                  <Text style={styles.condition}>Condition</Text>
+                </View>
+                <Text style={styles.itemText}>1 item(s)</Text>
+              </View>
+            </View>
+          </Pressable>
+        </View>
+
+        <View style={styles.bottomContainer}>
+          <Text style={styles.amount}>Total: $100</Text>
         </View>
       </View>
+      
     </ScrollView>
   );
 };
@@ -119,35 +119,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderRadius: 5,
   },
-  hiddenRow: {
-    alignItems: "center",
-    backgroundColor: "#DDD",
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    paddingLeft: 15,
-    height: 110,
-  },
-  hiddenButton: {
-    alignItems: "center",
-    bottom: 0,
-    justifyContent: "center",
-    position: "absolute",
-    top: 0,
-    width: 75,
-  },
-
-  editButton: {
-    backgroundColor: "#007bff",
-    right: 80,
-    height: "100%",
-  },
-  deleteButton: {
-    backgroundColor: "#dc3545",
-    right: 0,
-    width: 80,
-    height: "100%",
-  },
+  
   visibleRow: {
     backgroundColor: "#FFF",
     height: 110,
@@ -168,8 +140,7 @@ const styles = StyleSheet.create({
   },
 
   itemSummaryComponent: {
-    flex: 1,
-    width: 380,
+    width: "95%",
     borderWidth: 1,
     borderStyle: "solid",
     borderColor: "black",
@@ -181,11 +152,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
 
-  OrderScreenContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
   usernameBox: {
     backgroundColor: "white",
     flexDirection: "row",
