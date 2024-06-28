@@ -117,7 +117,7 @@ const ManageListingScreen = () => {
   const fetchProductData = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(
+      const res = await axios.put(
         `https://nusell.onrender.com/products/${selectedItem}`
       );
       setLoading(false);
@@ -195,7 +195,7 @@ const ManageListingScreen = () => {
       const formData = new FormData();
       formData.append("product", JSON.stringify(updatedProduct));
       formData.append("image", {
-        uri: image || product.image,
+        uri: image || product.imageUrl,
         type: "image/jpeg",
         name: "product.jpg",
       });
@@ -204,7 +204,7 @@ const ManageListingScreen = () => {
 
       // send a post request to the backend API
       const response = await axios.put(
-        `https://nusell.onrender.com/products/${selectedItem}`,
+        `https://nusell.onrender.com/products/updateListing/${selectedItem}`,
         formData,
         {
           headers: {
@@ -301,7 +301,7 @@ const ManageListingScreen = () => {
                 >
                   <Image
                     source={{
-                      uri: product.image,
+                      uri: product.imageUrl,
                     }}
                     style={{
                       borderWidth: 1,
@@ -320,13 +320,13 @@ const ManageListingScreen = () => {
                 style={{ paddingLeft: 10 }}
                 showsHorizontalScrollIndicator={false}
               >
-                {product.images &&
-                  product.images.length > 0 &&
-                  product.images.map((image, index) => (
+                {product.imagesUrls &&
+                  product.imagesUrls.length > 0 &&
+                  product.imagesUrls.map((imageUrl, index) => (
                     <TouchableOpacity key={index}>
                       <View style={styles.morePhotosContainer}>
                         <Image
-                          source={{ uri: image }}
+                          source={{ uri: imageUrl }}
                           style={styles.sidePhotos}
                         />
                       </View>

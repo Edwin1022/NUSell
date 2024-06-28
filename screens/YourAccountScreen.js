@@ -72,7 +72,7 @@ const YourAccountScreen = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await axios.get(
+        const res = await axios.put(
           `https://nusell.onrender.com/users/getUserData?email=${user.email}`
         );
         setUser(res.data.data);
@@ -92,7 +92,7 @@ const YourAccountScreen = () => {
       setMobileNo(user.mobile);
     }
     if (user.image) {
-      setImage(user.image);
+      setImage(user.imageUrl);
     } else {
       setImage(placeholderImage);
     }

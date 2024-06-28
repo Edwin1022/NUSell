@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 10,
     overflow: "hidden",
-    width: "95%"
+    width: 340
   },
 
   usernameBox: {

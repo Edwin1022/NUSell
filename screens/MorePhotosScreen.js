@@ -122,7 +122,7 @@ const MorePhotosScreen = () => {
               <CustomButton
                 onPress={() => {
                   const validImages = images.filter((image) => image != null);
-                  navigation.navigate("ListingSummary", {
+                  navigation.navigate("ListingSummary2", {
                     productId,
                     validImages,
                   });

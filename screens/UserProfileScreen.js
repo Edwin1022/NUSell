@@ -59,8 +59,8 @@ const UserProfileScreen = () => {
 
   const fetchSellerData = async () => {
     try {
-      const res = await axios.get(
-        `https://nusell.onrender.com/users/getUserData?email=${selectedUser.email}`
+      const res = await axios.put(
+        `http://192.168.1.101:8000/users/getUserData?email=${selectedUser.email}`
       );
       setSeller(res.data.data);
     } catch (err) {
@@ -117,7 +117,7 @@ const UserProfileScreen = () => {
                 justifyContent: "center",
                 alignItems: "center",
               }}
-              source={{ uri: seller.image }}
+              source={{ uri: seller.imageUrl }}
             />
           </TouchableOpacity>
 
@@ -549,7 +549,7 @@ const UserProfileScreen = () => {
             onPress={() => setImageModalVisible(false)}
           >
             <Image
-              source={{ uri: seller.image }}
+              source={{ uri: seller.imageUrl }}
               style={styles.fullImage}
               resizeMode="contain"
             />

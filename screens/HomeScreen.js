@@ -5,6 +5,7 @@ import {
   Pressable,
   TouchableOpacity,
   SafeAreaView,
+  ScrollView
 } from "react-native";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
@@ -12,7 +13,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import { Drawer } from "react-native-drawer-layout";
 import { Ionicons } from "@expo/vector-icons";
-import { ScrollView } from "react-native-gesture-handler";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { HomeScreenComponent } from "../components/HomeScreenComponent";
 import axios from "axios";
@@ -43,7 +43,7 @@ const HomeScreen = () => {
     const fetchUserData = async () => {
       try {
         const res = await axios.get(
-          `https://nusell.onrender.com/users/getUserData?email=${user.email}`
+          `https://nusell.onrender.com/getUserData?email=${user.email}`
         );
         setUser(res.data.data);
       } catch (err) {
@@ -226,9 +226,9 @@ const HomeScreen = () => {
               products.map((product, index) => (
                 <View key={index} style={styles.itemContainer}>
                   <HomeScreenComponent
-                    pfp={product.user.image}
+                    pfp={product.user.imageUrl}
                     username={product.user.name}
-                    image={product.image}
+                    image={product.imageUrl}
                     name={product.name}
                     condition={product.condition}
                     price={product.price}

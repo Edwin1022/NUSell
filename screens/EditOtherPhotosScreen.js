@@ -49,11 +49,11 @@ const EditOtherPhotosScreen = () => {
   const fetchProductData = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(
+      const res = await axios.put(
         `https://nusell.onrender.com/products/${selectedItem}`
       );
       setLoading(false);
-      const fetchedImages = res.data.images;
+      const fetchedImages = res.data.imagesUrls;
       const updatedImages = Array(8).fill(null);
       for (let i = 0; i < fetchedImages.length; i++) {
         updatedImages[i] = fetchedImages[i];

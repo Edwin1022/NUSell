@@ -1,36 +1,58 @@
 const mongoose = require("mongoose");
 const express = require("express");
+const crypto = require("crypto");
 const router = express.Router();
 const { Product } = require("../models/product");
 const { User } = require("../models/user");
 const { Category } = require("../models/category");
 const { OrderItem } = require("../models/order-item");
 const multer = require("multer");
+const {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
-const FILE_TYPE_MAP = {
-  "image/png": "png",
-  "image/jpeg": "jpeg",
-  "image/jpg": "jpg",
-};
+const dotenv = require("dotenv");
+dotenv.config();
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const isValid = FILE_TYPE_MAP[file.mimetype];
-    let uploadError = new Error("invalid image type");
+const bucketName = process.env.BUCKET_NAME;
+const bucketRegion = process.env.BUCKET_REGION;
+const accessKey = process.env.ACCESS_KEY;
+const secretAccessKey = process.env.SECRET_ACCESS_KEY;
 
-    if (isValid) {
-      uploadError = null;
-    }
-    cb(uploadError, "../screens/public/uploads");
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: accessKey,
+    secretAccessKey: secretAccessKey,
   },
-  filename: function (req, file, cb) {
-    const filename = file.originalname.split(" ").join("-");
-    const extension = FILE_TYPE_MAP[file.mimetype];
-    cb(null, `${filename}-${Date.now()}.${extension}`);
-  },
+  region: bucketRegion,
 });
 
-const uploadOptions = multer({ storage: storage });
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+const randomImageName = (bytes = 32) =>
+  crypto.randomBytes(bytes).toString("hex");
+
+const getSignedUrlsForImages = async (bucketName, imageNames) => {
+  const signedUrls = await Promise.all(
+    imageNames.map(async (imageName) => {
+      const getObjectParams = {
+        Bucket: bucketName,
+        Key: imageName,
+      };
+      const command = new GetObjectCommand(getObjectParams);
+      const url = await getSignedUrl(s3, command, {
+        expiresIn: 60 * 60 * 24 * 6,
+      }); // URL expires in 1 hour
+      return url;
+    })
+  );
+
+  return signedUrls;
+};
 
 router.get(`/`, async (req, res) => {
   const productList = await Product.find()
@@ -40,6 +62,20 @@ router.get(`/`, async (req, res) => {
   if (!productList) {
     res.status(500).json({ success: false });
   }
+
+  for (const product of productList) {
+    const getObjectParams = {
+      Bucket: bucketName,
+      Key: product.image,
+    };
+    const command = new GetObjectCommand(getObjectParams);
+    const url = await getSignedUrl(s3, command, {
+      expiresIn: 60 * 60 * 24 * 6,
+    });
+    product.imageUrl = url;
+    await product.save();
+  }
+
   res.status(200).send(productList);
 });
 
@@ -56,6 +92,7 @@ router.get(`/byCategories`, async (req, res) => {
   if (!productList) {
     res.status(500).json({ success: false });
   }
+
   res.send(productList);
 });
 
@@ -72,10 +109,11 @@ router.get(`/bySellers`, async (req, res) => {
   if (!productList) {
     res.status(500).json({ success: false });
   }
+
   res.send(productList);
 });
 
-router.get(`/:id`, async (req, res) => {
+router.put(`/:id`, async (req, res) => {
   const product = await Product.findById(req.params.id).populate(
     "user category"
   );
@@ -83,6 +121,20 @@ router.get(`/:id`, async (req, res) => {
   if (!product) {
     res.status(500).json({ success: false });
   }
+
+  const getObjectParams = {
+    Bucket: bucketName,
+    Key: product.image,
+  };
+  const command = new GetObjectCommand(getObjectParams);
+  const url = await getSignedUrl(s3, command);
+  product.imageUrl = url;
+  getSignedUrlsForImages(bucketName, product.images).then((urls) => {
+    product.imagesUrls = urls;
+  });
+
+  await product.save();
+
   res.send(product);
 });
 
@@ -101,6 +153,7 @@ router.post("/search", async (req, res) => {
     const results = await Product.find(query)
       .populate("user")
       .sort({ price: 1 });
+
     res.json(results);
   } catch (error) {
     console.log(error);
@@ -108,7 +161,7 @@ router.post("/search", async (req, res) => {
   }
 });
 
-router.post(`/`, uploadOptions.single("image"), async (req, res) => {
+router.post(`/`, upload.single("image"), async (req, res) => {
   const productData = JSON.parse(req.body.product);
 
   const user = await User.findById(productData.user);
@@ -120,14 +173,22 @@ router.post(`/`, uploadOptions.single("image"), async (req, res) => {
   const file = req.file;
   if (!file) return res.status(400).send("No image in the request");
 
-  const fileName = req.file.filename;
-  const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
+  const imageName = randomImageName();
+  const putObjectParams = {
+    Bucket: bucketName,
+    Key: imageName,
+    Body: file.buffer,
+    ContentType: file.mimetype,
+  };
+
+  const command = new PutObjectCommand(putObjectParams);
+  await s3.send(command);
 
   let product = new Product({
     name: productData.name,
     description: productData.description,
     richDescription: productData.richDescription,
-    image: `${basePath}${fileName}`,
+    image: imageName,
     brand: productData.brand,
     condition: productData.condition,
     price: productData.price,
@@ -143,7 +204,7 @@ router.post(`/`, uploadOptions.single("image"), async (req, res) => {
   res.send({ productId: product.id });
 });
 
-router.put(`/:id`, uploadOptions.single("image"), async (req, res) => {
+router.put(`/updateListing/:id`, upload.single("image"), async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(400).send("Invalid Product Id");
   }
@@ -159,8 +220,16 @@ router.put(`/:id`, uploadOptions.single("image"), async (req, res) => {
   const file = req.file;
   if (!file) return res.status(400).send("No image in the request");
 
-  const fileName = req.file.filename;
-  const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
+  const imageName = randomImageName();
+  const putObjectParams = {
+    Bucket: bucketName,
+    Key: imageName,
+    Body: file.buffer,
+    ContentType: file.mimetype,
+  };
+
+  const command = new PutObjectCommand(putObjectParams);
+  await s3.send(command);
 
   // Retrieve the current product
   const currentProduct = await Product.findById(req.params.id);
@@ -175,7 +244,7 @@ router.put(`/:id`, uploadOptions.single("image"), async (req, res) => {
       name: productData.name,
       description: productData.description,
       richDescription: productData.richDescription,
-      image: `${basePath}${fileName}`,
+      image: imageName,
       brand: productData.brand,
       condition: productData.condition,
       price: productData.price,
@@ -206,6 +275,48 @@ router.put(`/:id`, uploadOptions.single("image"), async (req, res) => {
 
   res.send(product);
 });
+
+router.put(
+  "/gallery-images/:id",
+  upload.array("images", 10),
+  async (req, res) => {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).send("Invalid Product Id");
+    }
+
+    const files = req.files;
+    let imagesPaths = [];
+    if (files) {
+      const uploadPromises = files.map(async (file) => {
+        const imageName = randomImageName();
+        const putObjectParams = {
+          Bucket: bucketName,
+          Key: imageName,
+          Body: file.buffer,
+          ContentType: file.mimetype,
+        };
+
+        const command = new PutObjectCommand(putObjectParams);
+        await s3.send(command);
+        imagesPaths.push(imageName);
+      });
+
+      await Promise.all(uploadPromises);
+    }
+
+    const product = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        images: imagesPaths,
+      },
+      { new: true }
+    );
+
+    if (!product) return res.status(500).send("the product cannot be updated");
+
+    res.send(product);
+  }
+);
 
 router.delete(`/:id`, (req, res) => {
   Product.findByIdAndDelete(req.params.id)
@@ -250,36 +361,5 @@ router.get(`/get/featured/:count`, async (req, res) => {
   }
   res.send(products);
 });
-
-router.put(
-  "/gallery-images/:id",
-  uploadOptions.array("images", 10),
-  async (req, res) => {
-    if (!mongoose.isValidObjectId(req.params.id)) {
-      return res.status(400).send("Invalid Product Id");
-    }
-
-    const files = req.files;
-    let imagesPaths = [];
-    const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
-    if (files) {
-      files.map((file) => {
-        imagesPaths.push(`${basePath}${file.filename}`);
-      });
-    }
-
-    const product = await Product.findByIdAndUpdate(
-      req.params.id,
-      {
-        images: imagesPaths,
-      },
-      { new: true }
-    );
-
-    if (!product) return res.status(500).send("the product cannot be updated");
-
-    res.send(product);
-  }
-);
 
 module.exports = router;

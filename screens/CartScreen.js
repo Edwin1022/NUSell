@@ -102,7 +102,7 @@ const CartScreen = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, backgroundColor: "white", paddingLeft: 20}}
+      style={{ flex: 1, backgroundColor: "white", alignItems:"center"}}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ marginTop: 10 }}></View>
@@ -119,9 +119,9 @@ const CartScreen = () => {
                 cartItems.map((item, index) => (
                   <View key={index} style={{ marginVertical: 10 }}>
                     <CartComponent
-                      pfp={item.product.user.image}
+                      pfp={item.product.user.imageUrl}
                       username={item.product.user.name}
-                      image={item.product.image}
+                      image={item.product.imageUrl}
                       name={item.product.name}
                       condition={item.product.condition}
                       price={item.product.price}

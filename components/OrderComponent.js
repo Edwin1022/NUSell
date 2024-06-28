@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 5,
     borderColor: "green",
-    marginLeft: 100,
+    marginLeft: 80,
   },
   amount: {
     fontSize: 18,
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   },
 
   itemSummaryComponent: {
-    width: "95%",
+    width: 340,
     borderWidth: 1,
     borderStyle: "solid",
     borderColor: "black",

@@ -52,7 +52,7 @@ const ProductInfoScreen = () => {
   const fetchProductData = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(
+      const res = await axios.put(
         `https://nusell.onrender.com/products/${selectedItem}`
       );
       setLoading(false);
@@ -73,18 +73,22 @@ const ProductInfoScreen = () => {
   };
 
   const handleAddToCart = () => {
-    axios
-      .post("https://nusell.onrender.com/order-items", {
-        productId: selectedItem,
-        userId,
-      })
-      .then((response) => {
-        Alert.alert("Success", "Item added to cart successfully");
-      })
-      .catch((error) => {
-        Alert.alert("Error", "Failed to add item to cart");
-        console.log(error);
-      });
+    if (seller.id === userId) {
+      Alert.alert("Error", "Failed to add item to cart");
+    } else {
+      axios
+        .post("https://nusell.onrender.com/order-items", {
+          productId: selectedItem,
+          userId,
+        })
+        .then((response) => {
+          Alert.alert("Success", "Item added to cart successfully");
+        })
+        .catch((error) => {
+          Alert.alert("Error", "Failed to add item to cart");
+          console.log(error);
+        });
+    }
   };
 
   return (
@@ -107,7 +111,7 @@ const ProductInfoScreen = () => {
                 <Image
                   style={styles.userProfile}
                   source={{
-                    uri: seller.image,
+                    uri: seller.imageUrl,
                   }}
                 />
               </Pressable>
@@ -118,7 +122,7 @@ const ProductInfoScreen = () => {
 
             <TouchableOpacity
               onPress={() => {
-                setSelectedImage(product.image);
+                setSelectedImage(product.imageUrl);
                 setModalVisible(true);
               }}
             >
@@ -130,19 +134,19 @@ const ProductInfoScreen = () => {
                   width: "95%",
                   borderWidth: 1,
                   borderRadius: 10,
-                  overflow: "hidden"
+                  overflow: "hidden",
                 }}
               >
                 <Image
                   source={{
-                    uri: product.image,
+                    uri: product.imageUrl,
                   }}
                   style={{
                     borderWidth: 1,
                     borderRadius: 10,
                     width: 350,
                     height: 200,
-                    objectFit: "cover"
+                    objectFit: "cover",
                   }}
                 />
               </View>
@@ -154,19 +158,19 @@ const ProductInfoScreen = () => {
                 style={{ paddingLeft: 10 }}
                 showsHorizontalScrollIndicator={false}
               >
-                {product.images &&
-                  product.images.length > 0 &&
-                  product.images.map((image, index) => (
+                {product.imagesUrls &&
+                  product.imagesUrls.length > 0 &&
+                  product.imagesUrls.map((imageUrl, index) => (
                     <TouchableOpacity
                       key={index}
                       onPress={() => {
-                        setSelectedImage(image);
+                        setSelectedImage(imageUrl);
                         setModalVisible(true);
                       }}
                     >
                       <View style={styles.morePhotosContainer}>
                         <Image
-                          source={{ uri: image }}
+                          source={{ uri: imageUrl }}
                           style={styles.sidePhotos}
                         />
                       </View>
@@ -222,7 +226,11 @@ const ProductInfoScreen = () => {
             <View>
               <View style={styles.buttonContainer}>
                 <Pressable
-                  onPress={() => navigation.navigate("Purchase")}
+                  onPress={() =>
+                    seller.id === userId
+                      ? Alert.alert("Error", "Failed to purchase item")
+                      : navigation.navigate("Purchase")
+                  }
                   style={styles.buyNowButton}
                 >
                   <Text style={styles.buttonText}>Buy Now</Text>

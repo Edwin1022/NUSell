@@ -92,10 +92,10 @@ const YourListingsScreen = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, backgroundColor: "white", paddingLeft: 20 }}
+      style={{ flex: 1, backgroundColor: "white", alignItems:"center" }}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{ alignItems: "center", marginTop: 10 }}></View>
+        <View style={{ marginTop: 10 }}></View>
         <KeyboardAvoidingView>
           {loading ? (
             <View style={styles.loadingContainer}>
@@ -109,9 +109,9 @@ const YourListingsScreen = () => {
                 products.map((item, index) => (
                   <View key={index} style={{ marginVertical: 10 }}>
                     <ListingComponent
-                      pfp={user.image}
+                      pfp={user.imageUrl}
                       username={user.name}
-                      image={item.image}
+                      image={item.imageUrl}
                       name={item.name}
                       condition={item.condition}
                       onEdit={() => handleEdit(item.id)}

@@ -1,4 +1,10 @@
-import { View, Text } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  ScrollView,
+  KeyboardAvoidingView,
+} from "react-native";
 import React, { useLayoutEffect } from "react";
 import Back from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
@@ -39,7 +45,14 @@ const YourOrdersScreen = () => {
   }, []);
 
   return (
-    <OrderComponent/>
+    <SafeAreaView style={{ alignItems: "center" }}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={{ marginTop: 20 }}></View>
+        <View style-={{marginVertical: 10}}>
+          <OrderComponent />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 

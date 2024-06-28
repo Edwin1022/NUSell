@@ -145,8 +145,7 @@ const styles = StyleSheet.create({
   },
 
   itemSummaryComponent: {
-    flex: 1,
-    width: 380,
+    width: 340,
     borderWidth: 1,
     borderStyle: "solid",
     borderColor: "black",

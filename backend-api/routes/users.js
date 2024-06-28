@@ -4,8 +4,36 @@ const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const multer = require("multer");
 const { User } = require("../models/user");
+const multer = require("multer");
+const {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+
+const dotenv = require("dotenv");
+dotenv.config();
+
+const bucketName = process.env.BUCKET_NAME;
+const bucketRegion = process.env.BUCKET_REGION;
+const accessKey = process.env.ACCESS_KEY;
+const secretAccessKey = process.env.SECRET_ACCESS_KEY;
+
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: accessKey,
+    secretAccessKey: secretAccessKey,
+  },
+  region: bucketRegion,
+});
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+const randomImageName = (bytes = 32) =>
+  crypto.randomBytes(bytes).toString("hex");
 
 // function to hash password
 const hashPassword = async (password) => {
@@ -280,33 +308,6 @@ router.get("/profile/:userId", async (req, res) => {
   }
 });
 
-const FILE_TYPE_MAP = {
-  "image/png": "png",
-  "image/jpeg": "jpeg",
-  "image/jpg": "jpg",
-};
-
-// set up Multer Storage
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const isValid = FILE_TYPE_MAP[file.mimetype];
-    let uploadError = new Error("invalid image type");
-
-    if (isValid) {
-      uploadError = null;
-    }
-    cb(uploadError, "../screens/public/uploads");
-  },
-  filename: function (req, file, cb) {
-    const filename = file.originalname.split(" ").join("-");
-    const extension = FILE_TYPE_MAP[file.mimetype];
-    cb(null, `${filename}-${Date.now()}.${extension}`);
-  },
-});
-
-// Initialize Multer middleware
-const upload = multer({ storage: storage });
-
 // endpoint to update user profile
 router.put("/updateProfile", upload.single("image"), async (req, res) => {
   try {
@@ -315,9 +316,16 @@ router.put("/updateProfile", upload.single("image"), async (req, res) => {
     const file = req.file;
     if (!file) return res.status(400).send("No image in the request");
 
-    const fileName = req.file.filename;
-    const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
-    const imageName = `${basePath}${fileName}`;
+    const imageName = randomImageName();
+    const putObjectParams = {
+      Bucket: bucketName,
+      Key: imageName,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+    };
+
+    const command = new PutObjectCommand(putObjectParams);
+    await s3.send(command);
 
     const updatedUser = await User.findOneAndUpdate(
       { email: userData.email },
@@ -348,7 +356,7 @@ router.put("/updateProfile", upload.single("image"), async (req, res) => {
 });
 
 // endpoint to get user data
-router.get("/getUserData", async (req, res) => {
+router.put("/getUserData", async (req, res) => {
   try {
     const email = req.query.email;
     if (!email) {
@@ -363,6 +371,16 @@ router.get("/getUserData", async (req, res) => {
         .status(404)
         .send({ status: "error", message: "User not found" });
     }
+
+    const getObjectParams = {
+      Bucket: bucketName,
+      Key: user.image,
+    };
+    const command = new GetObjectCommand(getObjectParams);
+    const url = await getSignedUrl(s3, command, {expiresIn: 60 * 60 * 24 * 6});
+    user.imageUrl = url;
+
+    await user.save();
 
     res.send({ status: "ok", data: user });
   } catch (error) {

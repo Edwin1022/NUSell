@@ -77,7 +77,7 @@ const SimilarProductsScreen = () => {
       style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{ alignItems: "center", marginTop: 10 }}></View>
+        <View style={{ marginTop: 10 }}></View>
         <KeyboardAvoidingView>
           <View>
             {similarProducts &&
@@ -85,9 +85,9 @@ const SimilarProductsScreen = () => {
               similarProducts.map((product, index) => (
                 <View key={index} style={{ marginVertical: 10 }}>
                   <ProductComponent
-                    pfp={product.user.image}
+                    pfp={product.user.imageUrl}
                     username={product.user.name}
-                    image={product.image}
+                    image={product.imageUrl}
                     name={product.name}
                     condition={product.condition}
                     price={product.price}

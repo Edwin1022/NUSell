@@ -48,7 +48,7 @@ const ListingSummary2Screen = () => {
   const fetchProductData = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(
+      const res = await axios.put(
         `https://nusell.onrender.com/products/${productId}`
       );
       setLoading(false);
@@ -120,7 +120,7 @@ const ListingSummary2Screen = () => {
           <KeyboardAvoidingView>
             <TouchableOpacity
               onPress={() => {
-                setSelectedImage(product.image);
+                setSelectedImage(product.imageUrl);
                 setModalVisible(true);
               }}
             >
@@ -137,7 +137,7 @@ const ListingSummary2Screen = () => {
               >
                 <Image
                   source={{
-                    uri: product.image,
+                    uri: product.imageUrl,
                   }}
                   style={{
                     borderWidth: 1,
