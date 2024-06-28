@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { SlideOutRight } = require("react-native-reanimated");
 
 const productSchema = mongoose.Schema({
   user: {
