@@ -49,7 +49,7 @@ const PurchaseScreen = () => {
 
   const fetchProductData = async () => {
     try {
-      const res = await axios.get(
+      const res = await axios.put(
         `https://nusell.onrender.com/products/${selectedItem}`
       );
       setTotalPrice(res.data.price);
