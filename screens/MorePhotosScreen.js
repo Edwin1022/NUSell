@@ -36,7 +36,7 @@ const MorePhotosScreen = () => {
         <Back
           name="arrow-back"
           size={30}
-          onPress={() => navigation.navigate("UpdateListing", { productId })}
+          onPress={() => navigation.navigate("Home")}
           style={{ marginRight: 20, color: "white" }}
         />
       ),
@@ -93,7 +93,7 @@ const MorePhotosScreen = () => {
       <ScrollView style={styles.addPhotoScreen}>
         <View>
           <View style={{ alignItems: "center", marginTop: 10 }}>
-            <Text style={styles.headerText}>Add more photos</Text>
+            <Text style={styles.headerText}>Add more photos?</Text>
           </View>
 
           <View style={styles.morePhotosContainer}>

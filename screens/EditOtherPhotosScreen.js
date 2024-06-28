@@ -154,7 +154,7 @@ const EditOtherPhotosScreen = () => {
               <View style={{ marginTop: 40 }}>
                 <CustomButton onPress={() => {
                   const validImages = images.filter((image) => image != null);
-                  navigation.navigate("ListingSummary", {productId: selectedItem, validImages})
+                  navigation.navigate("ListingSummary2", {productId: selectedItem, validImages})
                 }} text="Update" />
               </View>
             </View>

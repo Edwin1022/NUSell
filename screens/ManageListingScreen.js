@@ -272,6 +272,7 @@ const ManageListingScreen = () => {
                     width: "95%",
                     borderWidth: 1,
                     borderRadius: 10,
+                    overflow: "hidden",
                   }}
                 >
                   <Image
@@ -280,9 +281,9 @@ const ManageListingScreen = () => {
                     }}
                     style={{
                       borderWidth: 1,
-                      borderRadius: 10,
+                      width: "100%",
                       height: 200,
-                      
+                      objectFit: "cover",
                     }}
                   />
                 </View>
@@ -295,7 +296,7 @@ const ManageListingScreen = () => {
                     width: "95%",
                     borderWidth: 1,
                     borderRadius: 10,
-                    overflow: "hidden"
+                    overflow: "hidden",
                   }}
                 >
                   <Image
@@ -484,13 +485,15 @@ const ManageListingScreen = () => {
                   >
                     Recommend
                   </Text>
-                  <Text style={[
+                  <Text
+                    style={[
                       {
                         color: "white",
                       },
                       styles.priceDataButtonText,
-                    ]}>
-                      Listing Price
+                    ]}
+                  >
+                    Listing Price
                   </Text>
                 </Pressable>
               </View>
@@ -559,7 +562,7 @@ const styles = StyleSheet.create({
   priceDataButtonText: {
     fontWeight: "bold",
     flexWrap: "wrap",
-    fontSize: 16
+    fontSize: 16,
   },
 
   priceDataButton: {
@@ -569,7 +572,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#007FFF",
     borderRadius: 75,
     width: 150,
-    alignItems: "center"
+    alignItems: "center",
   },
 
   nextButton: {

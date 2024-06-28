@@ -20,20 +20,14 @@ import { Dropdown } from "react-native-element-dropdown";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import ModalScreen from "./ModalScreen";
-import axios from "axios";
-import { UserContext } from "../UserContext";
-import { ProductContext } from "../ProductContext";
+import { ListingContext } from "../ListingContext";
 
 const ItemListingScreen = () => {
   const navigation = useNavigation();
-  const { userId } = useContext(UserContext);
-  const { setProductId } = useContext(ProductContext);
   const [modalVisible, setModalVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [identifying, setIdentifying] = useState(false);
 
   //category states
-  const [value, setValue] = useState(null);
   const data = [
     {
       label: "Computers and Tech",
@@ -91,13 +85,22 @@ const ItemListingScreen = () => {
   ];
 
   //text input states
-  const [image, setImage] = useState();
-  const [itemName, setItemName] = useState("");
-  const [itemDescription, setItemDescription] = useState("");
-  const [brand, setBrand] = useState("");
-  const [condition, setCondition] = useState("");
-  const [price, setPrice] = useState(0);
-  const [estimatedPrices, setEstimatedPrices] = useState([]);
+  const {
+    image,
+    setImage,
+    itemName,
+    setItemName,
+    itemDescription,
+    setItemDescription,
+    brand,
+    setBrand,
+    value,
+    setValue,
+    condition,
+    setCondition,
+    price,
+    setPrice,
+  } = useContext(ListingContext);
 
   const [errorImage, setErrorImage] = useState();
   const [errorItemName, setErrorItemName] = useState("");
@@ -368,63 +371,17 @@ const ItemListingScreen = () => {
     }
 
     if (isValid) {
-      Alert.alert("Now add more photos of your product!");
+      navigation.navigate("ListingSummary1", {
+        image,
+        itemName,
+        itemDescription,
+        brand,
+        value,
+        condition,
+        price,
+      });
     } else {
       return;
-    }
-
-    const product = {
-      name: itemName.trim(),
-      description: itemDescription.trim(),
-      image: image,
-      brand: brand.trim(),
-      price: price,
-      category: value,
-      condition: condition,
-      user: userId,
-    };
-
-    try {
-      const formData = new FormData();
-      formData.append("product", JSON.stringify(product));
-      formData.append("image", {
-        uri: image,
-        type: "image/jpeg",
-        name: "product.jpg",
-      });
-
-      setLoading(true);
-
-      // send a post request to the backend API
-      const response = await axios.post(
-        "https://nusell.onrender.com/products",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      setLoading(false);
-
-      setImage(null);
-      setItemName("");
-      setItemDescription("");
-      setBrand("");
-      setValue("");
-      setCondition("");
-      setPrice(0);
-
-      setProductId(response.data.productId);
-
-      navigation.navigate("MorePhotos");
-    } catch (error) {
-      console.log("product listed failed", error);
-      Alert.alert(
-        "Product Listing Error",
-        "An error occurred while listing product"
-      );
     }
   };
 
@@ -436,259 +393,253 @@ const ItemListingScreen = () => {
         showsVerticalScrollIndicator={false}
         style={{ marginLeft: 10 }}
       >
-        {loading ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#007AFF" />
-            <Text style={styles.loadingText}>Loading...</Text>
+        <KeyboardAvoidingView>
+          <View style={{ alignItems: "center", marginTop: 10 }}>
+            <Text
+              style={{
+                fontSize: 17,
+                fontWeight: "bold",
+                marginTop: 12,
+                color: "#041E42",
+              }}
+            >
+              List Your Item
+            </Text>
           </View>
-        ) : (
-          <KeyboardAvoidingView>
-            <View style={{ alignItems: "center", marginTop: 10 }}>
-              <Text
+
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
+            <ModalScreen
+              image={image}
+              isVisible={modalVisible}
+              onClose={() => setModalVisible(false)}
+              onCameraPress={uploadImage}
+              onImagePress={() => uploadImage("gallery")}
+              onDeletePress={removeImage}
+            />
+
+            {identifying ? (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#007AFF" />
+                <Text style={styles.loadingText}>Identifying Item...</Text>
+              </View>
+            ) : image ? (
+              <View
                 style={{
-                  fontSize: 17,
-                  fontWeight: "bold",
-                  marginTop: 12,
-                  color: "#041E42",
+                  alignItems: "center",
+                  marginTop: 20,
+                  flex: 1,
+                  width: 350,
+                  borderWidth: 1,
+                  borderRadius: 10,
                 }}
               >
-                List Your Item
-              </Text>
-            </View>
-
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
-              <ModalScreen
-                image={image}
-                isVisible={modalVisible}
-                onClose={() => setModalVisible(false)}
-                onCameraPress={uploadImage}
-                onImagePress={() => uploadImage("gallery")}
-                onDeletePress={removeImage}
-              />
-
-              {identifying ? (
-                <View style={styles.loadingContainer}>
-                  <ActivityIndicator size="large" color="#007AFF" />
-                  <Text style={styles.loadingText}>Identifying Item...</Text>
-                </View>
-              ) : image ? (
-                <View
+                <Image
+                  source={{
+                    uri: image,
+                  }}
                   style={{
-                    alignItems: "center",
-                    marginTop: 20,
-                    flex: 1,
-                    width: 350,
                     borderWidth: 1,
                     borderRadius: 10,
+                    width: 350,
+                    height: 200,
                   }}
-                >
+                />
+              </View>
+            ) : (
+              <View style={styles.photoUpload}>
+                <View>
                   <Image
                     source={{
-                      uri: image,
+                      uri: "https://static-00.iconduck.com/assets.00/camera-icon-512x417-vgmhgbfy.png",
                     }}
-                    style={{
-                      borderWidth: 1,
-                      borderRadius: 10,
-                      width: 350,
-                      height: 200,
-                    }}
+                    style={styles.itemPhoto}
                   />
                 </View>
-              ) : (
-                <View style={styles.photoUpload}>
-                  <View>
-                    <Image
-                      source={{
-                        uri: "https://static-00.iconduck.com/assets.00/camera-icon-512x417-vgmhgbfy.png",
-                      }}
-                      style={styles.itemPhoto}
-                    />
-                  </View>
 
-                  <Text style={{ fontSize: 20 }}>
-                    Add photo to start a listing
-                  </Text>
-                </View>
-              )}
-
-              {!!errorImage && <Text style={styles.error}>{errorImage}</Text>}
-            </TouchableOpacity>
-
-            <View style={{ marginBottom: 20, marginTop: 20 }}>
-              <Text style={styles.Title}>
-                Item Name{"\n"}
-                <Text style={{ fontWeight: "normal", fontSize: 15, color: "#007FFF" }}>
-                  (keep your item name short and clear)
+                <Text style={{ fontSize: 20 }}>
+                  Add photo to start a listing
                 </Text>
+              </View>
+            )}
+
+            {!!errorImage && <Text style={styles.error}>{errorImage}</Text>}
+          </TouchableOpacity>
+
+          <View style={{ marginBottom: 20, marginTop: 20 }}>
+            <Text style={styles.Title}>
+              Item Name{"\n"}
+              <Text
+                style={{ fontWeight: "normal", fontSize: 15, color: "#007FFF" }}
+              >
+                (keep your item name short and clear)
               </Text>
-              <TextInput
-                value={itemName}
-                onChangeText={setItemName}
-                style={styles.itemNameInput}
-                editable
-                multiline={true}
-                maxLength={100}
-                placeholder="What is this item?  Eg. Portable Aircon"
-              />
-              {!!errorItemName && (
-                <Text style={styles.error}>{errorItemName}</Text>
-              )}
-            </View>
+            </Text>
+            <TextInput
+              value={itemName}
+              onChangeText={setItemName}
+              style={styles.itemNameInput}
+              editable
+              multiline={true}
+              maxLength={100}
+              placeholder="What is this item?  Eg. Portable Aircon"
+            />
+            {!!errorItemName && (
+              <Text style={styles.error}>{errorItemName}</Text>
+            )}
+          </View>
 
-            <View>
-              <Text style={styles.Title}>Item Description</Text>
-              <TextInput
-                value={itemDescription}
-                onChangeText={setItemDescription}
-                style={styles.itemDescriptionInput}
-                editable
-                multiline={true}
-                maxLength={300}
-                placeholder="Give a brief description of your item"
-              />
-              {!!errorItemDescription && (
-                <Text style={styles.error}>{errorItemDescription}</Text>
-              )}
-            </View>
+          <View>
+            <Text style={styles.Title}>Item Description</Text>
+            <TextInput
+              value={itemDescription}
+              onChangeText={setItemDescription}
+              style={styles.itemDescriptionInput}
+              editable
+              multiline={true}
+              maxLength={300}
+              placeholder="Give a brief description of your item"
+            />
+            {!!errorItemDescription && (
+              <Text style={styles.error}>{errorItemDescription}</Text>
+            )}
+          </View>
 
-            <View style={{ marginBottom: 10, marginTop: 20 }}>
-              <Text style={styles.Title}>Brand</Text>
-              <TextInput
-                value={brand}
-                onChangeText={setBrand}
-                style={styles.itemNameInput}
-                editable
-                multiline={true}
-                maxLength={100}
-                placeholder="What is the brand of this item?  Eg. Midea"
-              />
-              {!!errorBrand && <Text style={styles.error}>{errorBrand}</Text>}
-            </View>
+          <View style={{ marginBottom: 10, marginTop: 20 }}>
+            <Text style={styles.Title}>Brand</Text>
+            <TextInput
+              value={brand}
+              onChangeText={setBrand}
+              style={styles.itemNameInput}
+              editable
+              multiline={true}
+              maxLength={100}
+              placeholder="What is the brand of this item?  Eg. Midea"
+            />
+            {!!errorBrand && <Text style={styles.error}>{errorBrand}</Text>}
+          </View>
 
-            <View style={styles.container}>
-              <Text style={styles.Title}>Category </Text>
-              <Dropdown
-                style={styles.dropdown}
-                data={data}
-                labelField="label"
-                valueField="value"
-                placeholder="Select a category"
-                value={value}
-                onChange={(item) => {
-                  setValue(item.value);
-                }}
-              />
-              {!!errorCategory && (
-                <Text style={styles.error}>{errorCategory}</Text>
-              )}
-            </View>
+          <View style={styles.container}>
+            <Text style={styles.Title}>Category </Text>
+            <Dropdown
+              style={styles.dropdown}
+              data={data}
+              labelField="label"
+              valueField="value"
+              placeholder="Select a category"
+              value={value}
+              onChange={(item) => {
+                setValue(item.value);
+              }}
+            />
+            {!!errorCategory && (
+              <Text style={styles.error}>{errorCategory}</Text>
+            )}
+          </View>
 
-            <View>
-              <Text style={styles.Title}>Condition</Text>
-              <View style={styles.conditionButtonContainer}>
-                <Pressable
+          <View>
+            <Text style={styles.Title}>Condition</Text>
+            <View style={styles.conditionButtonContainer}>
+              <Pressable
+                style={[
+                  {
+                    backgroundColor: condition === "Used" ? "#007FFF" : "white",
+                  },
+                  styles.usedButton,
+                ]}
+                onPress={() => setCondition("Used")}
+              >
+                <Text
+                  style={[
+                    { color: condition === "Used" ? "white" : "#007FFF" },
+                    styles.usedButtonText,
+                  ]}
+                >
+                  USED
+                </Text>
+              </Pressable>
+
+              <Pressable
+                style={[
+                  {
+                    backgroundColor:
+                      condition === "Brand New" ? "#007FFF" : "white",
+                  },
+                  styles.brandNewButton,
+                ]}
+                onPress={() => setCondition("Brand New")}
+              >
+                <Text
                   style={[
                     {
-                      backgroundColor:
-                        condition === "Used" ? "#007FFF" : "white",
+                      color: condition === "Brand New" ? "white" : "#007FFF",
                     },
-                    styles.usedButton,
+                    styles.brandNewButtonText,
                   ]}
-                  onPress={() => setCondition("Used")}
                 >
-                  <Text
-                    style={[
-                      { color: condition === "Used" ? "white" : "#007FFF" },
-                      styles.usedButtonText,
-                    ]}
-                  >
-                    USED
-                  </Text>
-                </Pressable>
-
-                <Pressable
-                  style={[
-                    {
-                      backgroundColor:
-                        condition === "Brand New" ? "#007FFF" : "white",
-                    },
-                    styles.brandNewButton,
-                  ]}
-                  onPress={() => setCondition("Brand New")}
-                >
-                  <Text
-                    style={[
-                      {
-                        color: condition === "Brand New" ? "white" : "#007FFF",
-                      },
-                      styles.brandNewButtonText,
-                    ]}
-                  >
-                    BRAND NEW
-                  </Text>
-                </Pressable>
-              </View>
-              {!!errorCondition && (
-                <Text style={styles.error}>{errorCondition}</Text>
-              )}
+                  BRAND NEW
+                </Text>
+              </Pressable>
             </View>
+            {!!errorCondition && (
+              <Text style={styles.error}>{errorCondition}</Text>
+            )}
+          </View>
 
-            <View style={{ marginTop: 30 }}>
-              <Text style={styles.Title}> Price </Text>
-              <View style={styles.priceInputRow}>
-                <View style={styles.priceInputColumn}>
-                  <View style={styles.priceInputContainer}>
-                    <Text>$ </Text>
-                    <TextInput
-                      value={price}
-                      onChangeText={setPrice}
-                      style={styles.priceInput}
-                      editable
-                      multiline={true}
-                      maxLength={200}
-                      keyboardType="numeric"
-                      placeholder="Price"
-                    />
-                  </View>
-                  {!!errorPrice && (
-                    <Text style={styles.error}>{errorPrice}</Text>
-                  )}
+          <View style={{ marginTop: 30 }}>
+            <Text style={styles.Title}> Price </Text>
+            <View style={styles.priceInputRow}>
+              <View style={styles.priceInputColumn}>
+                <View style={styles.priceInputContainer}>
+                  <Text>$ </Text>
+                  <TextInput
+                    value={price}
+                    onChangeText={setPrice}
+                    style={styles.priceInput}
+                    editable
+                    multiline={true}
+                    maxLength={200}
+                    keyboardType="numeric"
+                    placeholder="Price"
+                  />
                 </View>
-                <Pressable
-                  style={styles.priceDataButton}
-                  onPress={handleViewPriceData}
-                >
-                  <Text
-                    style={[
-                      {
-                        color: "white",
-                      },
-                      styles.priceDataButtonText,
-                    ]}
-                  >
-                    Recommend
-                  </Text>
-                  <Text style={[
-                      {
-                        color: "white",
-                      },
-                      styles.priceDataButtonText,
-                    ]}>
-                      Listing Price
-                  </Text>
-                </Pressable>
+                {!!errorPrice && <Text style={styles.error}>{errorPrice}</Text>}
               </View>
+              <Pressable
+                style={styles.priceDataButton}
+                onPress={handleViewPriceData}
+              >
+                <Text
+                  style={[
+                    {
+                      color: "white",
+                    },
+                    styles.priceDataButtonText,
+                  ]}
+                >
+                  Recommend
+                </Text>
+                <Text
+                  style={[
+                    {
+                      color: "white",
+                    },
+                    styles.priceDataButtonText,
+                  ]}
+                >
+                  Listing Price
+                </Text>
+              </Pressable>
             </View>
+          </View>
 
-            <View style={styles.continueButton}>
-              <CustomButton
-                onPress={handleContinue}
-                type="PRIMARY"
-                text={"Continue"}
-              />
-            </View>
-          </KeyboardAvoidingView>
-        )}
+          <View style={styles.continueButton}>
+            <CustomButton
+              onPress={handleContinue}
+              type="PRIMARY"
+              text={"Continue"}
+            />
+          </View>
+        </KeyboardAvoidingView>
       </ScrollView>
     </SafeAreaView>
   );
@@ -735,13 +686,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 8,
-    width: "99%"
+    width: "99%",
   },
 
   priceDataButtonText: {
     fontWeight: "bold",
     flexWrap: "wrap",
-    fontSize: 16
+    fontSize: 16,
   },
 
   priceDataButton: {
@@ -751,7 +702,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#007FFF",
     borderRadius: 75,
     width: 150,
-    alignItems: "center"
+    alignItems: "center",
   },
 
   continueButton: {
@@ -834,7 +785,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     marginBottom: 10,
     alignItems: "center",
-    width: "95%"
+    width: "95%",
   },
 
   itemDescriptionInput: {

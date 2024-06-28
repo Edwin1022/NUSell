@@ -17,7 +17,7 @@ import { StyleSheet } from "react-native";
 import axios from "axios";
 import CustomButton from "../components/CustomButton";
 
-const ListingSummaryScreen = () => {
+const ListingSummary2Screen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { productId, validImages } = route.params;
@@ -322,4 +322,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ListingSummaryScreen;
+export default ListingSummary2Screen;

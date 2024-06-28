@@ -18,10 +18,10 @@ import YourListingsScreen from "../screens/YourListingsScreen";
 import ManageListingScreen from "../screens/ManageListingScreen";
 import ProductInfoScreen from "../screens/ProductInfoScreen";
 import EditOtherPhotosScreen from "../screens/EditOtherPhotosScreen";
-import ListingSummaryScreen from "../screens/ListingSummaryScreen";
-import UpdateListingScreen from "../screens/UpdateListingScreen";
 import DashboardScreen from "../screens/DashboardScreen";
 import SimilarProductsScreen from "../screens/SimilarProductsScreen";
+import ListingSummary1Screen from "../screens/ListingSummary1Screen";
+import ListingSummary2Screen from "../screens/ListingSummary2Screen";
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -52,8 +52,8 @@ const StackNavigator = () => {
           name="EditOtherPhotos"
           component={EditOtherPhotosScreen}
         />
-        <Stack.Screen name="ListingSummary" component={ListingSummaryScreen} />
-        <Stack.Screen name="UpdateListing" component={UpdateListingScreen} />
+        <Stack.Screen name="ListingSummary1" component={ListingSummary1Screen} />
+        <Stack.Screen name="ListingSummary2" component={ListingSummary2Screen} />
         <Stack.Screen name="Dashboard" component={DashboardScreen} />
         <Stack.Screen name="SimilarProducts" component={SimilarProductsScreen} />
       </Stack.Navigator>
