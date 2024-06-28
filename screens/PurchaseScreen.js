@@ -38,7 +38,7 @@ const PurchaseScreen = () => {
 
   const fetchUserData = async () => {
     try {
-      const res = await axios.get(
+      const res = await axios.put(
         `https://nusell.onrender.com/users/getUserData?email=${user.email}`
       );
       setUser(res.data.data);
