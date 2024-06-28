@@ -60,7 +60,7 @@ const UserProfileScreen = () => {
   const fetchSellerData = async () => {
     try {
       const res = await axios.put(
-        `http://192.168.1.101:8000/users/getUserData?email=${selectedUser.email}`
+        `https://nusell.onrender.com/getUserData?email=${selectedUser.email}`
       );
       setSeller(res.data.data);
     } catch (err) {
