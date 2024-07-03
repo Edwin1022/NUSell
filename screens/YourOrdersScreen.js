@@ -9,6 +9,7 @@ import React, { useLayoutEffect } from "react";
 import Back from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import { OrderComponent } from "../components/OrderComponent";
+import { EbayComparisonComponent } from "../components/EbayComparisonComponent";
 
 const YourOrdersScreen = () => {
   const navigation = useNavigation();
@@ -50,6 +51,7 @@ const YourOrdersScreen = () => {
         <View style={{ marginTop: 20 }}></View>
         <View style-={{marginVertical: 10}}>
           <OrderComponent />
+          <EbayComparisonComponent/>
         </View>
       </ScrollView>
     </SafeAreaView>
