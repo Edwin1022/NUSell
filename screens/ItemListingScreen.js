@@ -11,7 +11,7 @@ import {
   Pressable,
   ActivityIndicator,
 } from "react-native";
-import React, { useState, useLayoutEffect, useContext } from "react";
+import React, { useState, useLayoutEffect, useContext, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Back from "react-native-vector-icons/Ionicons";
 import CustomButton from "../components/CustomButton";
@@ -21,11 +21,13 @@ import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import ModalScreen from "./ModalScreen";
 import { ListingContext } from "../ListingContext";
+import axios from "axios";
 
 const ItemListingScreen = () => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [identifying, setIdentifying] = useState(false);
+  const [accessToken, setAccessToken] = useState("");
 
   //category states
   const data = [
@@ -127,6 +129,22 @@ const ItemListingScreen = () => {
         />
       ),
     });
+  }, []);
+
+  const getOAuth2Token = async () => {
+    try {
+      const response = await axios.get(
+        "http://192.168.0.109:8000/products/getAccessToken"
+      );
+      const token = response.data.token;
+      setAccessToken(token);
+    } catch (error) {
+      console.error("Error fetching access token:", error);
+    }
+  };
+
+  useEffect(() => {
+    getOAuth2Token();
   }, []);
 
   // Function to convert image to base64
@@ -251,7 +269,7 @@ const ItemListingScreen = () => {
     }
 
     if (isValid) {
-      navigation.navigate("Dashboard", { itemName, brand, condition });
+      navigation.navigate("SimilarProducts", { itemName, brand, accessToken });
     } else {
       return;
     }

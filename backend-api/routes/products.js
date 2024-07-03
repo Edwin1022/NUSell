@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const express = require("express");
 const crypto = require("crypto");
 const router = express.Router();
+const axios = require("axios");
 const { Product } = require("../models/product");
 const { User } = require("../models/user");
 const { Category } = require("../models/category");
@@ -341,6 +342,44 @@ router.delete(`/:id`, (req, res) => {
     .catch((err) => {
       return res.status(400).json({ success: false, error: err });
     });
+});
+
+const CLIENT_ID = "EdwinWon-NUSell-PRD-8346cf8d6-447e900f";
+const CLIENT_SECRET = "PRD-346cf8d60b27-42cc-4ce2-9563-88f0";
+const OAUTH2_URL = "https://api.ebay.com/identity/v1/oauth2/token";
+
+const getOAuth2Token = async () => {
+  const basicAuth = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString(
+    "base64"
+  );
+
+  try {
+    const response = await axios.post(
+      OAUTH2_URL,
+      "grant_type=client_credentials&scope=https://api.ebay.com/oauth/api_scope",
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Basic ${basicAuth}`,
+        },
+      }
+    );
+
+    return response.data.access_token;
+  } catch (error) {
+    console.error("Error fetching OAuth2 token:", error);
+    throw error;
+  }
+};
+
+router.get("/getAccessToken", async (req, res) => {
+  try {
+    const token = await getOAuth2Token();
+    res.json({ token });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to fetch token" });
+  }
 });
 
 router.get(`/get/count`, async (req, res) => {
