@@ -16,16 +16,14 @@ import axios from "axios";
 
 const screenWidth = Dimensions.get("window").width;
 
-const DashboardScreen = () => {
+const EbayDashboardScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { itemName, brand } = route.params;
-  const [nusellItems, setNusellItems] = useState([]);
+  const { itemName, brand, accessToken } = route.params;
+  const [ebayItems, setEbayItems] = useState([]);
   const [noOfProducts, setNoOfProducts] = useState(0);
   const [lowestListedPrice, setLowestListedPrice] = useState(0);
   const [highestListedPrice, setHighestListedPrice] = useState(0);
-  const [noOfIncreasedPrice, setNoOfIncreasedPrice] = useState(0);
-  const [noOfDecreasedPrice, setNoOfDecreasedPrice] = useState(0);
   const [noOfPricesInEachPriceRange, setNoOfPricesInEachPriceRange] = useState(
     []
   );
@@ -39,7 +37,12 @@ const DashboardScreen = () => {
         backgroundColor: "#007AFF",
       },
       headerLeft: () => (
-        <Text style={styles.headerLeft}>Overview on NUSell</Text>
+        <Text style={styles.headerLeft}>
+          Overview on <Text style={{ color: "#E53238" }}>e</Text>
+          <Text style={{ color: "#0D64D2" }}>b</Text>
+          <Text style={{ color: "#F5AF02" }}>a</Text>
+          <Text style={{ color: "#66B817" }}>y</Text>
+        </Text>
       ),
       headerRight: () => (
         <Back
@@ -141,39 +144,41 @@ const DashboardScreen = () => {
     return counts;
   };
 
-  const fetchSimilarProducts = async () => {
+  const API_BASE_URL = "https://api.ebay.com";
+
+  const searchItems = async (query, aspectFilter) => {
     try {
       setLoading(true);
-      const response = await axios.post(
-        "http://192.168.0.109:8000/products/search",
+      const response = await axios.get(
+        `${API_BASE_URL}/buy/browse/v1/item_summary/search`,
         {
-          itemName,
-          brand,
+          params: {
+            q: query,
+            aspect_filter: aspectFilter,
+            limit: 50,
+          },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+            "X-EBAY-C-MARKETPLACE-ID": "EBAY_SG",
+            "X-EBAY-C-ENDUSERCTX":
+              "affiliateCampaignId=<ePNCampaignId>,affiliateReferenceId=<referenceId></referenceId>",
+          },
         }
       );
-
-      const items = response.data;
+      const items = response.data.itemSummaries;
 
       setLoading(false);
 
-      setNusellItems(items);
+      setEbayItems(items);
 
       setNoOfProducts(items.length);
 
-      const prices = items.map((item) => item.price);
+      const prices = items.map((item) => item.price.value);
       const lowestPrice = Math.min(...prices);
       setLowestListedPrice(lowestPrice);
       const highestPrice = Math.max(...prices);
       setHighestListedPrice(highestPrice);
-
-      const increasedCount = items.filter(
-        (item) => item.priceChangeType === "increased"
-      ).length;
-      setNoOfIncreasedPrice(increasedCount);
-      const decreasedCount = items.filter(
-        (item) => item.priceChangeType === "decreased"
-      ).length;
-      setNoOfDecreasedPrice(decreasedCount);
 
       const ranges = distributePriceRange(lowestPrice, highestPrice, 5);
 
@@ -181,11 +186,14 @@ const DashboardScreen = () => {
       setNoOfPricesInEachPriceRange(elementsInEachRange);
     } catch (error) {
       console.error(error);
+      throw error;
     }
   };
 
   useEffect(() => {
-    fetchSimilarProducts();
+    searchItems(itemName, {
+      aspect_filter: `Brand:${brand}`,
+    });
   }, []);
 
   const medianPrice = (lowestListedPrice + highestListedPrice) / 2;
@@ -205,7 +213,6 @@ const DashboardScreen = () => {
             <Text>Item name: {itemName}</Text>
             <Text>Item brand: {brand}</Text>
             <Text>No. of similar item(s) listed: {noOfProducts}</Text>
-            <Text>No. of similar item(s) sold: 0</Text>
           </View>
 
           <View style={styles.section}>
@@ -220,12 +227,6 @@ const DashboardScreen = () => {
             </Text>
           </View>
 
-          <View style={styles.section}>
-            <Text style={styles.subHeader}>Price Changes</Text>
-            <Text>Increased: {noOfIncreasedPrice} products</Text>
-            <Text>Decreased: {noOfDecreasedPrice} products</Text>
-          </View>
-
           {noOfProducts <= 0 ? (
             <View style={{ alignItems: "center", marginVertical: 175 }}>
               <Text>You are the first one to list this item</Text>
@@ -236,8 +237,8 @@ const DashboardScreen = () => {
                 <Text style={styles.subHeader}>Price Position</Text>
                 <Pressable
                   onPress={() =>
-                    navigation.navigate("SimilarProducts", {
-                      similarProducts: nusellItems,
+                    navigation.navigate("EbaySimilarProducts", {
+                      similarProducts: ebayItems,
                     })
                   }
                 >
@@ -325,4 +326,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DashboardScreen;
+export default EbayDashboardScreen;

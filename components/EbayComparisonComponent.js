@@ -8,20 +8,20 @@ import {
 } from "react-native";
 import React from "react";
 
-export const EbayComparisonComponent = () => {
+export const EbayComparisonComponent = ({image, name, price, onItem}) => {
   return (
     <ScrollView>
       
       <Pressable style={styles.itemSummaryComponent}>
 
         <View style={styles.swipable}>
-          <Pressable>
+          <Pressable onPress={onItem}>
             <View style={styles.visibleRow}>
               <View>
                 <Image
                   style={styles.itemImage}
                   source={{
-                    uri: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg",
+                    uri: image,
                   }}
                 />
               </View>
@@ -29,7 +29,7 @@ export const EbayComparisonComponent = () => {
               <View>
                 <View style={styles.itemNameBox}>
                   <Text style={styles.itemName}>
-                    An example of a very long item name extend this name by a lot recite the bee movie script tryna excedd my word limit be like blablabla make the item name long af longerrrrrr that way it extends to fit all the words
+                    {name}
                   </Text>
                 </View>
               </View>
@@ -38,7 +38,7 @@ export const EbayComparisonComponent = () => {
         </View>
 
         <View style={styles.bottomContainer}>
-          <Text style={styles.amount}>Total: $100</Text>
+          <Text style={styles.amount}>Price: ${price}</Text>
         </View>
       </Pressable>
       

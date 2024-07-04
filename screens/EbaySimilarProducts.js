@@ -1,24 +1,21 @@
 import {
   KeyboardAvoidingView,
+  Linking,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import React, { useContext, useLayoutEffect } from "react";
+import React, { useLayoutEffect } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Back from "react-native-vector-icons/Ionicons";
-import { UserContext } from "../UserContext";
-import { ProductContext } from "../ProductContext";
-import { ProductComponent } from "../components/ProductComponent";
+import { EbayComparisonComponent } from "../components/EbayComparisonComponent";
 
-const SimilarProductsScreen = () => {
+const EbaySimilarProductsScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { similarProducts } = route.params;
-  const { setSelectedItem } = useContext(ProductContext);
-  const { setSelectedUser } = useContext(UserContext);
 
   // header
   useLayoutEffect(() => {
@@ -27,7 +24,14 @@ const SimilarProductsScreen = () => {
       headerStyle: {
         backgroundColor: "#007AFF",
       },
-      headerLeft: () => <Text style={styles.headerLeft}>Similar Products on NUSell</Text>,
+      headerLeft: () => (
+        <Text style={styles.headerLeft}>
+          Similar Products on <Text style={{ color: "#E53238" }}>e</Text>
+          <Text style={{ color: "#0D64D2" }}>b</Text>
+          <Text style={{ color: "#F5AF02" }}>a</Text>
+          <Text style={{ color: "#66B817" }}>y</Text>
+        </Text>
+      ),
       headerRight: () => (
         <Back
           name="arrow-back"
@@ -38,16 +42,6 @@ const SimilarProductsScreen = () => {
       ),
     });
   }, []);
-
-  const handleUserPressed = (userId) => {
-    setSelectedUser(userId);
-    navigation.navigate("UserProfile");
-  };
-
-  const handleItemPressed = (productId) => {
-    setSelectedItem(productId);
-    navigation.navigate("ProductInfo");
-  };
 
   return (
     <SafeAreaView
@@ -61,17 +55,11 @@ const SimilarProductsScreen = () => {
                 similarProducts.length > 0 &&
                 similarProducts.map((product, index) => (
                   <View key={index} style={{ marginVertical: 10 }}>
-                    <ProductComponent
-                      pfp={product.user.imageUrl}
-                      username={product.user.name}
-                      image={product.imageUrl}
-                      name={product.name}
-                      condition={product.condition}
-                      price={product.price}
-                      priceChangeType={product.priceChangeType}
-                      priceChanged={product.priceChanged}
-                      onUser={() => handleUserPressed(product.user)}
-                      onItem={() => handleItemPressed(product.id)}
+                    <EbayComparisonComponent
+                      image={product.image.imageUrl}
+                      name={product.title}
+                      price={product.price.value}
+                      onItem={() => Linking.openURL(product.itemWebUrl)}
                     />
                   </View>
                 ))}
@@ -83,7 +71,7 @@ const SimilarProductsScreen = () => {
   );
 };
 
-export default SimilarProductsScreen;
+export default EbaySimilarProductsScreen;
 
 const styles = StyleSheet.create({
   headerLeft: {
@@ -92,7 +80,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
     marginLeft: 15,
-    marginRight: 5
   },
 
   loadingContainer: {

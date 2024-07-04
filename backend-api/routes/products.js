@@ -140,7 +140,7 @@ router.put(`/:id`, async (req, res) => {
 });
 
 router.post("/search", async (req, res) => {
-  const { itemName, brand, condition } = req.body;
+  const { itemName, brand } = req.body;
   try {
     const itemNamePattern = itemName.replace(/\s/g, "\\s?");
     const brandPattern = brand.replace(/\s/g, "\\s?");
@@ -148,7 +148,6 @@ router.post("/search", async (req, res) => {
     const query = {
       name: { $regex: itemNamePattern, $options: "i" },
       brand: { $regex: brandPattern, $options: "i" },
-      condition,
     };
 
     const results = await Product.find(query)

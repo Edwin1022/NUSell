@@ -14,6 +14,7 @@ const {
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
 const dotenv = require("dotenv");
+const { Product } = require("../models/product");
 dotenv.config();
 
 const bucketName = process.env.BUCKET_NAME;
@@ -377,7 +378,9 @@ router.put("/getUserData", async (req, res) => {
       Key: user.image,
     };
     const command = new GetObjectCommand(getObjectParams);
-    const url = await getSignedUrl(s3, command, {expiresIn: 60 * 60 * 24 * 6});
+    const url = await getSignedUrl(s3, command, {
+      expiresIn: 60 * 60 * 24 * 6,
+    });
     user.imageUrl = url;
 
     await user.save();
@@ -548,9 +551,11 @@ router.delete(`/:id`, (req, res) => {
   User.findByIdAndDelete(req.params.id)
     .then((user) => {
       if (user) {
-        return res
-          .status(200)
-          .json({ success: true, message: "the user is deleted" });
+        Product.findOneAndDelete({ user: req.params, id }).then(() => {
+          return res
+            .status(200)
+            .json({ success: true, message: "the user is deleted" });
+        });
       } else {
         return res
           .status(404)

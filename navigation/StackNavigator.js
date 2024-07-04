@@ -22,6 +22,8 @@ import DashboardScreen from "../screens/DashboardScreen";
 import SimilarProductsScreen from "../screens/SimilarProductsScreen";
 import ListingSummary1Screen from "../screens/ListingSummary1Screen";
 import ListingSummary2Screen from "../screens/ListingSummary2Screen";
+import EbayDashboardScreen from "../screens/EbayDashboardScreen";
+import EbaySimilarProductsScreen from "../screens/EbaySimilarProducts";
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -56,6 +58,8 @@ const StackNavigator = () => {
         <Stack.Screen name="ListingSummary2" component={ListingSummary2Screen} />
         <Stack.Screen name="Dashboard" component={DashboardScreen} />
         <Stack.Screen name="SimilarProducts" component={SimilarProductsScreen} />
+        <Stack.Screen name="EbayDashboard" component={EbayDashboardScreen} />
+        <Stack.Screen name="EbaySimilarProducts" component={EbaySimilarProductsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -249,7 +249,6 @@ const ItemListingScreen = () => {
   const handleViewPriceData = () => {
     setErrorItemName(null);
     setErrorBrand(null);
-    setErrorCondition(null);
 
     let isValid = true;
 
@@ -263,13 +262,32 @@ const ItemListingScreen = () => {
       isValid = false;
     }
 
-    if (!condition) {
-      setErrorCondition("Please select a condition");
+    if (isValid) {
+      navigation.navigate("Dashboard", { itemName, brand });
+    } else {
+      return;
+    }
+  };
+
+  //handle View Price Data logic
+  const handleViewEbayPriceData = () => {
+    setErrorItemName(null);
+    setErrorBrand(null);
+
+    let isValid = true;
+
+    if (!itemName.trim()) {
+      setErrorItemName("Please provide an item name");
+      isValid = false;
+    }
+
+    if (!brand.trim()) {
+      setErrorBrand("Please provide the item brand");
       isValid = false;
     }
 
     if (isValid) {
-      navigation.navigate("SimilarProducts", { itemName, brand, accessToken });
+      navigation.navigate("EbayDashboard", { itemName, brand, accessToken });
     } else {
       return;
     }
@@ -582,6 +600,14 @@ const ItemListingScreen = () => {
                 </Text>
               </Pressable>
             </View>
+          </View>
+
+          <View style={{marginTop: 30}}>
+            <CustomButton
+              onPress={handleViewEbayPriceData}
+              type="PRIMARY"
+              text={"Ebay"}
+            />
           </View>
 
           <View style={styles.continueButton}>
