@@ -24,6 +24,7 @@ const EbayDashboardScreen = () => {
   const [noOfProducts, setNoOfProducts] = useState(0);
   const [lowestListedPrice, setLowestListedPrice] = useState(0);
   const [highestListedPrice, setHighestListedPrice] = useState(0);
+  const [medianListedPrice, setMedianListedPrice] = useState(0);
   const [noOfPricesInEachPriceRange, setNoOfPricesInEachPriceRange] = useState(
     []
   );
@@ -174,11 +175,27 @@ const EbayDashboardScreen = () => {
 
       setNoOfProducts(items.length);
 
-      const prices = items.map((item) => item.price.value);
+      const rawPrices = items
+        .map((item) => parseFloat(item.price.value))
+        .sort((a, b) => a - b);
+
+      const q1 = (rawPrices[14] + rawPrices[15]) / 2;
+      const q3 = (rawPrices[44] + rawPrices[45]) / 2;
+      const iqr = q3 - q1;
+
+      const lowOutlier = q1 - 1.5 * iqr;
+      const highOulier = q3 + 1.5 * iqr;
+
+      const prices = rawPrices.filter(
+        (price) => price >= lowOutlier && price <= highOulier
+      );
+      
       const lowestPrice = Math.min(...prices);
       setLowestListedPrice(lowestPrice);
       const highestPrice = Math.max(...prices);
       setHighestListedPrice(highestPrice);
+      const medianPrice = (prices[29] + prices[30]) / 2;
+      setMedianListedPrice(medianPrice);
 
       const ranges = distributePriceRange(lowestPrice, highestPrice, 5);
 
@@ -196,8 +213,7 @@ const EbayDashboardScreen = () => {
     });
   }, []);
 
-  const medianPrice = (lowestListedPrice + highestListedPrice) / 2;
-  const idealListingPrice = (medianPrice * (1 - 0.05)).toFixed(2);
+  const idealListingPrice = (medianListedPrice * (1 - 0.05)).toFixed(2);
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
