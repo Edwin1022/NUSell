@@ -131,6 +131,8 @@ const ItemListingScreen = () => {
     });
   }, []);
 
+
+
   const getOAuth2Token = async () => {
     try {
       const response = await axios.get(
@@ -338,6 +340,9 @@ const ItemListingScreen = () => {
     if (!price) {
       setErrorPrice("Please indicate a price");
       isValid = false;
+    } else if (price < 0) {
+      isValid = false;
+      Alert.alert("Invalid input", "Price cannot be negative.");
     }
 
     if (isValid) {
@@ -560,7 +565,7 @@ const ItemListingScreen = () => {
             <View style={styles.priceInputRow}>
               <View style={styles.priceInputColumn}>
                 <View style={styles.priceInputContainer}>
-                  <Text>$ </Text>
+                  <Text>SGD     $ </Text>
                   <TextInput
                     value={price}
                     onChangeText={setPrice}
@@ -574,6 +579,8 @@ const ItemListingScreen = () => {
                 </View>
                 {!!errorPrice && <Text style={styles.error}>{errorPrice}</Text>}
               </View>
+            </View>
+            <View style={styles.compareButtonRow}>
               <Pressable
                 style={styles.priceDataButton}
                 onPress={handleViewPriceData}
@@ -586,7 +593,7 @@ const ItemListingScreen = () => {
                     styles.priceDataButtonText,
                   ]}
                 >
-                  Recommend
+                  Compare Items
                 </Text>
                 <Text
                   style={[
@@ -596,19 +603,39 @@ const ItemListingScreen = () => {
                     styles.priceDataButtonText,
                   ]}
                 >
-                  Listing Price
+                  on NUSell
+                </Text>
+              </Pressable>
+              <Pressable
+                style={styles.priceDataButton}
+                onPress={handleViewEbayPriceData}
+              >
+                <Text
+                  style={[
+                    {
+                      color: "white",
+                    },
+                    styles.priceDataButtonText,
+                  ]}
+                >
+                  Compare Items
+                </Text>
+                <Text
+                  style={[
+                    {
+                      color: "white",
+                    },
+                    styles.priceDataButtonText,
+                  ]}
+                >
+                  on Ebay
                 </Text>
               </Pressable>
             </View>
+            
           </View>
 
-          <View style={{marginTop: 30}}>
-            <CustomButton
-              onPress={handleViewEbayPriceData}
-              type="PRIMARY"
-              text={"Ebay"}
-            />
-          </View>
+          
 
           <View style={styles.continueButton}>
             <CustomButton
@@ -624,6 +651,15 @@ const ItemListingScreen = () => {
 };
 
 const styles = StyleSheet.create({
+
+  compareButtonRow: {
+    width: "95%",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    padding: 10,
+    marginTop: 10,
+  },  
+
   itemPhoto: {
     height: 50,
     width: 50,
@@ -674,13 +710,11 @@ const styles = StyleSheet.create({
   },
 
   priceDataButton: {
-    marginLeft: 60,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
     backgroundColor: "#007FFF",
     borderRadius: 75,
     width: 150,
     alignItems: "center",
+    padding: 10
   },
 
   continueButton: {
@@ -697,7 +731,6 @@ const styles = StyleSheet.create({
     borderBottomColor: "gray",
     borderBottomWidth: 1,
     padding: 5,
-    marginLeft: 10,
   },
 
   priceInputRow: {
