@@ -18,7 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/Ionicons";
 
 export const SearchScreen = () => {
-  const navigate = useNavigation();
+  const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
@@ -29,7 +29,7 @@ export const SearchScreen = () => {
         <View style={styles.headerContainer}>
           <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
             <Pressable
-              onPress={() => navigate.navigate("Home")}
+              onPress={() => navigation.navigate("Home")}
               style={styles.backIcon}
             >
               <Ionicons size={30} color="black" name="arrow-back-outline" />
@@ -62,7 +62,7 @@ export const SearchScreen = () => {
                 borderRadius={30}
                 style={styles.button}
                 iconStyle={styles.buttonIcon}
-                onPress={() => navigate.navigate("SearchNearby")}
+                onPress={() => navigation.navigate("SearchNearby")}
               >
                 <Text style={styles.buttonText}>Search Nearby</Text>
               </Icon.Button>
@@ -74,7 +74,7 @@ export const SearchScreen = () => {
                 borderRadius={30}
                 style={styles.button}
                 iconStyle={styles.buttonIcon}
-                onPress={() => navigate.navigate("SearchByUser")}
+                onPress={() => navigation.navigate("SearchByUser")}
               >
                 <Text style={styles.buttonText}>Search by User</Text>
               </Icon.Button>

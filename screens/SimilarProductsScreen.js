@@ -39,8 +39,8 @@ const SimilarProductsScreen = () => {
     });
   }, []);
 
-  const handleUserPressed = (userId) => {
-    setSelectedUser(userId);
+  const handleUserPressed = (user) => {
+    setSelectedUser(user);
     navigation.navigate("UserProfile");
   };
 
