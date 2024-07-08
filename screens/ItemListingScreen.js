@@ -653,8 +653,7 @@ const styles = StyleSheet.create({
   compareButtonRow: {
     width: "95%",
     flexDirection: "row",
-    justifyContent: "space-evenly",
-    padding: 10,
+    justifyContent: "space-between",
     marginTop: 10,
   },  
 
