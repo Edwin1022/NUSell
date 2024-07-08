@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import React from "react";
 
-export const UserComponent = ({ pfp, username, onUser }) => {
+export const UserComponent = ({ pfp, username, rating, onUser }) => {
   return (
     <ScrollView>
       <View style={styles.OrderScreenContainer}>
@@ -25,6 +25,7 @@ export const UserComponent = ({ pfp, username, onUser }) => {
             </Pressable>
             <Pressable onPress={onUser}>
               <Text style={styles.username}>{username}</Text>
+              <Text style={styles.rating}>Rating: {rating == 0 ? "-" : rating} / 5</Text>
             </Pressable>
           </View>
         </View>
@@ -44,6 +45,10 @@ const styles = StyleSheet.create({
   username: {
     fontSize: 18,
     fontWeight: "bold",
+  },
+
+  rating: {
+    fontSize: 17
   },
 
   itemSummaryComponent: {

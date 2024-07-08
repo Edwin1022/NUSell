@@ -1,14 +1,9 @@
 import {
   SafeAreaView,
-  ScrollView,
-  KeyboardAvoidingView,
   Text,
   View,
   StyleSheet,
-  Image,
   FlatList,
-  Alert,
-  Button,
   TextInput,
   TouchableOpacity,
   Pressable,
@@ -27,13 +22,12 @@ export const SearchByUserScreen = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const fetchAllUsers = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://192.168.1.104:8000/users");
+      const response = await axios.get("http://192.168.0.109:8000/users");
 
       const users = response.data;
 
@@ -116,6 +110,7 @@ export const SearchByUserScreen = () => {
                     <UserComponent
                       pfp={item.imageUrl}
                       username={item.name}
+                      rating={item.rating}
                       onUser={() => handleUserPressed(item)}
                     />
                   )}
@@ -200,5 +195,18 @@ const styles = StyleSheet.create({
 
   icon: {
     padding: 10,
+  },
+
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+  },
+
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#007AFF",
   },
 });

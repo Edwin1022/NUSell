@@ -1,31 +1,107 @@
 import {
   SafeAreaView,
   ScrollView,
-  KeyboardAvoidingView,
   Text,
   View,
-  Image,
-  Alert,
-  Button,
   TextInput,
   TouchableOpacity,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useLayoutEffect, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/Ionicons";
+import axios from "axios";
+import { HomeScreenComponent } from "../components/HomeScreenComponent";
+import { ProductContext } from "../ProductContext";
 
 export const SearchScreen = () => {
   const navigation = useNavigation();
+  const { setSelectedItem } = useContext(ProductContext);
+  const [allProducts, setAllProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // (default) sort items by date created in descending order (latest to oldest)
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+
+      const res = await axios.get(`https://nusell.onrender.com/products`);
+
+      setAllProducts(res.data);
+
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  // sort items by date created in ascending order (oldest to latest)
+  const fetchProducts2 = async () => {
+    try {
+      setLoading(true);
+
+      const res = await axios.get(`https://nusell.onrender.com/products`);
+
+      setAllProducts(res.data.reverse());
+
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // sort items by price in descending order (highest to lowest)
+  const fetchProducts3 = async () => {
+    try {
+      setLoading(true);
+
+      const res = await axios.get(`https://nusell.onrender.com/products`);
+
+      setAllProducts(res.data.sort((a, b) => b.price - a.price));
+
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // sort items by price in ascending order (lowest to highest)
+  const fetchProducts4 = async () => {
+    try {
+      setLoading(true);
+
+      const res = await axios.get(`https://nusell.onrender.com/products`);
+
+      setAllProducts(res.data.sort((a, b) => a.price - b.price));
+
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    const filtered = allProducts.filter((product) =>
+      product.name.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredProducts(filtered);
+  };
 
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
     >
-      <ScrollView style={styles.searchScreenContainer}>
+      <View style={styles.searchScreenContainer}>
         <View style={styles.headerContainer}>
           <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
             <Pressable
@@ -49,11 +125,12 @@ export const SearchScreen = () => {
                 placeholder="Search"
                 placeholderTextColor="white"
                 value={searchQuery}
-                onChangeText={(text) => setSearchQuery(text)}
+                onChangeText={handleSearch}
               />
             </View>
           </View>
         </View>
+
         <View style={styles.main}>
           <View style={styles.buttonRow}>
             <View>
@@ -81,7 +158,38 @@ export const SearchScreen = () => {
             </View>
           </View>
         </View>
-      </ScrollView>
+
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#007AFF" />
+            <Text style={styles.loadingText}>Loading...</Text>
+          </View>
+        ) : (
+          <ScrollView>
+            <View style={styles.results}>
+              {filteredProducts &&
+                filteredProducts.length > 0 &&
+                searchQuery.length > 0 &&
+                filteredProducts.map((product, index) => (
+                  <View key={index} style={styles.itemContainer}>
+                    <HomeScreenComponent
+                      pfp={product.user.imageUrl}
+                      username={product.user.name}
+                      image={product.imageUrl}
+                      name={product.name}
+                      condition={product.condition}
+                      price={product.price}
+                      onPress={() => {
+                        setSelectedItem(product.id);
+                        navigation.navigate("ProductInfo");
+                      }}
+                    />
+                  </View>
+                ))}
+            </View>
+          </ScrollView>
+        )}
+      </View>
     </SafeAreaView>
   );
 };
@@ -114,7 +222,6 @@ const styles = StyleSheet.create({
   },
 
   main: {
-    flex: 1,
     alignItems: "center",
   },
 
@@ -154,5 +261,36 @@ const styles = StyleSheet.create({
 
   icon: {
     padding: 10,
+  },
+
+  results: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    padding: 2,
+    backgroundColor: "white",
+  },
+
+  itemContainer: {
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderColor: "black",
+    borderRadius: 15,
+    margin: 8,
+    width: "44%",
+    alignItems: "center",
+  },
+
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+  },
+
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#007AFF",
   },
 });

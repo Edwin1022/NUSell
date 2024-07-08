@@ -5,10 +5,12 @@ import Back from "react-native-vector-icons/Ionicons";
 import { UserContext } from "../UserContext";
 import axios from "axios";
 import { HomeScreenComponent } from "../components/HomeScreenComponent";
+import { ProductContext } from "../ProductContext";
 
 const UserStoreScreen = () => {
   const navigation = useNavigation();
   const { selectedUser } = useContext(UserContext);
+  const { setSelectedItem } = useContext(ProductContext);
   const [userProducts, setUserProducts] = useState();
 
   // header
@@ -35,7 +37,7 @@ const UserStoreScreen = () => {
   const fetchUserProducts = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.1.104:8000/products/BySellers?users=${selectedUser.id}`
+        `http://192.168.0.109:8000/products/BySellers?users=${selectedUser.id}`
       );
 
       const products = response.data;
