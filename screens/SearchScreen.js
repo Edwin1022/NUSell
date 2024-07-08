@@ -78,6 +78,12 @@ export const SearchScreen = () => {
               </Icon.Button>
             </View>
           </View>
+
+          <View style={styles.searchItems}>
+            <Text>
+              do whatever within this view 
+            </Text>
+          </View>
         
       </ScrollView>
     </SafeAreaView>
@@ -85,6 +91,16 @@ export const SearchScreen = () => {
 };
 
 const styles = StyleSheet.create({
+
+  searchItems: {
+    backgroundColor: "pink",
+    flex: 1,
+    flexDirection:"column",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 500
+  },
+
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
