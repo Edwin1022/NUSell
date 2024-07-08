@@ -13,7 +13,7 @@ export const BottomTabs = () => {
   return (
     <Tab.Navigator>
       <Tab.Screen
-        name="Home"
+        name="HomeStack"
         component={HomeSearchStackNav}
         options={{
           tabBarLabel: "Home",
