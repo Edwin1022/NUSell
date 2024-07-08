@@ -42,8 +42,8 @@ const styles = StyleSheet.create({
   },
 
   username: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 16,
+    fontWeight: "bold"
   },
 
   itemSummaryComponent: {
@@ -54,8 +54,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     backgroundColor: "white",
-    paddingTop: 10,
-    paddingBottom: 10,
     overflow: "hidden",
   },
 
@@ -68,9 +66,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     flexDirection: "row",
     alignItems: "center",
-    padding: 10,
     paddingLeft: 15,
-    paddingBottom: 0,
     height: 50,
   },
 });

@@ -23,11 +23,9 @@ export const SearchScreen = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
+      style={{ flex: 1, backgroundColor: "white", alignItems: "center", padding: 10, paddingTop: 50 }}
     >
-      <ScrollView style={styles.searchScreenContainer}>
-        <View style={styles.headerContainer}>
-          <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+      <View style={styles.headerContainer}>
             <Pressable
               onPress={() => navigation.navigate("Home")}
               style={styles.backIcon}
@@ -53,8 +51,8 @@ export const SearchScreen = () => {
               />
             </View>
           </View>
-        </View>
-        <View style={styles.main}>
+      <ScrollView style={styles.searchScreenContainer}>
+        
           <View style={styles.buttonRow}>
             <View>
               <Icon.Button
@@ -80,7 +78,7 @@ export const SearchScreen = () => {
               </Icon.Button>
             </View>
           </View>
-        </View>
+        
       </ScrollView>
     </SafeAreaView>
   );
@@ -91,12 +89,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     padding: 10,
-    width: 380,
+    width: "100%",
+    backgroundColor: "white",
+    marginTop: 10,
   },
 
   button: {
     backgroundColor: "#dcdcdc",
     padding: 15,
+    borderColor: "#dcdcdc"
   },
 
   buttonIcon: {
@@ -110,13 +111,9 @@ const styles = StyleSheet.create({
   searchScreenContainer: {
     flex: 1,
     backgroundColor: "white",
-    alignContent: "center",
+    width: "100%",
   },
 
-  main: {
-    flex: 1,
-    alignItems: "center",
-  },
 
   searchBar: {
     borderWidth: 1,
@@ -138,10 +135,11 @@ const styles = StyleSheet.create({
 
   headerContainer: {
     backgroundColor: "white",
-    height: 100,
     paddingRight: 10,
     paddingTop: 5,
     paddingBottom: 5,
+    flexDirection: "row",
+    alignItems: "center"
   },
 
   input: {
