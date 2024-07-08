@@ -16,6 +16,9 @@ import Icon from "react-native-vector-icons/Ionicons";
 import axios from "axios";
 import { HomeScreenComponent } from "../components/HomeScreenComponent";
 import { ProductContext } from "../ProductContext";
+import FilterModalScreen from "./FilterModalScreen";
+
+
 
 export const SearchScreen = () => {
   const navigation = useNavigation();
@@ -24,6 +27,7 @@ export const SearchScreen = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   // (default) sort items by date created in descending order (latest to oldest)
   const fetchProducts = async () => {
@@ -144,7 +148,6 @@ export const SearchScreen = () => {
                 <Text style={styles.buttonText}>Search Nearby</Text>
               </Icon.Button>
             </View>
-
             <View>
               <Icon.Button
                 name="person-outline"
@@ -157,7 +160,25 @@ export const SearchScreen = () => {
               </Icon.Button>
             </View>
           </View>
+        
+          <View style={styles.filterButtonRow}>
+            <Icon.Button
+              name="options-outline"
+              borderRadius={30}
+              style={styles.filterButton}
+              iconStyle={styles.buttonIcon}
+              onPress={() => setModalVisible(true)}
+            >
+              <Text style={styles.buttonText}>Filter</Text>
+            </Icon.Button>
+          </View>
+          
         </View>
+
+        <FilterModalScreen
+          onClose={() => setModalVisible(false)}
+          isVisible={modalVisible}
+        />
 
         {loading ? (
           <View style={styles.loadingContainer}>
@@ -218,6 +239,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#dcdcdc",
     padding: 15,
     borderColor: "#dcdcdc"
+  },
+
+  filterButton: {
+    backgroundColor: "white",
+    borderStyle: "solid",
+    borderColor: "gray",
+    borderWidth: 1,
+  },
+
+  filterButtonRow: {
+    marginRight: 250,
   },
 
   buttonIcon: {

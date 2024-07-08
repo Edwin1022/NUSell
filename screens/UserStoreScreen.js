@@ -37,7 +37,7 @@ const UserStoreScreen = () => {
   const fetchUserProducts = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.0.109:8000/products/BySellers?users=${selectedUser.id}`
+        `http://192.168.0.116:8000/products/BySellers?users=${selectedUser.id}`
       );
 
       const products = response.data;

@@ -340,7 +340,7 @@ const ItemListingScreen = () => {
       isValid = false;
     } else if (price < 0) {
       isValid = false;
-      Alert.alert("Invalid input", "Price cannot be negative.");
+      Alert.alert("Invalid input", "Please give your items a valid price");
     }
 
     if (isValid) {
