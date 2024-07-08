@@ -99,7 +99,7 @@ export const SearchScreen = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
+      style={{ flex: 1, backgroundColor: "white", alignItems: "center", padding: 10, paddingTop: 50 }}
     >
       <View style={styles.searchScreenContainer}>
         <View style={styles.headerContainer}>
@@ -195,16 +195,29 @@ export const SearchScreen = () => {
 };
 
 const styles = StyleSheet.create({
+
+  searchItems: {
+    backgroundColor: "pink",
+    flex: 1,
+    flexDirection:"column",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 500
+  },
+
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     padding: 10,
-    width: 380,
+    width: "100%",
+    backgroundColor: "white",
+    marginTop: 10,
   },
 
   button: {
     backgroundColor: "#dcdcdc",
     padding: 15,
+    borderColor: "#dcdcdc"
   },
 
   buttonIcon: {
@@ -218,7 +231,7 @@ const styles = StyleSheet.create({
   searchScreenContainer: {
     flex: 1,
     backgroundColor: "white",
-    alignContent: "center",
+    width: "100%",
   },
 
   main: {
@@ -245,10 +258,11 @@ const styles = StyleSheet.create({
 
   headerContainer: {
     backgroundColor: "white",
-    height: 100,
     paddingRight: 10,
     paddingTop: 5,
     paddingBottom: 5,
+    flexDirection: "row",
+    alignItems: "center"
   },
 
   input: {

@@ -27,6 +27,7 @@ export const SearchByUserScreen = () => {
   const fetchAllUsers = async () => {
     try {
       setLoading(true);
+
       const response = await axios.get("http://192.168.0.109:8000/users");
 
       const users = response.data;
@@ -60,8 +61,36 @@ export const SearchByUserScreen = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
+      style={{ flex: 1, backgroundColor: "white", alignItems: "center",paddingTop: 30 }}
     >
+      <View style={styles.headerContainer}>
+              
+        <Pressable
+          onPress={() => navigation.goBack()}
+          style={styles.backIcon}
+        >
+          <Ionicons size={30} color="black" name="arrow-back-outline" />
+        </Pressable>
+
+        <View style={styles.searchBar}>
+          <TouchableOpacity>
+            <Ionicons
+              name="search"
+              size={24}
+              color="white"
+              style={styles.icon}
+            />
+          </TouchableOpacity>
+          <TextInput
+            style={styles.input}
+            placeholder="Search"
+            placeholderTextColor="white"
+            value={searchQuery}
+            onChangeText={handleSearch}
+          />
+          
+        </View>
+      </View>
       <View style={styles.searchScreenContainer}>
         {loading ? (
           <View style={styles.loadingContainer}>
@@ -128,21 +157,6 @@ export const SearchByUserScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  buttonRow: {
-    flexDirection: "column",
-    justifyContent: "space-between",
-    padding: 10,
-    width: 380,
-  },
-
-  button: {
-    backgroundColor: "#dcdcdc",
-    padding: 15,
-  },
-
-  buttonIcon: {
-    color: "black",
-  },
 
   buttonText: {
     fontFamily: "Arial",
@@ -152,11 +166,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     alignContent: "center",
-  },
-
-  main: {
-    flex: 1,
-    alignItems: "center",
+    padding: 10
   },
 
   searchBar: {
@@ -183,6 +193,8 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingTop: 5,
     paddingBottom: 5,
+    flexDirection: "row",
+    alignItems: "center",
   },
 
   input: {
