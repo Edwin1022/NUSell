@@ -99,36 +99,6 @@ export const SearchByUserScreen = () => {
           </View>
         ) : (
           <View>
-            <View style={styles.headerContainer}>
-              <View
-                style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
-              >
-                <Pressable
-                  onPress={() => navigation.goBack()}
-                  style={styles.backIcon}
-                >
-                  <Ionicons size={30} color="black" name="arrow-back-outline" />
-                </Pressable>
-
-                <View style={styles.searchBar}>
-                  <TouchableOpacity>
-                    <Ionicons
-                      name="search"
-                      size={24}
-                      color="white"
-                      style={styles.icon}
-                    />
-                  </TouchableOpacity>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Search"
-                    placeholderTextColor="white"
-                    value={searchQuery}
-                    onChangeText={handleSearch}
-                  />
-                </View>
-              </View>
-            </View>
             <View style={styles.main}>
               <View style={styles.buttonRow}>
                 <FlatList
