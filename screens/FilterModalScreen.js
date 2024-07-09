@@ -1,19 +1,18 @@
-import { StyleSheet, Button, Modal, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import {
+  StyleSheet,
+  Button,
+  Modal,
+  Text,
+  TouchableOpacity,
+  View,
+  Pressable,
+} from "react-native";
+import React, { useContext } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useState, useEffect } from "react";
+import { ButtonContext } from "../ButtonContext";
 
-const FilterModalScreen = ({isVisible, onClose}) => {
-  const [dateListed, setDateListedFilter] = useState("");
-  const [priceFilter, setPriceFilter] = useState("");
-
-  useEffect(() => {
-    if (!isVisible) {
-      // Reset the condition state when the modal is closed
-      setDateListedFilter("");
-      setPriceFilter("");
-    }
-  }, [isVisible]);
+const FilterModalScreen = ({ isVisible, onSubmit, onClose }) => {
+  const { activeButton, setActiveButton } = useContext(ButtonContext);
 
   return (
     <Modal
@@ -22,85 +21,98 @@ const FilterModalScreen = ({isVisible, onClose}) => {
       visible={isVisible}
       onRequestClose={onClose}
     >
-      <View
-        style={styles.modalContainer}
-      >
-        <View
-          style={styles.modal}
-        >
-          <Text style={styles.title}>
-            Price
-          </Text>
+      <View style={styles.modalContainer}>
+        <View style={styles.modal}>
+          <View style={styles.titleRow}>
+            <Text style={styles.title}>Sort</Text>
+            <Pressable onPress={onClose}>
+              <MaterialCommunityIcons name="close" size={24} color="black" />
+            </Pressable>
+          </View>
 
           <View style={styles.priceButtonRow}>
             <TouchableOpacity
               style={[
-                {backgroundColor: priceFilter === "lth" ? "slategray" : "steelblue"},
-                styles.filterButton
+                {
+                  backgroundColor:
+                    activeButton === "Button1" ? "slategray" : "steelblue",
+                },
+                styles.filterButton,
               ]}
-              onPress={()=> setPriceFilter("lth")}
+              onPress={() => setActiveButton("Button1")}
             >
-              <MaterialCommunityIcons name="sort-numeric-ascending" size={24} color="white" />
-              <Text
-                style={styles.buttonText}
-              >
-                Low to High
-              </Text>
+              <MaterialCommunityIcons
+                name="sort-numeric-ascending"
+                size={24}
+                color="white"
+              />
+              <Text style={styles.buttonText}>Price Low to High</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
-                {backgroundColor: priceFilter === "htl" ? "slategray" : "steelblue"},
-                styles.filterButton
+                {
+                  backgroundColor:
+                    activeButton === "Button2" ? "slategray" : "steelblue",
+                },
+                styles.filterButton,
               ]}
-              onPress={()=> setPriceFilter("htl")}
+              onPress={() => setActiveButton("Button2")}
             >
-              <MaterialCommunityIcons name="sort-numeric-descending" size={24} color="white" />
-              <Text
-                style={styles.buttonText}
-              >
-                High to Low
-              </Text>
+              <MaterialCommunityIcons
+                name="sort-numeric-descending"
+                size={24}
+                color="white"
+              />
+              <Text style={styles.buttonText}>Price High to Low</Text>
             </TouchableOpacity>
           </View>
-          
-          <Text style={styles.title}>
-            Date Listed
-          </Text>
 
           <View style={styles.dateListedButtonRow}>
             <TouchableOpacity
               style={[
-                {backgroundColor: dateListed === "latest" ? "slategray" : "steelblue"},
-                styles.dateFilterButton
+                {
+                  backgroundColor:
+                    activeButton === "Button3" ? "slategray" : "steelblue",
+                },
+                styles.dateFilterButton,
               ]}
-              onPress={()=> setDateListedFilter("latest")}
+              onPress={() => setActiveButton("Button3")}
             >
-              <MaterialCommunityIcons name="sort-calendar-ascending" size={24} color="white" />
-              <Text
-                style={styles.buttonText}
-              >
-                Latest
-              </Text>
+              <MaterialCommunityIcons
+                name="sort-calendar-ascending"
+                size={24}
+                color="white"
+              />
+              <Text style={styles.buttonText}>Newest First</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
-                {backgroundColor: dateListed === "oldest" ? "slategray" : "steelblue"},
-                styles.dateFilterButton
+                {
+                  backgroundColor:
+                    activeButton === "Button4" ? "slategray" : "steelblue",
+                },
+                styles.dateFilterButton,
               ]}
-              onPress={()=> setDateListedFilter("oldest")}
+              onPress={() => setActiveButton("Button4")}
             >
-              <MaterialCommunityIcons name="sort-calendar-descending" size={24} color="white" />
-              <Text
-                style={styles.buttonText}
-              >
-                Oldest
-              </Text>
+              <MaterialCommunityIcons
+                name="sort-calendar-descending"
+                size={24}
+                color="white"
+              />
+              <Text style={styles.buttonText}>Oldest First</Text>
             </TouchableOpacity>
           </View>
-          
-          <Button title="Close" onPress={onClose} />
-          <View style={{margin: 10}}></View>
-          <Button title="Submit" color={"#dc3545"}/>
+
+          <Pressable
+            style={styles.submitButton}
+            onPress={() => {
+              onSubmit();
+              onClose();
+            }}
+          >
+            <Text style={styles.buttonText}>SUBMIT</Text>
+          </Pressable>
         </View>
       </View>
     </Modal>
@@ -108,9 +120,21 @@ const FilterModalScreen = ({isVisible, onClose}) => {
 };
 
 const styles = StyleSheet.create({
+  submitButton: {
+    backgroundColor: "#dc3545",
+    padding: 10,
+    width: "95%",
+    marginLeft: 8,
+  },
+  titleRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+
   title: {
-    fontSize: 18,
-    fontWeight: "bold"
+    fontSize: 25,
+    fontWeight: "bold",
   },
   modalContainer: {
     flex: 1,
@@ -121,19 +145,19 @@ const styles = StyleSheet.create({
   modal: {
     backgroundColor: "white",
     borderRadius: 10,
-    padding: 20,
+    padding: 10,
     width: "95%",
   },
 
   priceButtonRow: {
     flexDirection: "row",
-    justifyContent: "space-around",
-    marginTop: 10
+    justifyContent: "space-evenly",
+    marginTop: 10,
   },
 
   dateListedButtonRow: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-evenly",
     marginTop: 10,
   },
 
@@ -141,7 +165,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 10,
-    paddingHorizontal: 35,
+    paddingHorizontal: 25,
     borderRadius: 5,
     marginBottom: 20,
   },
@@ -150,7 +174,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 8,
     borderRadius: 5,
     marginBottom: 10,
   },
@@ -159,7 +183,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     textAlign: "center",
     fontWeight: "bold",
-    marginLeft: 10,
-  }
-})
+    marginLeft: 5,
+  },
+});
 export default FilterModalScreen;

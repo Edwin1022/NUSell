@@ -99,7 +99,7 @@ router.post("/register", async (req, res) => {
     // create a new User
     const hashedPassword = await hashPassword(password);
     const newUser = new User({
-      image: placeholderImage,
+      image: "25967c1621c8ea52b526886251cf9ff0121e09ea6535986f9a554a125a1988c6",
       name,
       email,
       password: hashedPassword,
@@ -141,7 +141,7 @@ router.get("/verify/:token", async (req, res) => {
 
     await user.save();
 
-    res.status(200).json({ message: "Email verified successfully" });
+    res.status(200).json({ message: "Email verified successfully. You may proceed to login." });
   } catch (error) {
     res.status(500).json({ message: "Email verification failed" });
   }

@@ -17,14 +17,15 @@ import axios from "axios";
 import { HomeScreenComponent } from "../components/HomeScreenComponent";
 import { ProductContext } from "../ProductContext";
 import FilterModalScreen from "./FilterModalScreen";
-
-
+import { ButtonContext } from "../ButtonContext";
 
 export const SearchScreen = () => {
   const navigation = useNavigation();
   const { setSelectedItem } = useContext(ProductContext);
+  const { activeButton } = useContext(ButtonContext);
   const [allProducts, setAllProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -48,62 +49,61 @@ export const SearchScreen = () => {
     fetchProducts();
   }, []);
 
-  // sort items by date created in ascending order (oldest to latest)
-  const fetchProducts2 = async () => {
-    try {
-      setLoading(true);
-
-      const res = await axios.get(`https://nusell.onrender.com/products`);
-
-      setAllProducts(res.data.reverse());
-
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  // sort items by price in descending order (highest to lowest)
-  const fetchProducts3 = async () => {
-    try {
-      setLoading(true);
-
-      const res = await axios.get(`https://nusell.onrender.com/products`);
-
-      setAllProducts(res.data.sort((a, b) => b.price - a.price));
-
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  // sort items by price in ascending order (lowest to highest)
-  const fetchProducts4 = async () => {
-    try {
-      setLoading(true);
-
-      const res = await axios.get(`https://nusell.onrender.com/products`);
-
-      setAllProducts(res.data.sort((a, b) => a.price - b.price));
-
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const handleSearch = (query) => {
     setSearchQuery(query);
     const filtered = allProducts.filter((product) =>
       product.name.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredProducts(filtered);
+
+    if (activeButton === "Button1") {
+      const results = filtered.sort((a, b) => a.price - b.price);
+      setSearchResults(results);
+    } else if (activeButton === "Button2") {
+      const results = filtered.sort((a, b) => b.price - a.price);
+      setSearchResults(results);
+    } else if (activeButton === "Button4") {
+      const results = filtered.sort(
+        (a, b) => new Date(a.dateCreated) - new Date(b.dateCreated)
+      );
+      setSearchResults(results);
+    } else {
+      const results = filtered.sort(
+        (a, b) => new Date(b.dateCreated) - new Date(a.dateCreated)
+      );
+      setSearchResults(results);
+    }
+  };
+
+  const handleSubmit = () => {
+    if (activeButton === "Button1") {
+      const results = filteredProducts.sort((a, b) => a.price - b.price);
+      setSearchResults(results);
+    } else if (activeButton === "Button2") {
+      const results = filteredProducts.sort((a, b) => b.price - a.price);
+      setSearchResults(results);
+    } else if (activeButton === "Button4") {
+      const results = filteredProducts.sort(
+        (a, b) => new Date(a.dateCreated) - new Date(b.dateCreated)
+      );
+      setSearchResults(results);
+    } else {
+      const results = filteredProducts.sort(
+        (a, b) => new Date(b.dateCreated) - new Date(a.dateCreated)
+      );
+      setSearchResults(results);
+    }
   };
 
   return (
     <SafeAreaView
-      style={{ flex: 1, backgroundColor: "white", alignItems: "center", padding: 10, paddingTop: 50 }}
+      style={{
+        flex: 1,
+        backgroundColor: "white",
+        alignItems: "center",
+        padding: 10,
+        paddingTop: 50,
+      }}
     >
       <View style={styles.searchScreenContainer}>
         <View style={styles.headerContainer}>
@@ -160,22 +160,23 @@ export const SearchScreen = () => {
               </Icon.Button>
             </View>
           </View>
-        
-          <View style={styles.filterButtonRow}>
-            <Icon.Button
-              name="options-outline"
-              borderRadius={30}
-              style={styles.filterButton}
-              iconStyle={styles.buttonIcon}
-              onPress={() => setModalVisible(true)}
-            >
-              <Text style={styles.buttonText}>Filter</Text>
-            </Icon.Button>
-          </View>
-          
+          {searchQuery.length > 0 && filteredProducts.length > 0 && (
+            <View style={styles.filterButtonRow}>
+              <Icon.Button
+                name="options-outline"
+                borderRadius={30}
+                style={styles.filterButton}
+                iconStyle={styles.buttonIcon}
+                onPress={() => setModalVisible(true)}
+              >
+                <Text style={styles.buttonText}>Filter</Text>
+              </Icon.Button>
+            </View>
+          )}
         </View>
 
         <FilterModalScreen
+          onSubmit={handleSubmit}
           onClose={() => setModalVisible(false)}
           isVisible={modalVisible}
         />
@@ -188,10 +189,10 @@ export const SearchScreen = () => {
         ) : (
           <ScrollView>
             <View style={styles.results}>
-              {filteredProducts &&
-                filteredProducts.length > 0 &&
+              {searchResults &&
+                searchResults.length > 0 &&
                 searchQuery.length > 0 &&
-                filteredProducts.map((product, index) => (
+                searchResults.map((product, index) => (
                   <View key={index} style={styles.itemContainer}>
                     <HomeScreenComponent
                       pfp={product.user.imageUrl}
@@ -200,6 +201,7 @@ export const SearchScreen = () => {
                       name={product.name}
                       condition={product.condition}
                       price={product.price}
+                      dateCreated={product.dateCreated}
                       onPress={() => {
                         setSelectedItem(product.id);
                         navigation.navigate("ProductInfo");
@@ -216,14 +218,13 @@ export const SearchScreen = () => {
 };
 
 const styles = StyleSheet.create({
-
   searchItems: {
     backgroundColor: "pink",
     flex: 1,
-    flexDirection:"column",
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    height: 500
+    height: 500,
   },
 
   buttonRow: {
@@ -238,7 +239,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#dcdcdc",
     padding: 15,
-    borderColor: "#dcdcdc"
+    borderColor: "#dcdcdc",
   },
 
   filterButton: {
@@ -294,7 +295,7 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 5,
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
   },
 
   input: {

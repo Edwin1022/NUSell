@@ -134,7 +134,7 @@ const ItemListingScreen = () => {
   const getOAuth2Token = async () => {
     try {
       const response = await axios.get(
-        "http://192.168.1.101:8000/products/getAccessToken"
+        "http://192.168.0.116:8000/products/getAccessToken"
       );
       const token = response.data.token;
       setAccessToken(token);

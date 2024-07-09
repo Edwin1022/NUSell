@@ -13,8 +13,18 @@ export const HomeScreenComponent = ({
   name,
   condition,
   price,
+  dateCreated,
   onPress
 }) => {
+  const convertDate = (isoString) => {
+    const date = new Date(isoString);
+    return date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
   return (
     <Pressable onPress={onPress} style={styles.component}>
       <View style={styles.picContainer}>
@@ -42,6 +52,9 @@ export const HomeScreenComponent = ({
           />
           <Text style={styles.username}>{username}</Text>
         </Pressable>
+        <Text>
+          Posted on {convertDate(dateCreated)}
+        </Text>
       </View>
     </Pressable>
   );
