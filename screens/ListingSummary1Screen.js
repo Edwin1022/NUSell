@@ -37,6 +37,8 @@ const ListingSummary1Screen = () => {
     setCondition,
     price,
     setPrice,
+    latitude,
+    longitude,
   } = useContext(ListingContext);
   const { userId } = useContext(UserContext);
   const { setProductId } = useContext(ProductContext);
@@ -73,6 +75,10 @@ const ListingSummary1Screen = () => {
       category: value,
       condition: condition,
       user: userId,
+      location: {
+        type: "Point",
+        coordinates: [longitude, latitude],
+      },
     };
 
     try {
@@ -88,7 +94,7 @@ const ListingSummary1Screen = () => {
 
       // send a post request to the backend API
       const response = await axios.post(
-        "https://nusell.onrender.com/products",
+        "http://172.31.11.236:8000/products",
         formData,
         {
           headers: {

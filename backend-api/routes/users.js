@@ -536,6 +536,20 @@ router.get(`/`, async (req, res) => {
   if (!verifiedUsers) {
     res.status(500).json({ success: false });
   }
+
+  for (const user of verifiedUsers) {
+    const getObjectParams = {
+      Bucket: bucketName,
+      Key: user.image,
+    };
+    const command = new GetObjectCommand(getObjectParams);
+    const url = await getSignedUrl(s3, command, {
+      expiresIn: 60 * 60 * 24 * 6,
+    });
+    user.imageUrl = url;
+    await user.save();
+  }
+
   res.status(200).send(verifiedUsers);
 });
 

@@ -29,6 +29,8 @@ const ProductInfoScreen = () => {
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState();
+  const [cartItems, setCartItems] = useState([]);
+  const [accessToken, setAccessToken] = useState("");
 
   // header
   useLayoutEffect(() => {
@@ -63,8 +65,35 @@ const ProductInfoScreen = () => {
     }
   };
 
+  const fetchCartItems = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(
+        `https://nusell.onrender.com/order-items/byBuyers?users=${userId}`
+      );
+      setLoading(false);
+      setCartItems(res.data.map((item) => item.product.id));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getOAuth2Token = async () => {
+    try {
+      const response = await axios.get(
+        "http://172.31.11.236:8000/products/getAccessToken"
+      );
+      const token = response.data.token;
+      setAccessToken(token);
+    } catch (error) {
+      console.error("Error fetching access token:", error);
+    }
+  };
+
   useEffect(() => {
     fetchProductData();
+    fetchCartItems();
+    getOAuth2Token();
   }, []);
 
   const handleUserPressed = () => {
@@ -75,6 +104,8 @@ const ProductInfoScreen = () => {
   const handleAddToCart = () => {
     if (seller.id === userId) {
       Alert.alert("Error", "Failed to add item to cart");
+    } else if (cartItems.includes(product.id)) {
+      Alert.alert("Error", "Item has already been added to cart once");
     } else {
       axios
         .post("https://nusell.onrender.com/order-items", {
@@ -82,6 +113,7 @@ const ProductInfoScreen = () => {
           userId,
         })
         .then((response) => {
+          fetchCartItems();
           Alert.alert("Success", "Item added to cart successfully");
         })
         .catch((error) => {
@@ -222,6 +254,70 @@ const ProductInfoScreen = () => {
               <Text style={styles.text}>$ {product.price}</Text>
             </View>
 
+            <View style={styles.compareButtonRow}>
+              <Pressable
+                style={styles.priceDataButton}
+                onPress={() =>
+                  navigation.navigate("Dashboard", {
+                    itemName: product.name,
+                    brand: product.brand,
+                  })
+                }
+              >
+                <Text
+                  style={[
+                    {
+                      color: "white",
+                    },
+                    styles.priceDataButtonText,
+                  ]}
+                >
+                  Compare Items
+                </Text>
+                <Text
+                  style={[
+                    {
+                      color: "white",
+                    },
+                    styles.priceDataButtonText,
+                  ]}
+                >
+                  on NUSell
+                </Text>
+              </Pressable>
+              <Pressable
+                style={styles.priceDataButton}
+                onPress={() =>
+                  navigation.navigate("EbayDashboard", {
+                    itemName: product.name,
+                    brand: product.brand,
+                    accessToken,
+                  })
+                }
+              >
+                <Text
+                  style={[
+                    {
+                      color: "white",
+                    },
+                    styles.priceDataButtonText,
+                  ]}
+                >
+                  Compare Items
+                </Text>
+                <Text
+                  style={[
+                    {
+                      color: "white",
+                    },
+                    styles.priceDataButtonText,
+                  ]}
+                >
+                  on Ebay
+                </Text>
+              </Pressable>
+            </View>
+
             <View>
               <View style={styles.buttonContainer}>
                 <Pressable
@@ -332,6 +428,27 @@ const styles = StyleSheet.create({
     marginRight: 30,
     fontSize: 18,
     fontWeight: "500",
+  },
+
+  compareButtonRow: {
+    width: "95%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+  },
+
+  priceDataButtonText: {
+    fontWeight: "bold",
+    flexWrap: "wrap",
+    fontSize: 16,
+  },
+
+  priceDataButton: {
+    backgroundColor: "#007FFF",
+    borderRadius: 75,
+    width: 150,
+    alignItems: "center",
+    padding: 10,
   },
 
   buttonText: {

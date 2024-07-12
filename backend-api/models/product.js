@@ -59,6 +59,10 @@ const productSchema = mongoose.Schema({
     type: String,
     default: "",
   },
+  location: {
+    type: { type: String, default: 'Point' },
+    coordinates: [Number], // [longitude, latitude]
+  },
   priceChangeType: {
     type: String,
     default: "",
@@ -84,5 +88,7 @@ productSchema.virtual("id").get(function () {
 productSchema.set("toJSON", {
   virtuals: true,
 });
+
+productSchema.index({ location: '2dsphere' });
 
 exports.Product = mongoose.model("Product", productSchema);

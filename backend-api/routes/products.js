@@ -161,6 +161,24 @@ router.post("/search", async (req, res) => {
   }
 });
 
+router.post("/search-nearby", async (req, res) => {
+  const { latitude, longitude } = req.body;
+  // Implement search logic here
+  try {
+    const results = await Product.find({
+      location: {
+        $geoWithin: {
+          $centerSphere: [[longitude, latitude], 1 / 6378.1], // radius in radians
+        },
+      },
+    }).populate("user");
+    res.json(results);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 router.post(`/`, upload.single("image"), async (req, res) => {
   const productData = JSON.parse(req.body.product);
 
@@ -195,6 +213,7 @@ router.post(`/`, upload.single("image"), async (req, res) => {
     category: productData.category,
     user: productData.user,
     countInStock: productData.countInStock,
+    location: productData.location,
     isFeatured: productData.isFeatured,
   });
   product = await product.save();

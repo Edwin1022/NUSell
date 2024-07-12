@@ -28,7 +28,7 @@ export const SearchByUserScreen = () => {
     try {
       setLoading(true);
 
-      const response = await axios.get("http://192.168.0.116:8000/users");
+      const response = await axios.get("http://172.31.11.236:8000/users");
 
       const users = response.data;
 

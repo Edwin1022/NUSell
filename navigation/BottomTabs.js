@@ -33,7 +33,6 @@ export const BottomTabs = () => {
         options={{
           tabBarLabel: "Sell",
           tabBarLabelStyle: { color: "#007FFF" },
-          //headerShown: false,
           tabBarIcon: ({ focused }) =>
             focused ? (
               <Ionicons name="add-circle" size={24} color="#007FFF" />

@@ -2,6 +2,7 @@ import {
   SafeAreaView,
   ScrollView,
   KeyboardAvoidingView,
+  StyleSheet,
   Text,
   View,
   Image,
@@ -11,22 +12,31 @@ import {
   Pressable,
   ActivityIndicator,
 } from "react-native";
-import React, { useState, useLayoutEffect, useContext, useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, {
+  useState,
+  useLayoutEffect,
+  useContext,
+  useEffect,
+  useCallback,
+} from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Back from "react-native-vector-icons/Ionicons";
 import CustomButton from "../components/CustomButton";
-import { StyleSheet } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import ModalScreen from "./ModalScreen";
 import { ListingContext } from "../ListingContext";
 import axios from "axios";
+import * as Location from "expo-location";
+import { UserContext } from "../UserContext";
 
 const ItemListingScreen = () => {
   const navigation = useNavigation();
+  const { user } = useContext(UserContext);
   const [modalVisible, setModalVisible] = useState(false);
   const [identifying, setIdentifying] = useState(false);
+  const [identifyResult, setIdentifyResult] = useState("");
   const [accessToken, setAccessToken] = useState("");
 
   //category states
@@ -102,6 +112,10 @@ const ItemListingScreen = () => {
     setCondition,
     price,
     setPrice,
+    latitude,
+    setLatitude,
+    longitude,
+    setLongitude,
   } = useContext(ListingContext);
 
   const [errorImage, setErrorImage] = useState();
@@ -131,15 +145,49 @@ const ItemListingScreen = () => {
     });
   }, []);
 
+  const warn = () => {
+    if (!user.image || !user.mobileNo || !user.teleHandle) {
+      Alert.alert("Profile Incomplete.", "Set up your profile before listing an item.");
+      navigation.navigate("Home");
+    }
+  };
+
+  useEffect(() => {
+    warn();
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      warn();
+    }, [])
+  );
+
   const getOAuth2Token = async () => {
     try {
       const response = await axios.get(
-        "http://192.168.0.116:8000/products/getAccessToken"
+        "http://172.20.10.11:8000/products/getAccessToken"
       );
       const token = response.data.token;
       setAccessToken(token);
     } catch (error) {
       console.error("Error fetching access token:", error);
+    }
+  };
+
+  const getLocation = async () => {
+    try {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Permission to access location was denied");
+        return null;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      return location;
+    } catch (error) {
+      console.error("Error getting location:", error);
+      Alert.alert("Error getting location. Please try again.");
+      return null;
     }
   };
 
@@ -189,7 +237,7 @@ const ItemListingScreen = () => {
 
       const result = await response.json();
 
-      setItemName(result.responses[0].labelAnnotations[0].description);
+      setIdentifyResult(result.responses[0].labelAnnotations[0].description);
     } catch (error) {
       console.error(error);
       setErrorImage("Failed to identify image");
@@ -343,7 +391,18 @@ const ItemListingScreen = () => {
       Alert.alert("Invalid input", "Please give your items a valid price");
     }
 
+    if (!latitude || !longitude) {
+      const loc = await getLocation();
+      if (!loc) {
+        return; // Location retrieval failed, exit function
+      }
+      setLatitude(loc.coords.latitude);
+      setLongitude(loc.coords.longitude);
+    }
+
     if (isValid) {
+      console.log(latitude);
+      console.log(longitude);
       navigation.navigate("ListingSummary1", {
         image,
         itemName,
@@ -352,6 +411,8 @@ const ItemListingScreen = () => {
         value,
         condition,
         price,
+        latitude,
+        longitude,
       });
     } else {
       return;
@@ -436,6 +497,11 @@ const ItemListingScreen = () => {
             )}
 
             {!!errorImage && <Text style={styles.error}>{errorImage}</Text>}
+            {identifyResult && (
+              <Text style={{ fontSize: 18, fontWeight: "500" }}>
+                Identify Result: {identifyResult}
+              </Text>
+            )}
           </TouchableOpacity>
 
           <View style={{ marginBottom: 20, marginTop: 20 }}>
@@ -563,7 +629,7 @@ const ItemListingScreen = () => {
             <View style={styles.priceInputRow}>
               <View style={styles.priceInputColumn}>
                 <View style={styles.priceInputContainer}>
-                  <Text>SGD     $ </Text>
+                  <Text>SGD $ </Text>
                   <TextInput
                     value={price}
                     onChangeText={setPrice}
@@ -630,10 +696,7 @@ const ItemListingScreen = () => {
                 </Text>
               </Pressable>
             </View>
-            
           </View>
-
-          
 
           <View style={styles.continueButton}>
             <CustomButton
@@ -649,13 +712,12 @@ const ItemListingScreen = () => {
 };
 
 const styles = StyleSheet.create({
-
   compareButtonRow: {
     width: "95%",
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 10,
-  },  
+  },
 
   itemPhoto: {
     height: 50,
@@ -711,7 +773,7 @@ const styles = StyleSheet.create({
     borderRadius: 75,
     width: 150,
     alignItems: "center",
-    padding: 10
+    padding: 10,
   },
 
   continueButton: {

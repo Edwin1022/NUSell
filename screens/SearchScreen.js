@@ -1,6 +1,7 @@
 import {
   SafeAreaView,
   ScrollView,
+  StyleSheet,
   Text,
   View,
   TextInput,
@@ -10,7 +11,6 @@ import {
 } from "react-native";
 import React, { useState, useLayoutEffect, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/Ionicons";
 import axios from "axios";
@@ -51,8 +51,10 @@ export const SearchScreen = () => {
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-    const filtered = allProducts.filter((product) =>
-      product.name.toLowerCase().includes(query.toLowerCase())
+    const filtered = allProducts.filter(
+      (product) =>
+        product.name.toLowerCase().includes(query.toLowerCase()) ||
+        product.brand.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredProducts(filtered);
 
@@ -76,6 +78,10 @@ export const SearchScreen = () => {
   };
 
   const handleSubmit = () => {
+    if (!activeButton) {
+      return;
+    }
+
     if (activeButton === "Button1") {
       const results = filteredProducts.sort((a, b) => a.price - b.price);
       setSearchResults(results);
@@ -250,7 +256,7 @@ const styles = StyleSheet.create({
   },
 
   filterButtonRow: {
-    marginRight: 250,
+    marginLeft: 250,
   },
 
   buttonIcon: {
