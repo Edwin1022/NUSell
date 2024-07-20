@@ -9,10 +9,10 @@ import {
 } from "react-native";
 import React, { useContext } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { ButtonContext } from "../ButtonContext";
+import { DependentButtonContext } from "../DependentButtonContext";
 
 const FilterModalScreen = ({ isVisible, onSubmit, onClose }) => {
-  const { activeButton, setActiveButton } = useContext(ButtonContext);
+  const { activeButton, setActiveButton } = useContext(DependentButtonContext);
 
   return (
     <Modal

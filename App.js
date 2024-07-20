@@ -4,16 +4,16 @@ import StackNavigator from "./navigation/StackNavigator";
 import { UserProvider } from "./UserContext";
 import { ProductProvider } from "./ProductContext";
 import { ListingProvider } from "./ListingContext";
-import { ButtonProvider } from "./ButtonContext";
+import { DependentButtonProvider } from "./DependentButtonContext";
 
 export default function App() {
   return (
     <UserProvider>
       <ProductProvider>
         <ListingProvider>
-          <ButtonProvider>
-            <StackNavigator />
-          </ButtonProvider>
+            <DependentButtonProvider>
+              <StackNavigator />
+            </DependentButtonProvider>
         </ListingProvider>
       </ProductProvider>
     </UserProvider>

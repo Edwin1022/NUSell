@@ -7,7 +7,7 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import React, { useLayoutEffect } from "react";
+import React, { useLayoutEffect, useContext } from "react";
 import Logo from "../assets/images/NUSell_app_icon.png";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
@@ -77,6 +77,7 @@ const RegisterScreen = () => {
         Alert.alert("Registration Error", "Email is already registered");
       });
   };
+
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
@@ -144,7 +145,6 @@ const RegisterScreen = () => {
               iconName="lock1"
               iconType="AntDesign"
               placeholder="Enter your Password"
-              secureTextEntry
               control={control}
               rules={{
                 required: "Password is required",
@@ -156,7 +156,9 @@ const RegisterScreen = () => {
                   value: 24,
                   message: "Password should be no longer than 24 characters",
                 },
+              
               }}
+              hidable={true}
             />
           </View>
 
@@ -166,11 +168,11 @@ const RegisterScreen = () => {
               iconName="lock1"
               iconType="AntDesign"
               placeholder="Confirm Password"
-              secureTextEntry
               control={control}
               rules={{
                 validate: (value) => value === pwd || "Password does not match",
               }}
+              hidable={true}
             />
           </View>
 

@@ -120,7 +120,7 @@ const HomeScreen = () => {
               style={styles.drawer}
               showsVerticalScrollIndicator={false}
             >
-              <Text style={[styles.category, { marginLeft: 15 }]}>
+              <Text style={[styles.category, { marginLeft: 15, marginTop: 20 }]}>
                 Browse by Categories
               </Text>
               {categories &&
