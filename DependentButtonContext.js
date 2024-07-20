@@ -1,18 +1,18 @@
 import React, { createContext, useState } from "react";
 
-export const ButtonContext = createContext();
+export const DependentButtonContext = createContext();
 
-export const ButtonProvider = ({ children }) => {
+export const DependentButtonProvider = ({ children }) => {
   const [activeButton, setActiveButton] = useState();
 
   return (
-    <ButtonContext.Provider
+    <DependentButtonContext.Provider
       value={{
         activeButton,
         setActiveButton,
       }}
     >
       {children}
-    </ButtonContext.Provider>
+    </DependentButtonContext.Provider>
   );
 };

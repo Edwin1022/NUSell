@@ -17,13 +17,13 @@ import axios from "axios";
 import { HomeScreenComponent } from "../components/HomeScreenComponent";
 import { ProductContext } from "../ProductContext";
 import FilterModalScreen from "./FilterModalScreen";
-import { ButtonContext } from "../ButtonContext";
+import { DependentButtonContext } from "../DependentButtonContext";
 import * as Location from "expo-location";
 
 export const SearchNearbyScreen = () => {
   const navigation = useNavigation();
   const { setSelectedItem } = useContext(ProductContext);
-  const { activeButton } = useContext(ButtonContext);
+  const { activeButton } = useContext(DependentButtonContext);
   const [userCoords, setUserCoords] = useState("");
   const [allProducts, setAllProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -184,7 +184,7 @@ export const SearchNearbyScreen = () => {
         <View style={styles.headerContainer}>
           <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
             <Pressable
-              onPress={() => navigation.navigate("Home")}
+              onPress={() => navigation.navigate("Search")}
               style={styles.backIcon}
             >
               <Ionicons size={30} color="black" name="arrow-back-outline" />

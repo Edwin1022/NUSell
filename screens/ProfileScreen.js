@@ -169,6 +169,31 @@ const ProfileScreen = () => {
       </Pressable>
 
       <Pressable
+        onPress={() => navigation.navigate("Privacy")}
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          borderColor: "#D0D0D0",
+          borderWidth: 1,
+          borderLeftWidth: 0,
+          borderRightWidth: 0,
+          paddingVertical: 15,
+          paddingHorizontal: 5,
+        }}
+      >
+        <View style={{ marginLeft: 10 }}>
+          <Text style={{ fontSize: 18, fontWeight: 500 }}>Privacy Settings</Text>
+        </View>
+        <MaterialIcons
+          style={{ marginRight: 20 }}
+          name="keyboard-arrow-right"
+          size={24}
+          color="black"
+        />
+      </Pressable>
+
+      <Pressable
         onPress={logout}
         style={{
           flexDirection: "row",

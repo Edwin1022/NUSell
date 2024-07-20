@@ -4,8 +4,9 @@ import StackNavigator from "./navigation/StackNavigator";
 import { UserProvider } from "./UserContext";
 import { ProductProvider } from "./ProductContext";
 import { ListingProvider } from "./ListingContext";
-import { ButtonProvider } from "./ButtonContext";
+import { DependentButtonProvider } from "./DependentButtonContext";
 import { StripeProvider } from "@stripe/stripe-react-native";
+
 
 export default function App() {
   return (
@@ -13,9 +14,9 @@ export default function App() {
       <UserProvider>
         <ProductProvider>
           <ListingProvider>
-            <ButtonProvider>
+            <DependentButtonProvider>
               <StackNavigator />
-            </ButtonProvider>
+            </DependentButtonProvider>
           </ListingProvider>
         </ProductProvider>
       </UserProvider>

@@ -17,12 +17,12 @@ import axios from "axios";
 import { HomeScreenComponent } from "../components/HomeScreenComponent";
 import { ProductContext } from "../ProductContext";
 import FilterModalScreen from "./FilterModalScreen";
-import { ButtonContext } from "../ButtonContext";
+import { DependentButtonContext } from "../DependentButtonContext";
 
 export const SearchScreen = () => {
   const navigation = useNavigation();
   const { setSelectedItem } = useContext(ProductContext);
-  const { activeButton } = useContext(ButtonContext);
+  const { activeButton} = useContext(DependentButtonContext);
   const [allProducts, setAllProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
