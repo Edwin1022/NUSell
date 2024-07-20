@@ -19,7 +19,7 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import Back from "react-native-vector-icons/Ionicons";
 import CustomButton from "../components/CustomButton";
 import { Dropdown } from "react-native-element-dropdown";
@@ -33,11 +33,28 @@ import { UserContext } from "../UserContext";
 
 const ItemListingScreen = () => {
   const navigation = useNavigation();
-  const { user } = useContext(UserContext);
   const [modalVisible, setModalVisible] = useState(false);
   const [identifying, setIdentifying] = useState(false);
   const [identifyResult, setIdentifyResult] = useState("");
   const [accessToken, setAccessToken] = useState("");
+
+  const { user, setUser } = useContext(UserContext);
+
+  const fetchUserData = async () => {
+    try {
+      const res = await axios.put(
+        `https://nusell.onrender.com/users/getUserData?email=${user.email}`
+      );
+      setUser(res.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // retrieve user data from the backend
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   //category states
   const data = [
@@ -138,29 +155,21 @@ const ItemListingScreen = () => {
         <Back
           name="arrow-back"
           size={30}
-          onPress={() => navigation.navigate("Home")}
+          onPress={() => {
+            setImage(null);
+            setItemName("");
+            setItemDescription("");
+            setBrand("");
+            setValue("");
+            setCondition("");
+            setPrice(0);
+            navigation.navigate("Home");
+          }}
           style={{ marginRight: 20, color: "white" }}
         />
       ),
     });
   }, []);
-
-  const warn = () => {
-    if (!user.image || !user.mobileNo || !user.teleHandle) {
-      Alert.alert("Profile Incomplete.", "Set up your profile before listing an item.");
-      navigation.navigate("Home");
-    }
-  };
-
-  useEffect(() => {
-    warn();
-  }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      warn();
-    }, [])
-  );
 
   const getOAuth2Token = async () => {
     try {

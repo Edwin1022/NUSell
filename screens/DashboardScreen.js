@@ -145,7 +145,7 @@ const DashboardScreen = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        "http://172.31.11.236:8000/products/search",
+        "http://172.20.10.11:8000/products/search",
         {
           itemName,
           brand,

@@ -362,8 +362,8 @@ router.delete(`/:id`, (req, res) => {
     });
 });
 
-const CLIENT_ID = "EdwinWon-NUSell-PRD-8346cf8d6-447e900f";
-const CLIENT_SECRET = "PRD-346cf8d60b27-42cc-4ce2-9563-88f0";
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const OAUTH2_URL = "https://api.ebay.com/identity/v1/oauth2/token";
 
 const getOAuth2Token = async () => {

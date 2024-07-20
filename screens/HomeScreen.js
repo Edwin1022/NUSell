@@ -5,7 +5,7 @@ import {
   Pressable,
   TouchableOpacity,
   SafeAreaView,
-  ScrollView
+  ScrollView,
 } from "react-native";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
@@ -22,61 +22,54 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const [open, setOpen] = useState(false);
   const { setUserId } = useContext(UserContext);
-  const { setSelectedItem } = useContext(ProductContext);
   const { user, setUser } = useContext(UserContext);
+  const { setSelectedItem } = useContext(ProductContext);
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const token = await AsyncStorage.getItem("authToken");
-      const decodedToken = jwtDecode(token);
-      const userId = decodedToken.userId;
-      setUserId(userId);
-    };
+  const fetchUser = async () => {
+    const token = await AsyncStorage.getItem("authToken");
+    const decodedToken = jwtDecode(token);
+    const userId = decodedToken.userId;
+    setUserId(userId);
+    return userId;
+  };
 
-    fetchUser();
-  }, []);
+  const fetchUserData = async () => {
+    const userId = await fetchUser();
+    try {
+      const response = await axios.get(
+        `https://nusell.onrender.com/users/profile/${userId}`
+      );
+      const { user } = response.data;
+      setUser(user);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
-  // retrieve user data from the backend
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const res = await axios.put(
-          `https://nusell.onrender.com/getUserData?email=${user.email}`
-        );
-        setUser(res.data.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await axios.get(`https://nusell.onrender.com/categories`);
-        setCategories(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    fetchCategories();
-  }, []);
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get(`https://nusell.onrender.com/categories`);
+      setCategories(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const fetchProducts = async () => {
     try {
       const res = await axios.get(`https://nusell.onrender.com/products`);
-      setProducts(res.data);
+      setProducts(res.data.filter((product) => product.status !== "ordered"));
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
+    fetchUser();
+    fetchUserData();
+    fetchCategories();
     fetchProducts();
   }, []);
 
@@ -91,7 +84,7 @@ const HomeScreen = () => {
       const res = await axios.get(
         `https://nusell.onrender.com/products/ByCategories?categories=${category.id}`
       );
-      setProducts(res.data);
+      setProducts(res.data.filter((product) => product.status !== "ordered"));
     } catch (err) {
       console.log(err);
     }
@@ -102,7 +95,7 @@ const HomeScreen = () => {
       const res = await axios.get(
         `https://nusell.onrender.com/products/ByCategories?categories=666c025badffbb04e4c808cb`
       );
-      setProducts(res.data);
+      setProducts(res.data.filter((product) => product.status !== "ordered"));
     } catch (err) {
       console.log(err);
     }
@@ -168,7 +161,14 @@ const HomeScreen = () => {
                 }}
                 style={styles.categoryBox}
               >
-                <Text style={[styles.category, {fontWeight:"bold", color: "#007FFF"}]}>ALL ITEMS</Text>
+                <Text
+                  style={[
+                    styles.category,
+                    { fontWeight: "bold", color: "#007FFF" },
+                  ]}
+                >
+                  ALL ITEMS
+                </Text>
 
                 <Ionicons
                   name="chevron-forward-outline"
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     margin: 8,
     width: "44%",
-    alignItems: "center"
+    alignItems: "center",
   },
 
   headerContainer: {

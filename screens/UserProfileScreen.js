@@ -123,6 +123,13 @@ const UserProfileScreen = () => {
 
           <View style={{ marginTop: 30 }} />
 
+          <CustomButton
+            onPress={() => navigation.navigate("UserStore")}
+            text={`${seller.name}'s store`}
+          />
+
+          <View style={{ marginTop: 30 }} />
+
           {buttonVisible && (
             <CustomButton
               onPress={() => setModalVisible(true)}
@@ -355,7 +362,8 @@ const UserProfileScreen = () => {
                     marginRight: 20,
                   }}
                 >
-                  {seller.defaultAddress?.blockNo} {seller.defaultAddress?.street}
+                  {seller.defaultAddress?.blockNo}{" "}
+                  {seller.defaultAddress?.street}
                 </Text>
 
                 <Text
@@ -369,7 +377,8 @@ const UserProfileScreen = () => {
                     marginRight: 20,
                   }}
                 >
-                  {seller.defaultAddress?.unit} {seller.defaultAddress?.building}
+                  {seller.defaultAddress?.unit}{" "}
+                  {seller.defaultAddress?.building}
                 </Text>
 
                 <Text

@@ -94,7 +94,7 @@ const ListingSummary1Screen = () => {
 
       // send a post request to the backend API
       const response = await axios.post(
-        "http://172.31.11.236:8000/products",
+        "http://172.20.10.11:8000/products",
         formData,
         {
           headers: {

@@ -72,17 +72,19 @@ export const SearchNearbyScreen = () => {
     const location = await getUserLocation();
     setUserCoords(location.coords);
     const res = await axios.post(
-      "http://172.31.11.236:8000/products/search-nearby",
+      "http://172.20.10.11:8000/products/search-nearby",
       {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
       }
     );
-    const nearbyProducts = res.data.sort(
-      (a, b) =>
-        haversineDistance(userCoords, a.location.coordinates) -
-        haversineDistance(userCoords, b.location.coordinates)
-    );
+    const nearbyProducts = res.data
+      .filter((product) => product.status !== "ordered")
+      .sort(
+        (a, b) =>
+          haversineDistance(userCoords, a.location.coordinates) -
+          haversineDistance(userCoords, b.location.coordinates)
+      );
     setAllProducts(nearbyProducts);
     setAllResults(nearbyProducts);
     setLoading(false);

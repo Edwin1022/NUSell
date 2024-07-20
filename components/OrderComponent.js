@@ -8,36 +8,45 @@ import {
 } from "react-native";
 import React from "react";
 
-export const OrderComponent = () => {
+export const OrderComponent = ({
+  pfp,
+  username,
+  image,
+  name,
+  status,
+  condition,
+  price,
+  onUser,
+  onItem,
+}) => {
   return (
     <ScrollView>
-      
       <View style={styles.itemSummaryComponent}>
         <View style={styles.usernameBox}>
-          <Pressable>
+          <Pressable onPress={onUser}>
             <Image
               style={styles.userProfile}
               source={{
-                uri: "https://cdn.britannica.com/70/234870-050-D4D024BB/Orange-colored-cat-yawns-displaying-teeth.jpg",
+                uri: pfp,
               }}
             />
           </Pressable>
-          <Pressable>
-            <Text style={styles.username}>Username</Text>
+          <Pressable onPress={onUser}>
+            <Text style={styles.username}>{username}</Text>
           </Pressable>
           <Pressable style={styles.checkoutButton}>
-            <Text style={styles.buttonText}>STATUS</Text>
+            <Text style={styles.buttonText}>{status}</Text>
           </Pressable>
         </View>
 
         <View style={styles.swipable}>
-          <Pressable>
+          <Pressable onPress={onItem}>
             <View style={styles.visibleRow}>
               <View>
                 <Image
                   style={styles.itemImage}
                   source={{
-                    uri: "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg",
+                    uri: image,
                   }}
                 />
               </View>
@@ -45,11 +54,11 @@ export const OrderComponent = () => {
               <View>
                 <View style={styles.itemNameBox}>
                   <Text style={styles.itemName}>
-                    An example of a very long item name{" "}
+                    {name}
                   </Text>
                 </View>
                 <View style={styles.conditionBox}>
-                  <Text style={styles.condition}>Condition</Text>
+                  <Text style={styles.condition}>{condition}</Text>
                 </View>
                 <Text style={styles.itemText}>1 item(s)</Text>
               </View>
@@ -58,10 +67,9 @@ export const OrderComponent = () => {
         </View>
 
         <View style={styles.bottomContainer}>
-          <Text style={styles.amount}>Total: $100</Text>
+          <Text style={styles.amount}>Total: ${price}</Text>
         </View>
       </View>
-      
     </ScrollView>
   );
 };
@@ -119,7 +127,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderRadius: 5,
   },
-  
+
   visibleRow: {
     backgroundColor: "#FFF",
     height: 110,

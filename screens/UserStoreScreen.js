@@ -37,10 +37,10 @@ const UserStoreScreen = () => {
   const fetchUserProducts = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.0.116:8000/products/BySellers?users=${selectedUser.id}`
+        `http://172.20.10.11:8000/products/BySellers?users=${selectedUser.id}`
       );
 
-      const products = response.data;
+      const products = response.data.filter((product) => product.status !== "ordered");
 
       setUserProducts(products);
     } catch (error) {

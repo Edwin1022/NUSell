@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import HomeScreen from "../screens/HomeScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Entypo } from "@expo/vector-icons";
@@ -7,6 +7,9 @@ import { Ionicons } from "@expo/vector-icons";
 import ProfileScreen from "../screens/ProfileScreen";
 import ItemListingScreen from "../screens/ItemListingScreen";
 import HomeSearchStackNav from "./HomeSearchStackNav";
+import { UserContext } from "../UserContext";
+import { Alert } from "react-native";
+import axios from "axios";
 
 export const BottomTabs = () => {
   const Tab = createBottomTabNavigator();
@@ -56,6 +59,5 @@ export const BottomTabs = () => {
         }}
       />
     </Tab.Navigator>
-  
   );
-}
+};

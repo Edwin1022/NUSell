@@ -62,7 +62,7 @@ const YourListingsScreen = () => {
         `https://nusell.onrender.com/products/bySellers?users=${userId}`
       );
       setLoading(false);
-      setProducts(res.data);
+      setProducts(res.data.filter((product) => product.status !== "ordered"));
     } catch (err) {
       console.log(err);
     }

@@ -9,8 +9,14 @@ import {
   Alert,
   TouchableOpacity,
 } from "react-native";
-import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import CustomRadioButton from "../components/CustomRadioButton";
@@ -68,19 +74,19 @@ const YourAccountScreen = () => {
     });
   }, []);
 
+  const fetchUserData = async () => {
+    try {
+      const res = await axios.put(
+        `https://nusell.onrender.com/users/getUserData?email=${user.email}`
+      );
+      setUser(res.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   // retrieve user data from the backend
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const res = await axios.put(
-          `https://nusell.onrender.com/users/getUserData?email=${user.email}`
-        );
-        setUser(res.data.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
     fetchUserData();
   }, []);
 
@@ -189,6 +195,7 @@ const YourAccountScreen = () => {
         }
       );
 
+      fetchUserData();
       Alert.alert(
         "Profile Update Successful",
         "You have updated your profile successfully"

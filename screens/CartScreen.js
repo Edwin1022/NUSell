@@ -62,7 +62,7 @@ const CartScreen = () => {
         `https://nusell.onrender.com/order-items/byBuyers?users=${userId}`
       );
       setLoading(false);
-      setCartItems(res.data);
+      setCartItems(res.data.filter((cartItem) => cartItem.product.status !== "ordered"));
     } catch (err) {
       console.log(err);
     }

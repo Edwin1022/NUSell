@@ -81,7 +81,7 @@ const ProductInfoScreen = () => {
   const getOAuth2Token = async () => {
     try {
       const response = await axios.get(
-        "http://172.31.11.236:8000/products/getAccessToken"
+        "http://172.20.10.11:8000/products/getAccessToken"
       );
       const token = response.data.token;
       setAccessToken(token);

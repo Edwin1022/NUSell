@@ -37,7 +37,7 @@ export const SearchScreen = () => {
 
       const res = await axios.get(`https://nusell.onrender.com/products`);
 
-      setAllProducts(res.data);
+      setAllProducts(res.data.filter((product) => product.status !== "ordered"));
 
       setLoading(false);
     } catch (err) {

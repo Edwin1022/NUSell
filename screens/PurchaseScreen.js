@@ -19,7 +19,7 @@ const PurchaseScreen = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [shippingFee, setShippingFee] = useState(0);
   const { userId } = useContext(UserContext);
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   const [errorDelivery, setErrorDelivery] = useState("");
   const [errorPayment, setErrorPayment] = useState("");
@@ -36,17 +36,6 @@ const PurchaseScreen = () => {
     }
   };
 
-  const fetchUserData = async () => {
-    try {
-      const res = await axios.put(
-        `https://nusell.onrender.com/users/getUserData?email=${user.email}`
-      );
-      setUser(res.data.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const fetchProductData = async () => {
     try {
       const res = await axios.put(
@@ -60,7 +49,6 @@ const PurchaseScreen = () => {
 
   useEffect(() => {
     fetchAddresses();
-    fetchUserData();
     fetchProductData();
     setSelectedAddress(user.defaultAddress);
   }, []);
@@ -138,16 +126,26 @@ const PurchaseScreen = () => {
   };
 
   const handlePlaceOrder = async () => {
-    navigation.navigate("YourOrders");
+    axios
+      .post("http://172.20.10.11:8000/orders", {
+        user: userId,
+        orderItem: selectedItem,
+        status: "PAID",
+        subtotal: totalPrice,
+        shippingFee,
+        totalPrice: totalPrice + shippingFee,
+        shippingAddress: selectedAddress,
+        paymentMethod: selectedPayment,
+      })
+      .then((response) => {
+        Alert.alert("Success", "Order placed successfully");
+        navigation.navigate("Home");
+      })
+      .catch((error) => {
+        Alert.alert("Error", "Failed to place order");
+        console.log(error);
+      });
   };
-
-  /*const pay = async () => {
-    try {
-        
-    } catch(error) {
-        console.log("error", error)
-    }
-  }*/
 
   return (
     <ScrollView>
@@ -618,7 +616,25 @@ const PurchaseScreen = () => {
 
           <View style={{ marginTop: 25 }} />
 
-          <CustomButton onPress={handlePlaceOrder} text="Place Order" />
+          <CustomButton
+            onPress={() => {
+              if (selectedPayment === "card") {
+                navigation.navigate("CardPayment", {
+                  user: userId,
+                  orderItem: selectedItem,
+                  status: "PAID",
+                  subtotal: totalPrice,
+                  shippingFee,
+                  totalPrice: totalPrice + shippingFee,
+                  shippingAddress: selectedAddress,
+                  paymentMethod: selectedPayment,
+                });
+              } else if (selectedPayment === "cash") {
+                handlePlaceOrder();
+              }
+            }}
+            text="Place Order"
+          />
         </View>
       )}
     </ScrollView>

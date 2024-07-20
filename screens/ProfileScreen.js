@@ -9,7 +9,7 @@ import CustomButton from "../components/CustomButton";
 import { MaterialIcons } from "@expo/vector-icons";
 
 const ProfileScreen = () => {
-  const { userId } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const navigation = useNavigation();
 
   // header
@@ -50,23 +50,6 @@ const ProfileScreen = () => {
         </View>
       ),
     });
-  }, []);
-
-  const { user, setUser } = useContext(UserContext);
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await axios.get(
-          `https://nusell.onrender.com/users/profile/${userId}`
-        );
-        const { user } = response.data;
-        setUser(user);
-      } catch (error) {
-        console.log("error", error);
-      }
-    };
-
-    fetchUserProfile();
   }, []);
 
   const logout = () => {
