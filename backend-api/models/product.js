@@ -61,7 +61,7 @@ const productSchema = mongoose.Schema({
   },
   location: {
     type: { type: String, default: "Point" },
-    coordinates: [Number], // [longitude, latitude]
+    coordinates: { type: [Number], default: [0, 0] }, // [longitude, latitude]
   },
   priceChangeType: {
     type: String,
