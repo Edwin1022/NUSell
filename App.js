@@ -6,7 +6,7 @@ import { ProductProvider } from "./ProductContext";
 import { ListingProvider } from "./ListingContext";
 import { DependentButtonProvider } from "./DependentButtonContext";
 import { StripeProvider } from "@stripe/stripe-react-native";
-
+import { IndependentButtonProvider } from "./IndependentButtonContext";
 
 export default function App() {
   return (
@@ -15,7 +15,9 @@ export default function App() {
         <ProductProvider>
           <ListingProvider>
             <DependentButtonProvider>
-              <StackNavigator />
+              <IndependentButtonProvider>
+                <StackNavigator />
+              </IndependentButtonProvider>
             </DependentButtonProvider>
           </ListingProvider>
         </ProductProvider>

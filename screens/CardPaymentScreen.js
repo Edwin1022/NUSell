@@ -1,8 +1,9 @@
 import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { CardField, useConfirmPayment } from "@stripe/stripe-react-native";
 import axios from "axios";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import Back from "react-native-vector-icons/Ionicons";
 
 const CardPaymentScreen = (props) => {
   const navigation = useNavigation();
@@ -21,9 +22,34 @@ const CardPaymentScreen = (props) => {
   const [cardDetails, setCardDetails] = useState();
   const { confirmPayment, loading } = useConfirmPayment();
 
+  // header
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: "",
+      headerStyle: {
+        backgroundColor: "#6B71E3",
+      },
+      headerLeft: () => (
+        <Text style={styles.headerLeft}>
+          Payment x stripe
+        </Text>
+      ),
+      headerRight: () => (
+        <Back
+          name="arrow-back"
+          size={30}
+          onPress={() => {
+            navigation.goBack();
+          }}
+          style={{ marginRight: 20, color: "white" }}
+        />
+      ),
+    });
+  }, []);
+
   const handlePlaceOrder = async () => {
     axios
-      .post("http://172.20.10.11:8000/orders", {
+      .post("https://nusell.onrender.com/orders", {
         email,
         user,
         orderItem,
@@ -46,7 +72,7 @@ const CardPaymentScreen = (props) => {
 
   const fetchPaymentIntentClientSecret = async () => {
     const response = await fetch(
-      "http://172.20.10.11:8000/orders/create-payment-intent",
+      "https://nusell.onrender.com/orders/create-payment-intent",
       {
         method: "POST",
         headers: {
@@ -125,7 +151,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    margin: 20,
+    backgroundColor: "#fffafa",
   },
   input: {
     backgroundColor: "#efefefef",
@@ -133,12 +159,22 @@ const styles = StyleSheet.create({
     fontSize: 20,
     height: 50,
     padding: 10,
+    margin: 20,
   },
   card: {
     backgroundColor: "#efefefef",
   },
   cardContainer: {
     height: 50,
-    marginVertical: 30,
+    marginHorizontal: 20,
+    marginTop: 10,
+    marginBottom: 25,
+  },
+  headerLeft: {
+    fontFamily: "CustomFont",
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "white",
+    marginLeft: 20,
   },
 });

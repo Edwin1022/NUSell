@@ -28,7 +28,7 @@ export const SearchByUserScreen = () => {
     try {
       setLoading(true);
 
-      const response = await axios.get("http://172.20.10.11:8000/users");
+      const response = await axios.get("https://nusell.onrender.com/users");
 
       const users = response.data;
 

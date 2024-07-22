@@ -15,6 +15,7 @@ import { ListingComponent } from "../components/ListingComponent";
 import axios from "axios";
 import { ProductContext } from "../ProductContext";
 import { UserContext } from "../UserContext";
+import { SoldListingComponent } from "../components/SoldListingComponent";
 
 const YourListingsScreen = () => {
   const navigation = useNavigation();
@@ -23,6 +24,7 @@ const YourListingsScreen = () => {
   const { user } = useContext(UserContext);
   const { userId } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
+  const [statuses, setStatuses] = useState({});
 
   // header
   useLayoutEffect(() => {
@@ -62,7 +64,7 @@ const YourListingsScreen = () => {
         `https://nusell.onrender.com/products/bySellers?users=${userId}`
       );
       setLoading(false);
-      setProducts(res.data.filter((product) => product.status !== "ordered"));
+      setProducts(res.data);
     } catch (err) {
       console.log(err);
     }
@@ -92,7 +94,7 @@ const YourListingsScreen = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, backgroundColor: "white", alignItems:"center" }}
+      style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ marginTop: 10 }}></View>
@@ -106,19 +108,33 @@ const YourListingsScreen = () => {
             <View>
               {products &&
                 products.length > 0 &&
-                products.map((item, index) => (
-                  <View key={index} style={{ marginVertical: 10 }}>
-                    <ListingComponent
-                      pfp={user.imageUrl}
-                      username={user.name}
-                      image={item.imageUrl}
-                      name={item.name}
-                      condition={item.condition}
-                      onEdit={() => handleEdit(item.id)}
-                      onDelete={() => handleDelete(item.id)}
-                    />
-                  </View>
-                ))}
+                products.map((item, index) =>
+                  item.status !== "ordered" ? (
+                    <View key={index} style={{ marginVertical: 10 }}>
+                      <ListingComponent
+                        pfp={user.imageUrl}
+                        username={user.name}
+                        image={item.imageUrl}
+                        name={item.name}
+                        condition={item.condition}
+                        onEdit={() => handleEdit(item.id)}
+                        onDelete={() => handleDelete(item.id)}
+                      />
+                    </View>
+                  ) : (
+                    <View key={index} style={{ marginVertical: 10 }}>
+                      <SoldListingComponent
+                        pfp={user.imageUrl}
+                        username={user.name}
+                        image={item.imageUrl}
+                        name={item.name}
+                        condition={item.condition}            
+                        onEdit={() => handleEdit(item.id)}
+                        onDelete={() => handleDelete(item.id)}
+                      />
+                    </View>
+                  )
+                )}
             </View>
           )}
         </KeyboardAvoidingView>

@@ -12,13 +12,7 @@ import {
   Pressable,
   ActivityIndicator,
 } from "react-native";
-import React, {
-  useState,
-  useLayoutEffect,
-  useContext,
-  useEffect,
-  useCallback,
-} from "react";
+import React, { useState, useLayoutEffect, useContext, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Back from "react-native-vector-icons/Ionicons";
 import CustomButton from "../components/CustomButton";
@@ -35,7 +29,6 @@ const ItemListingScreen = () => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [identifying, setIdentifying] = useState(false);
-  const [identifyResult, setIdentifyResult] = useState("");
   const [accessToken, setAccessToken] = useState("");
 
   const { user, setUser } = useContext(UserContext);
@@ -117,6 +110,8 @@ const ItemListingScreen = () => {
   const {
     image,
     setImage,
+    identifyResult,
+    setIdentifyResult,
     itemName,
     setItemName,
     itemDescription,
@@ -157,6 +152,7 @@ const ItemListingScreen = () => {
           size={30}
           onPress={() => {
             setImage(null);
+            setIdentifyResult("");
             setItemName("");
             setItemDescription("");
             setBrand("");
@@ -174,7 +170,7 @@ const ItemListingScreen = () => {
   const getOAuth2Token = async () => {
     try {
       const response = await axios.get(
-        "http://172.20.10.11:8000/products/getAccessToken"
+        "https://nusell.onrender.com/products/getAccessToken"
       );
       const token = response.data.token;
       setAccessToken(token);
@@ -816,6 +812,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 20,
   },
 
   Title: {

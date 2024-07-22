@@ -4,6 +4,7 @@ export const ListingContext = createContext();
 
 export const ListingProvider = ({ children }) => {
   const [image, setImage] = useState();
+  const [identifyResult, setIdentifyResult] = useState("");
   const [itemName, setItemName] = useState("");
   const [itemDescription, setItemDescription] = useState("");
   const [brand, setBrand] = useState("");
@@ -18,6 +19,8 @@ export const ListingProvider = ({ children }) => {
       value={{
         image,
         setImage,
+        identifyResult,
+        setIdentifyResult,
         itemName,
         setItemName,
         itemDescription,

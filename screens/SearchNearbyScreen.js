@@ -72,7 +72,7 @@ export const SearchNearbyScreen = () => {
     const location = await getUserLocation();
     setUserCoords(location.coords);
     const res = await axios.post(
-      "http://172.20.10.11:8000/products/search-nearby",
+      "https://nusell.onrender.com/products/search-nearby",
       {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,

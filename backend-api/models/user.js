@@ -46,6 +46,26 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  studentIdVisible: {
+    type: Boolean,
+    default: false,
+  },
+  majorVisible: {
+    type: Boolean,
+    default: true,
+  },
+  facultyVisible: {
+    type: Boolean,
+    default: true,
+  },
+  addressVisible: {
+    type: Boolean,
+    default: false,
+  },
+  emailVisible: {
+    type: Boolean,
+    default: false,
+  },
   totalRating: {
     type: Number,
     default: 0,

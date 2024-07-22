@@ -15,6 +15,7 @@ import { CartComponent } from "../components/CartComponent";
 import { ProductContext } from "../ProductContext";
 import { UserContext } from "../UserContext";
 import axios from "axios";
+import { SoldCartComponent } from "../components/SoldCartComponent";
 
 const CartScreen = () => {
   const navigation = useNavigation();
@@ -62,7 +63,9 @@ const CartScreen = () => {
         `https://nusell.onrender.com/order-items/byBuyers?users=${userId}`
       );
       setLoading(false);
-      setCartItems(res.data.filter((cartItem) => cartItem.product.status !== "ordered"));
+      setCartItems(
+        res.data
+      );
     } catch (err) {
       console.log(err);
     }
@@ -102,7 +105,7 @@ const CartScreen = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, backgroundColor: "white", alignItems:"center"}}
+      style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ marginTop: 10 }}></View>
@@ -116,22 +119,37 @@ const CartScreen = () => {
             <View>
               {cartItems &&
                 cartItems.length > 0 &&
-                cartItems.map((item, index) => (
-                  <View key={index} style={{ marginVertical: 10 }}>
-                    <CartComponent
-                      pfp={item.product.user.imageUrl}
-                      username={item.product.user.name}
-                      image={item.product.imageUrl}
-                      name={item.product.name}
-                      condition={item.product.condition}
-                      price={item.product.price}
-                      onUser={() => handleUserPressed(item.product.user)}
-                      onItem={() => handleItemPressed(item.product.id)}
-                      onDelete={() => handleDelete(item.id)}
-                      onCheckout={() => handleCheckout(item.product.id)}
-                    />
-                  </View>
-                ))}
+                cartItems.map((item, index) =>
+                  item.product.status !== "ordered" ? (
+                    <View key={index} style={{ marginVertical: 10 }}>
+                      <CartComponent
+                        pfp={item.product.user.imageUrl}
+                        username={item.product.user.name}
+                        image={item.product.imageUrl}
+                        name={item.product.name}
+                        condition={item.product.condition}
+                        price={item.product.price}
+                        onUser={() => handleUserPressed(item.product.user)}
+                        onItem={() => handleItemPressed(item.product.id)}
+                        onDelete={() => handleDelete(item.id)}
+                        onCheckout={() => handleCheckout(item.product.id)}
+                      />
+                    </View>
+                  ) : (
+                    <View key={index} style={{ marginVertical: 10 }}>
+                      <SoldCartComponent
+                        pfp={item.product.user.imageUrl}
+                        username={item.product.user.name}
+                        image={item.product.imageUrl}
+                        name={item.product.name}
+                        condition={item.product.condition}
+                        price={item.product.price}
+                        onUser={() => handleUserPressed(item.product.user)}
+                        onDelete={() => handleDelete(item.id)}
+                      />
+                    </View>
+                  )
+                )}
             </View>
           )}
         </KeyboardAvoidingView>

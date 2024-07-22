@@ -81,7 +81,7 @@ const ProductInfoScreen = () => {
   const getOAuth2Token = async () => {
     try {
       const response = await axios.get(
-        "http://172.20.10.11:8000/products/getAccessToken"
+        "https://nusell.onrender.com/products/getAccessToken"
       );
       const token = response.data.token;
       setAccessToken(token);

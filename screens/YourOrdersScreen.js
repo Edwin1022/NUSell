@@ -58,7 +58,7 @@ const YourOrdersScreen = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://172.20.10.11:8000/orders/byBuyers?users=${userId}`
+        `https://nusell.onrender.com/orders/byBuyers?users=${userId}`
       );
       setLoading(false);
       setOrders(res.data);

@@ -204,17 +204,7 @@ const HomeScreen = () => {
             style={styles.searchbox}
           >
             <Text style={styles.input}>Search</Text>
-          </TouchableOpacity>
-          <View style={styles.icons}>
-            <TouchableOpacity>
-              <Ionicons
-                name="camera-outline"
-                size={27}
-                color="white"
-                style={styles.icon}
-              />
-            </TouchableOpacity>
-          </View>
+          </TouchableOpacity>         
         </View>
       </View>
 

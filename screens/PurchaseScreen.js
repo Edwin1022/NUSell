@@ -127,7 +127,7 @@ const PurchaseScreen = () => {
 
   const handlePlaceOrder = async () => {
     axios
-      .post("http://172.20.10.11:8000/orders", {
+      .post("https://nusell.onrender.com/orders", {
         user: userId,
         orderItem: selectedItem,
         status: "PAID",
@@ -210,90 +210,99 @@ const PurchaseScreen = () => {
           <Text style={{ fontSize: 17, fontWeight: "bold", marginLeft: 10 }}>
             Select a Delivery Address
           </Text>
+          {addresses.length === 0 ? (
+            <View style={{ flex: 1, alignItems: "center", marginTop: 200 }}>
+              <Text style={{ textAlign: "center", fontSize: 15 }}>
+                Navigate to Your Profile Page to add your addresses before
+                purchasing the item.
+              </Text>
+            </View>
+          ) : (
+            <Pressable style={{ marginLeft: 5, marginRight: 5 }}>
+              {addresses?.map((address, index) => (
+                <Pressable
+                  style={{
+                    backgroundColor: "white",
+                    borderWidth: 1,
+                    borderColor: "#D0D0D0",
+                    padding: 10,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 5,
+                    marginVertical: 10,
+                  }}
+                >
+                  {selectedAddress && selectedAddress._id == address?._id ? (
+                    <AntDesign name="checkcircle" size={24} color="#007AFF" />
+                  ) : (
+                    <AntDesign
+                      onPress={() => setSelectedAddress(address)}
+                      name="checkcircleo"
+                      size={24}
+                      color="#007AFF"
+                    />
+                  )}
 
-          <Pressable style={{ marginLeft: 5, marginRight: 5 }}>
-            {addresses?.map((address, index) => (
-              <Pressable
-                style={{
-                  backgroundColor: "white",
-                  borderWidth: 1,
-                  borderColor: "#D0D0D0",
-                  padding: 10,
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 5,
-                  marginVertical: 10,
-                }}
-              >
-                {selectedAddress && selectedAddress._id == address?._id ? (
-                  <AntDesign name="checkcircle" size={24} color="#007AFF" />
-                ) : (
-                  <AntDesign
-                    onPress={() => setSelectedAddress(address)}
-                    name="checkcircleo"
-                    size={24}
-                    color="#007AFF"
-                  />
-                )}
-
-                <View style={{ marginLeft: 10 }}>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: 3,
-                    }}
-                  >
-                    <Text style={{ fontSize: 15, fontWeight: "bold" }}>
-                      <MaterialIcons
-                        name="location-pin"
-                        size={24}
-                        color="#007AFF"
-                      />
+                  <View style={{ marginLeft: 10 }}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 3,
+                      }}
+                    >
+                      <Text style={{ fontSize: 15, fontWeight: "bold" }}>
+                        <MaterialIcons
+                          name="location-pin"
+                          size={24}
+                          color="#007AFF"
+                        />
+                      </Text>
+                    </View>
+                    <Text style={{ fontSize: 15, color: "#181818" }}>
+                      {address?.blockNo} {address?.street}
                     </Text>
+
+                    <Text style={{ fontSize: 15, color: "#181818" }}>
+                      {address?.unit} {address?.building}
+                    </Text>
+
+                    <Text style={{ fontSize: 15, color: "#181818" }}>
+                      Singapore {address?.postalCode}
+                    </Text>
+
+                    <View>
+                      {selectedAddress &&
+                        selectedAddress._id == address?._id && (
+                          <Pressable
+                            onPress={() => setCurrentStep(1)}
+                            style={{
+                              backgroundColor: "#007FFF",
+                              width: 200,
+                              padding: 10,
+                              borderRadius: 20,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              marginTop: 10,
+                            }}
+                          >
+                            <Text
+                              style={{
+                                textAlign: "center",
+                                color: "white",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              Deliver to this Address
+                            </Text>
+                          </Pressable>
+                        )}
+                    </View>
                   </View>
-                  <Text style={{ fontSize: 15, color: "#181818" }}>
-                    {address?.blockNo} {address?.street}
-                  </Text>
-
-                  <Text style={{ fontSize: 15, color: "#181818" }}>
-                    {address?.unit} {address?.building}
-                  </Text>
-
-                  <Text style={{ fontSize: 15, color: "#181818" }}>
-                    Singapore {address?.postalCode}
-                  </Text>
-
-                  <View>
-                    {selectedAddress && selectedAddress._id == address?._id && (
-                      <Pressable
-                        onPress={() => setCurrentStep(1)}
-                        style={{
-                          backgroundColor: "#007FFF",
-                          width: 200,
-                          padding: 10,
-                          borderRadius: 20,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          marginTop: 10,
-                        }}
-                      >
-                        <Text
-                          style={{
-                            textAlign: "center",
-                            color: "white",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          Deliver to this Address
-                        </Text>
-                      </Pressable>
-                    )}
-                  </View>
-                </View>
-              </Pressable>
-            ))}
-          </Pressable>
+                </Pressable>
+              ))}
+            </Pressable>
+          )}
         </View>
       )}
 
@@ -390,32 +399,6 @@ const PurchaseScreen = () => {
           <Text style={{ fontSize: 17, fontWeight: "bold" }}>
             Select your Payment Method
           </Text>
-
-          <View
-            style={{
-              backgroundColor: "white",
-              borderWidth: 1,
-              borderColor: "#D0D0D0",
-              padding: 10,
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 5,
-              marginVertical: 10,
-            }}
-          >
-            {selectedPayment == "paypal" ? (
-              <AntDesign name="checkcircle" size={24} color="#007AFF" />
-            ) : (
-              <AntDesign
-                onPress={() => setSelectedPayment("paypal")}
-                name="checkcircleo"
-                size={24}
-                color="#007AFF"
-              />
-            )}
-
-            <Text style={{ flex: 1, marginLeft: 10 }}>PayPal</Text>
-          </View>
 
           <View
             style={{
@@ -605,9 +588,7 @@ const PurchaseScreen = () => {
             <View>
               <Text style={{ fontSize: 17, fontWeight: "bold" }}>Pay with</Text>
               <Text style={{ marginTop: 5, fontSize: 15, color: "gray" }}>
-                {selectedPayment == "paypal"
-                  ? "Pay Online (PayPal)"
-                  : selectedPayment == "cash"
+                {selectedPayment == "cash"
                   ? "Pay on delivery (Cash)"
                   : "Pay Online (Credit/Debit Card)"}
               </Text>
@@ -629,7 +610,7 @@ const PurchaseScreen = () => {
                   shippingAddress: selectedAddress,
                   paymentMethod: selectedPayment,
                 });
-              } else if (selectedPayment === "cash") {
+              } else {
                 handlePlaceOrder();
               }
             }}

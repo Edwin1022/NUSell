@@ -25,7 +25,7 @@ import ListingSummary2Screen from "../screens/ListingSummary2Screen";
 import EbayDashboardScreen from "../screens/EbayDashboardScreen";
 import EbaySimilarProductsScreen from "../screens/EbaySimilarProducts";
 import CardPaymentScreen from "../screens/CardPaymentScreen";
-import PrivacySettingScreen from "../screens/PrivacySettingScreen";
+import {PrivacySettingScreen} from "../screens/PrivacySettingScreen";
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();

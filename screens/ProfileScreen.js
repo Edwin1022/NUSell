@@ -5,11 +5,11 @@ import { AntDesign } from "@expo/vector-icons";
 import axios from "axios";
 import { UserContext } from "../UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import CustomButton from "../components/CustomButton";
 import { MaterialIcons } from "@expo/vector-icons";
 
 const ProfileScreen = () => {
-  const { user } = useContext(UserContext);
+  const { userId } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const navigation = useNavigation();
 
   // header
@@ -50,6 +50,22 @@ const ProfileScreen = () => {
         </View>
       ),
     });
+  }, []);
+
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(
+        `https://nusell.onrender.com/users/profile/${userId}`
+      );
+      const { user } = response.data;
+      setUser(user);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
   }, []);
 
   const logout = () => {
@@ -183,7 +199,9 @@ const ProfileScreen = () => {
         }}
       >
         <View style={{ marginLeft: 10 }}>
-          <Text style={{ fontSize: 18, fontWeight: 500 }}>Privacy Settings</Text>
+          <Text style={{ fontSize: 18, fontWeight: 500 }}>
+            Privacy Settings
+          </Text>
         </View>
         <MaterialIcons
           style={{ marginRight: 20 }}

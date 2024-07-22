@@ -10,17 +10,19 @@ import {
   Modal,
   Alert,
 } from "react-native";
-import React, { useState, useLayoutEffect, useEffect } from "react";
+import React, { useState, useLayoutEffect, useEffect, useContext } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Back from "react-native-vector-icons/Ionicons";
 import { StyleSheet } from "react-native";
 import axios from "axios";
 import CustomButton from "../components/CustomButton";
+import { UserContext } from "../UserContext";
 
 const ListingSummary2Screen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { productId, validImages } = route.params;
+  const { user } = useContext(UserContext);
   const [product, setProduct] = useState("");
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -88,10 +90,17 @@ const ListingSummary2Screen = () => {
 
       setLoading(false);
 
-      Alert.alert(
-        "Product Listed Successful",
-        "You have listed your product successfully"
-      );
+      if (!user.mobileNo || !user.teleHandle) {
+        Alert.alert(
+          "Product Listed Successful",
+          "You have listed your product successfully.\nAdd your mobileNo and teleHandle for buyers to reach out to you."
+        );
+      } else {
+        Alert.alert(
+          "Product Listed Successful",
+          "You have listed your product successfully"
+        );
+      }
 
       navigation.navigate("Home");
     } catch (error) {
@@ -101,6 +110,22 @@ const ListingSummary2Screen = () => {
         "An error occurred while uploading images"
       );
     }
+  };
+
+  const handleListItem = () => {
+    if (!user.mobileNo || !user.teleHandle) {
+      Alert.alert(
+        "Product Listed Successful",
+        "You have listed your product successfully.\nAdd your mobileNo and teleHandle for buyers to reach out to you."
+      );
+    } else {
+      Alert.alert(
+        "Product Listed Successful",
+        "You have listed your product successfully"
+      );
+    }
+
+    navigation.navigate("Home");
   };
 
   return (
@@ -132,7 +157,7 @@ const ListingSummary2Screen = () => {
                   width: "95%",
                   borderWidth: 1,
                   borderRadius: 10,
-                  overflow: "hidden"
+                  overflow: "hidden",
                 }}
               >
                 <Image
@@ -144,7 +169,7 @@ const ListingSummary2Screen = () => {
                     borderRadius: 10,
                     height: 200,
                     width: 350,
-                    objectFit: "cover"
+                    objectFit: "cover",
                   }}
                 />
               </View>
@@ -226,7 +251,7 @@ const ListingSummary2Screen = () => {
                 onPress={
                   validImages.length > 0
                     ? () => handleUploadSideImages()
-                    : () => navigation.navigate("Home")
+                    : () => handleListItem()
                 }
                 text="Publish"
               />

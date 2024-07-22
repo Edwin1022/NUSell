@@ -1,65 +1,30 @@
-import { View, Text, ScrollView, Pressable, Alert, StyleSheet, KeyboardAvoidingView } from "react-native";
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useState,
-} from "react";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Alert,
+} from "react-native";
+import React, { useContext, useEffect, useLayoutEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
 import Back from "react-native-vector-icons/Ionicons";
-import axios from "axios";
-import { UserContext } from "../UserContext";
-import ToggleSwitch from 'toggle-switch-react-native'
+import ToggleSwitch from "toggle-switch-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from "../components/CustomButton";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { IndependentButtonContext } from "../IndependentButtonContext";
+import axios from "axios";
+import { UserContext } from "../UserContext";
 
 export const PrivacySettingScreen = () => {
   const navigation = useNavigation();
+  const { userId } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
 
-  const [buttonStates, setButtonStates] = useState({
-    button1: false,
-    button2: false,
-    button3: false,
-    button4: false,
-    button5: false,
-  });
+  const { buttonStates, setButtonStates, toggleButton } = useContext(
+    IndependentButtonContext
+  );
 
-  useEffect(() => {
-    const loadButtonStates = async () => {
-      try {
-        const savedStates = await AsyncStorage.getItem('buttonStates');
-        if (savedStates) {
-          setButtonStates(JSON.parse(savedStates));
-        }
-      } catch (error) {
-        console.error('Failed to load button states:', error);
-      }
-    };
-
-    loadButtonStates();
-  }, []);
-
-  useEffect(() => {
-    const saveButtonStates = async () => {
-      try {
-        await AsyncStorage.setItem('buttonStates', JSON.stringify(buttonStates));
-      } catch (error) {
-        console.error('Failed to save button states:', error);
-      }
-    };
-
-    saveButtonStates();
-  }, [buttonStates]);
-
-  const toggleButton = (button) => {
-    setButtonStates((prevState) => ({
-      ...prevState,
-      [button]: !prevState[button],
-    }));
-  };
   // header
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -77,7 +42,7 @@ export const PrivacySettingScreen = () => {
             marginLeft: 20,
           }}
         >
-          Privacy Settings 
+          Privacy Settings
         </Text>
       ),
       headerRight: () => (
@@ -91,89 +56,132 @@ export const PrivacySettingScreen = () => {
     });
   }, []);
 
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+  
+  useEffect(() => {
+    setButtonStates((prevState) => ({
+      ...prevState,
+      button1: user.studentIdVisible,
+      button2: user.majorVisible,
+      button3: user.facultyVisible,
+      button4: user.addressVisible,
+      button5: user.emailVisible,
+    }));
+  }, [user]);
+
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(
+        `https://nusell.onrender.com/users/profile/${userId}`
+      );
+      const { user } = response.data;
+      setUser(user);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  const handleUpdate = async () => {
+    axios
+      .post("https://nusell.onrender.com/users/privacy", { userId, buttonStates })
+      .then((response) => {
+        Alert.alert("Success", "Privacy set successfully");
+        fetchUserData();
+        navigation.navigate("Profile");
+      })
+      .catch((error) => {
+        Alert.alert("Error", "Failed to set privacy");
+        console.log(error);
+      });
+  };
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white", alignItems:"center" }}>
-      <ScrollView style={styles.outerContainer} showsVerticalScrollIndicator={false}>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
+    >
+      <ScrollView
+        style={styles.outerContainer}
+        showsVerticalScrollIndicator={false}
+      >
         <KeyboardAvoidingView>
           <Text style={styles.headerTitle}>Allow Other Users to See</Text>
+          <View style={{ margin: 20 }} />
           <View style={styles.options}>
             <View style={styles.optionContainer}>
               <Text style={styles.labels}>Student Id</Text>
               <ToggleSwitch
                 isOn={buttonStates["button1"]}
-                onColor="#32cd32"
-                offColor="#dc3545"
+                onColor="#007AFF"
+                offColor="#d0d0d0"
                 size="large"
-                onToggle={() => toggleButton(`button1`) }
+                onToggle={() => toggleButton(`button1`)}
               />
             </View>
-            
+
             <View style={styles.optionContainer}>
               <Text style={styles.labels}>Major</Text>
               <ToggleSwitch
                 isOn={buttonStates["button2"]}
-                onColor="#32cd32"
-                offColor="#dc3545"
+                onColor="#007AFF"
+                offColor="#d0d0d0"
                 size="large"
-                onToggle={()=> toggleButton(`button2`) }
+                onToggle={() => toggleButton(`button2`)}
               />
             </View>
             <View style={styles.optionContainer}>
               <Text style={styles.labels}>Faculty</Text>
               <ToggleSwitch
                 isOn={buttonStates["button3"]}
-                onColor="#32cd32"
-                offColor="#dc3545"
+                onColor="#007AFF"
+                offColor="#d0d0d0"
                 size="large"
-                onToggle={()=> toggleButton(`button3`) }
+                onToggle={() => toggleButton(`button3`)}
               />
             </View>
             <View style={styles.optionContainer}>
               <Text style={styles.labels}>Address</Text>
               <ToggleSwitch
                 isOn={buttonStates["button4"]}
-                onColor="#32cd32"
-                offColor="#dc3545"
+                onColor="#007AFF"
+                offColor="#d0d0d0"
                 size="large"
-                onToggle={()=> toggleButton(`button4`) }
+                onToggle={() => toggleButton(`button4`)}
               />
             </View>
             <View style={styles.optionContainer}>
               <Text style={styles.labels}>Email</Text>
               <ToggleSwitch
-                isOn={buttonStates['button5']}
-                onColor="#32cd32"
-                offColor="#dc3545"
+                isOn={buttonStates["button5"]}
+                onColor="#007AFF"
+                offColor="#d0d0d0"
                 size="large"
-                onToggle={()=> toggleButton(`button5`) }
+                onToggle={() => toggleButton(`button5`)}
               />
             </View>
           </View>
-          <CustomButton
-            onPress={() => doSomething()}
-            text={"Update"}
-          />
-          
+          <View style={{ margin: 20 }} />
+          <CustomButton onPress={() => handleUpdate()} text={"Update"} />
         </KeyboardAvoidingView>
-
       </ScrollView>
-      
     </SafeAreaView>
-   
   );
 };
 
 const styles = StyleSheet.create({
   headerTitle: {
-    fontSize: 30,
+    fontSize: 23,
     fontWeight: "bold",
-    alignSelf: "center"
+    marginTop: 12,
+    color: "#041E42",
+    alignSelf: "center",
   },
   options: {
-    padding: 10
+    padding: 10,
   },
   outerContainer: {
-    padding: 10, 
+    padding: 10,
     marginTop: -30,
   },
 
@@ -182,10 +190,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: 300,
     alignItems: "center",
-    margin: 10
-  }, 
+    margin: 10,
+  },
 
   labels: {
     fontSize: 20,
-  }
+  },
 });

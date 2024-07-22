@@ -171,7 +171,7 @@ const EbayDashboardScreen = () => {
 
       setLoading(false);
 
-      setEbayItems(items);
+      setEbayItems(items.sort((a, b) => a.price.value - b.price.value));
 
       setNoOfProducts(items.length);
 
@@ -189,7 +189,7 @@ const EbayDashboardScreen = () => {
       const prices = rawPrices.filter(
         (price) => price >= lowOutlier && price <= highOulier
       );
-      
+
       const lowestPrice = Math.min(...prices);
       setLowestListedPrice(lowestPrice);
       const highestPrice = Math.max(...prices);

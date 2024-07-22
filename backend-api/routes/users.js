@@ -137,7 +137,11 @@ router.get("/verify/:token", async (req, res) => {
 
     await user.save();
 
-    res.status(200).json({ message: "Email verified successfully. You may proceed to login." });
+    res
+      .status(200)
+      .json({
+        message: "Email verified successfully. You may proceed to login.",
+      });
   } catch (error) {
     res.status(500).json({ message: "Email verification failed" });
   }
@@ -496,6 +500,32 @@ router.get("/getDefaultAddress/:userId", async (req, res) => {
     res.status(200).json({ defaultAddress });
   } catch (error) {
     res.status(500).json({ message: "Error retrieving the default address" });
+  }
+});
+
+// endpoint to store users' privacy settings to the database
+router.post("/privacy", async (req, res) => {
+  try {
+    const { userId, buttonStates } = req.body;
+
+    // find the user by the userId
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.studentIdVisible = buttonStates["button1"];
+    user.majorVisible = buttonStates["button2"];
+    user.facultyVisible = buttonStates["button3"];
+    user.addressVisible = buttonStates["button4"];
+    user.emailVisible = buttonStates["button5"];
+
+    // save the updated user in the backend
+    await user.save();
+
+    res.status(200).json({ message: "Privacy set successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error setting privacy" });
   }
 });
 

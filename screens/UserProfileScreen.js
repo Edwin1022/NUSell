@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Modal,
   Image,
+  Pressable,
 } from "react-native";
 import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -17,6 +18,7 @@ import { UserContext } from "../UserContext";
 import axios from "axios";
 import CustomButton from "../components/CustomButton";
 import RatingModalScreen from "./RatingModalScreen";
+import { Ionicons } from "@expo/vector-icons";
 
 const UserProfileScreen = () => {
   const { selectedUser } = useContext(UserContext);
@@ -81,52 +83,47 @@ const UserProfileScreen = () => {
         <View style={{ alignItems: "center", marginTop: 20 }} />
 
         <KeyboardAvoidingView>
-          <View style={{ alignItems: "center" }}>
+          <Pressable style={{ alignItems: "center" }}>
             <Text
               style={{
                 fontSize: 17,
                 fontWeight: "bold",
                 marginTop: 10,
+                marginLeft: 10,
                 color: "#041E42",
               }}
             >
               {seller.name}'s Profile
             </Text>
+          </Pressable>
+
+          <View style={styles.profileContainer}>
+            <Pressable
+              onPress={() => navigation.navigate("UserStore")}
+              style={styles.cameraIcon}
+            >
+              <Ionicons name="storefront" size={24} color="white" />
+            </Pressable>
+            <TouchableOpacity onPress={() => setImageModalVisible(true)}>
+              <Avatar.Image
+                size={140}
+                style={{
+                  borderRadius: 80,
+                  marginTop: 30,
+                  backgroundColor: "white",
+                  height: 160,
+                  width: 160,
+                  padding: 8,
+                  borderColor: "#ccc",
+                  borderWidth: 1,
+                  elevation: 4,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                source={{ uri: seller.imageUrl }}
+              />
+            </TouchableOpacity>
           </View>
-
-          <TouchableOpacity
-            onPress={() => setImageModalVisible(true)}
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              position: "relative",
-            }}
-          >
-            <Avatar.Image
-              size={140}
-              style={{
-                borderRadius: 80,
-                marginTop: 30,
-                backgroundColor: "white",
-                height: 160,
-                width: 160,
-                padding: 8,
-                borderColor: "#ccc",
-                borderWidth: 1,
-                elevation: 4,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              source={{ uri: seller.imageUrl }}
-            />
-          </TouchableOpacity>
-
-          <View style={{ marginTop: 30 }} />
-
-          <CustomButton
-            onPress={() => navigation.navigate("UserStore")}
-            text={`${seller.name}'s store`}
-          />
 
           <View style={{ marginTop: 30 }} />
 
@@ -218,154 +215,24 @@ const UserProfileScreen = () => {
             </View>
           </View>
 
-          <View style={{ marginTop: 30 }}>
-            <View
-              style={{
-                marginTop: 10,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderColor: "#e6e6e6",
-                borderBottomWidth: 1,
-                paddingBottom: 5,
-              }}
-            >
-              <Text
-                style={{ color: "#7d7c7c", fontSize: 16, fontWeight: "400" }}
-              >
-                Student Id
-              </Text>
-              <Text
-                style={{
-                  color: "black",
-                  fontStyle: "normal",
-                  fontFamily: "Open Sans",
-                  fontSize: 15,
-                  textAlignVertical: "center",
-                  textAlign: "right",
-                  marginRight: 20,
-                }}
-              >
-                {seller.studentId}
-              </Text>
-            </View>
-          </View>
-
-          <View style={{ marginTop: 30 }}>
-            <View
-              style={{
-                marginTop: 10,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderColor: "#e6e6e6",
-                borderBottomWidth: 1,
-                paddingBottom: 5,
-              }}
-            >
-              <Text
-                style={{
-                  color: "#7d7c7c",
-                  fontSize: 16,
-                  fontWeight: "400",
-                  marginRight: 20,
-                }}
-              >
-                Faculty
-              </Text>
-              <Text
-                style={{
-                  color: "black",
-                  fontStyle: "normal",
-                  fontFamily: "Open Sans",
-                  fontSize: 15,
-                  textAlignVertical: "center",
-                  textAlign: "right",
-                  marginRight: 20,
-                }}
-              >
-                {seller.faculty}
-              </Text>
-            </View>
-          </View>
-
-          <View style={{ marginTop: 30 }}>
-            <View
-              style={{
-                marginTop: 10,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderColor: "#e6e6e6",
-                borderBottomWidth: 1,
-                paddingBottom: 5,
-              }}
-            >
-              <Text
-                style={{ color: "#7d7c7c", fontSize: 16, fontWeight: "400" }}
-              >
-                Major
-              </Text>
-              <Text
-                style={{
-                  color: "black",
-                  fontStyle: "normal",
-                  fontFamily: "Open Sans",
-                  fontSize: 15,
-                  textAlignVertical: "center",
-                  textAlign: "right",
-                  marginRight: 20,
-                }}
-              >
-                {seller.major}
-              </Text>
-            </View>
-          </View>
-
-          <View style={{ marginTop: 10 }}>
-            <View
-              style={{
-                marginTop: 10,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderColor: "#e6e6e6",
-                borderBottomWidth: 1,
-              }}
-            >
-              <Text
-                style={{
-                  color: "#7d7c7c",
-                  fontSize: 16,
-                  fontWeight: "400",
-                  marginRight: 60,
-                }}
-              >
-                Address
-              </Text>
-
+          {seller.studentIdVisible && (
+            <View style={{ marginTop: 30 }}>
               <View
                 style={{
-                  padding: 10,
-                  flexDirection: "column",
-                  gap: 5,
+                  marginTop: 10,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderColor: "#e6e6e6",
+                  borderBottomWidth: 1,
+                  paddingBottom: 5,
                 }}
               >
                 <Text
-                  style={{
-                    color: "black",
-                    fontStyle: "normal",
-                    fontFamily: "Open Sans",
-                    fontSize: 15,
-                    textAlignVertical: "center",
-                    textAlign: "right",
-                    marginRight: 20,
-                  }}
+                  style={{ color: "#7d7c7c", fontSize: 16, fontWeight: "400" }}
                 >
-                  {seller.defaultAddress?.blockNo}{" "}
-                  {seller.defaultAddress?.street}
+                  Student Id
                 </Text>
-
                 <Text
                   style={{
                     color: "black",
@@ -377,26 +244,164 @@ const UserProfileScreen = () => {
                     marginRight: 20,
                   }}
                 >
-                  {seller.defaultAddress?.unit}{" "}
-                  {seller.defaultAddress?.building}
-                </Text>
-
-                <Text
-                  style={{
-                    color: "black",
-                    fontStyle: "normal",
-                    fontFamily: "Open Sans",
-                    fontSize: 15,
-                    textAlignVertical: "center",
-                    textAlign: "right",
-                    marginRight: 20,
-                  }}
-                >
-                  Singapore {seller.defaultAddress?.postalCode}
+                  {seller.studentId}
                 </Text>
               </View>
             </View>
-          </View>
+          )}
+
+          {seller.facultyVisible && (
+            <View style={{ marginTop: 30 }}>
+              <View
+                style={{
+                  marginTop: 10,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderColor: "#e6e6e6",
+                  borderBottomWidth: 1,
+                  paddingBottom: 5,
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#7d7c7c",
+                    fontSize: 16,
+                    fontWeight: "400",
+                    marginRight: 20,
+                  }}
+                >
+                  Faculty
+                </Text>
+                <Text
+                  style={{
+                    color: "black",
+                    fontStyle: "normal",
+                    fontFamily: "Open Sans",
+                    fontSize: 15,
+                    textAlignVertical: "center",
+                    textAlign: "right",
+                    marginRight: 20,
+                  }}
+                >
+                  {seller.faculty}
+                </Text>
+              </View>
+            </View>
+          )}
+
+          {seller.majorVisible && (
+            <View style={{ marginTop: 30 }}>
+              <View
+                style={{
+                  marginTop: 10,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderColor: "#e6e6e6",
+                  borderBottomWidth: 1,
+                  paddingBottom: 5,
+                }}
+              >
+                <Text
+                  style={{ color: "#7d7c7c", fontSize: 16, fontWeight: "400" }}
+                >
+                  Major
+                </Text>
+                <Text
+                  style={{
+                    color: "black",
+                    fontStyle: "normal",
+                    fontFamily: "Open Sans",
+                    fontSize: 15,
+                    textAlignVertical: "center",
+                    textAlign: "right",
+                    marginRight: 20,
+                  }}
+                >
+                  {seller.major}
+                </Text>
+              </View>
+            </View>
+          )}
+
+          {seller.addressVisible && (
+            <View style={{ marginTop: 10 }}>
+              <View
+                style={{
+                  marginTop: 10,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderColor: "#e6e6e6",
+                  borderBottomWidth: 1,
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#7d7c7c",
+                    fontSize: 16,
+                    fontWeight: "400",
+                    marginRight: 60,
+                  }}
+                >
+                  Address
+                </Text>
+
+                <View
+                  style={{
+                    padding: 10,
+                    flexDirection: "column",
+                    gap: 5,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "black",
+                      fontStyle: "normal",
+                      fontFamily: "Open Sans",
+                      fontSize: 15,
+                      textAlignVertical: "center",
+                      textAlign: "right",
+                      marginRight: 20,
+                    }}
+                  >
+                    {seller.defaultAddress?.blockNo}{" "}
+                    {seller.defaultAddress?.street}
+                  </Text>
+
+                  <Text
+                    style={{
+                      color: "black",
+                      fontStyle: "normal",
+                      fontFamily: "Open Sans",
+                      fontSize: 15,
+                      textAlignVertical: "center",
+                      textAlign: "right",
+                      marginRight: 20,
+                    }}
+                  >
+                    {seller.defaultAddress?.unit}{" "}
+                    {seller.defaultAddress?.building}
+                  </Text>
+
+                  <Text
+                    style={{
+                      color: "black",
+                      fontStyle: "normal",
+                      fontFamily: "Open Sans",
+                      fontSize: 15,
+                      textAlignVertical: "center",
+                      textAlign: "right",
+                      marginRight: 20,
+                    }}
+                  >
+                    Singapore {seller.defaultAddress?.postalCode}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          )}
 
           <View
             style={{
@@ -449,6 +454,7 @@ const UserProfileScreen = () => {
                 borderColor: "#e6e6e6",
                 borderBottomWidth: 1,
                 paddingBottom: 5,
+                width: 300,
               }}
             >
               <Text
@@ -472,42 +478,44 @@ const UserProfileScreen = () => {
             </View>
           </View>
 
-          <View
-            style={{
-              marginTop: 30,
-            }}
-          >
+          {seller.emailVisible && (
             <View
               style={{
-                marginTop: 10,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderColor: "#e6e6e6",
-                borderBottomWidth: 1,
-                paddingBottom: 5,
+                marginTop: 30,
               }}
             >
-              <Text
-                style={{ color: "#7d7c7c", fontSize: 16, fontWeight: "400" }}
-              >
-                Email
-              </Text>
-              <Text
+              <View
                 style={{
-                  color: "black",
-                  fontStyle: "normal",
-                  fontFamily: "Open Sans",
-                  fontSize: 15,
-                  textAlignVertical: "center",
-                  textAlign: "right",
-                  marginRight: 20,
+                  marginTop: 10,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderColor: "#e6e6e6",
+                  borderBottomWidth: 1,
+                  paddingBottom: 5,
                 }}
               >
-                {seller.email}
-              </Text>
+                <Text
+                  style={{ color: "#7d7c7c", fontSize: 16, fontWeight: "400" }}
+                >
+                  Email
+                </Text>
+                <Text
+                  style={{
+                    color: "black",
+                    fontStyle: "normal",
+                    fontFamily: "Open Sans",
+                    fontSize: 15,
+                    textAlignVertical: "center",
+                    textAlign: "right",
+                    marginRight: 20,
+                  }}
+                >
+                  {seller.email}
+                </Text>
+              </View>
             </View>
-          </View>
+          )}
 
           <View style={{ marginTop: 30 }}>
             <View
@@ -587,5 +595,22 @@ const styles = StyleSheet.create({
   fullImage: {
     width: "90%",
     height: "90%",
+  },
+  profileContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+  },
+  cameraIcon: {
+    position: "absolute",
+    right: 85,
+    zIndex: 1,
+    bottom: 5,
+    height: 36,
+    width: 36,
+    backgroundColor: "#0163D2",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 18,
   },
 });

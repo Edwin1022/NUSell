@@ -145,7 +145,7 @@ const DashboardScreen = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        "http://172.20.10.11:8000/products/search",
+        "https://nusell.onrender.com/products/search",
         {
           itemName,
           brand,

@@ -25,6 +25,7 @@ const ListingSummary1Screen = () => {
   const {
     image,
     setImage,
+    setIdentifyResult,
     itemName,
     setItemName,
     itemDescription,
@@ -94,7 +95,7 @@ const ListingSummary1Screen = () => {
 
       // send a post request to the backend API
       const response = await axios.post(
-        "http://172.20.10.11:8000/products",
+        "https://nusell.onrender.com/products",
         formData,
         {
           headers: {
@@ -106,6 +107,7 @@ const ListingSummary1Screen = () => {
       setLoading(false);
 
       setImage(null);
+      setIdentifyResult("");
       setItemName("");
       setItemDescription("");
       setBrand("");

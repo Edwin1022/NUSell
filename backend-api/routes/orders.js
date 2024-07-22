@@ -21,6 +21,7 @@ router.get(`/`, async (req, res) => {
   res.status(200).send(orderList);
 });
 
+// endpoint to get orders of a particular user from the database
 router.get(`/byBuyers`, async (req, res) => {
   let filter = {};
   if (req.query.users) {
@@ -37,9 +38,19 @@ router.get(`/byBuyers`, async (req, res) => {
   res.send(orderList);
 });
 
-// endpoint to get orders of a particular user from the database
 router.get(`/:id`, async (req, res) => {
   const order = await Order.findById(req.params.id)
+    .populate("user", "name")
+    .populate({ path: "orderedItem", populate: "user" });
+
+  if (!order) {
+    res.status(500).json({ success: false });
+  }
+  res.status(200).send(order);
+});
+
+router.get(`/byProducts/:productId`, async (req, res) => {
+  const order = await Order.findOne({ orderedItem: req.params.productId })
     .populate("user", "name")
     .populate({ path: "orderedItem", populate: "user" });
 
@@ -77,6 +88,7 @@ const sendPaymentConfirmationEmail = async (
   recipientName,
   phoneNumber,
   shippingAddress,
+  paymentMethod,
   paymentDate,
   amountPaid
 ) => {
@@ -123,7 +135,9 @@ const sendPaymentConfirmationEmail = async (
       ${shippingAddress.unit} ${shippingAddress.building}<br>
       Singapore ${shippingAddress.postalCode}</p>
       <h3>PAYMENT DETAILS</h3>
-      <p>Payment Method: Credit Card/Debit Card<br>
+      <p>Payment Method: ${
+        paymentMethod === "card" ? "Credit Card/Debit Card" : "Cash on Delivery"
+      }<br>
       Payment Date: ${formatDate(paymentDate)}<br>
       Amount Paid: SGD ${amountPaid}</p>
       <h3>WHAT'S NEXT</h3>
@@ -139,6 +153,85 @@ const sendPaymentConfirmationEmail = async (
     console.log("Payment confirmation email sent successfully");
   } catch (error) {
     console.log("Error sending payment confirmation email", error);
+  }
+};
+
+const sendProductSoldEmail = async (
+  sellerEmail,
+  sellerName,
+  orderId,
+  orderDate,
+  buyerName,
+  item,
+  subtotal,
+  shippingFee,
+  totalPayment,
+  buyerPhoneNumber,
+  shippingAddress,
+  paymentMethod,
+  paymentDate,
+  amountPaid
+) => {
+  // create a nodemailer transport
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "wongedwin93@gmail.com",
+      pass: "zimh blug reha vefp",
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  // compose the email message
+  const mailOptions = {
+    from: "NUSell.com",
+    to: sellerEmail,
+    subject: "Your Product Has Been Sold",
+    html: `
+      <p>Hello ${sellerName},</p>
+      <p>We are pleased to inform you that your product has been sold. Please find the order details below:</p>
+      <h3>ORDER DETAILS</h3>
+      <p>Order ID: ${orderId}<br>
+      Order Date: ${formatDate(orderDate)}</p>
+      <img src="${
+        item.imageUrl
+      }" alt="Product Image" style="width:100%; max-width:200px; height:auto; display:block;"><br>
+      <p>
+        <strong>${item.name}</strong><br>
+        Quantity: 1<br>
+        Price: SGD ${item.price}
+      </p>
+      <p>Subtotal: SGD ${subtotal}<br>
+      Shipping Fee: SGD ${shippingFee}<br>
+      Total Payment: SGD ${totalPayment}</p>
+      <h3>BUYER DETAILS</h3>
+      <p>Buyer Name: ${buyerName}<br>
+      Phone Number: ${buyerPhoneNumber}<br>
+      Shipping Address:<br>
+      ${shippingAddress.blockNo} ${shippingAddress.street}<br>
+      ${shippingAddress.unit} ${shippingAddress.building}<br>
+      Singapore ${shippingAddress.postalCode}</p>
+      <h3>PAYMENT DETAILS</h3>
+      <p>Payment Method: ${
+        paymentMethod === "card" ? "Credit Card/Debit Card" : "Cash on Delivery"
+      }<br>
+      Payment Date: ${formatDate(paymentDate)}<br>
+      Amount Paid: SGD ${amountPaid}</p>
+      <h3>WHAT'S NEXT</h3>
+      <p>Please proceed to ship the product to the buyer at the provided address. Once the product is shipped, kindly update the status on NUSell App.</p>
+      <p>Thank you for selling with us!<br>
+      NUSell Team</p>
+    `,
+  };
+
+  // send the email
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("Product sold email sent successfully");
+  } catch (error) {
+    console.log("Error sending product sold email", error);
   }
 };
 
@@ -170,26 +263,44 @@ router.post(`/`, async (req, res) => {
     .populate("user")
     .populate({ path: "orderedItem", populate: "user" });
 
-  const seller = order.orderedItem.user.name; // assuming the product has a user field referring to the seller
+  const seller = order.orderedItem.user;
   const item = {
     name: order.orderedItem.name,
-    quantity: 1, // if each order corresponds to one item
+    quantity: 1,
     price: order.orderedItem.price,
     imageUrl: order.orderedItem.imageUrl,
   };
 
   sendPaymentConfirmationEmail(
-    req.body.email,
+    req.body.email || order.user.email,
     order.id,
     order.dateOrdered,
-    seller,
+    seller.name,
     item,
-    req.body.subtotal, // assuming totalPrice is the subtotal here
-    req.body.shippingFee, // or order.shippingFee if it's part of the order model
+    req.body.subtotal,
+    req.body.shippingFee,
     order.totalPrice,
     order.user.name,
     order.user.mobileNo,
     order.shippingAddress,
+    order.paymentMethod,
+    order.dateOrdered,
+    order.totalPrice
+  );
+
+  sendProductSoldEmail(
+    seller.email,
+    seller.name,
+    order.id,
+    order.dateOrdered,
+    order.user.name,
+    item,
+    req.body.subtotal,
+    req.body.shippingFee,
+    order.totalPrice,
+    order.user.mobileNo,
+    order.shippingAddress,
+    order.paymentMethod,
     order.dateOrdered,
     order.totalPrice
   );

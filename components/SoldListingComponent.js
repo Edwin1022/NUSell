@@ -3,27 +3,29 @@ import {
   Text,
   StyleSheet,
   ScrollView,
+  TouchableOpacity,
   Pressable,
   Image,
 } from "react-native";
 import React from "react";
+import { SwipeRow } from "react-native-swipe-list-view";
+import { Ionicons } from "@expo/vector-icons";
 
-export const OrderComponent = ({
+export const SoldListingComponent = ({
   pfp,
   username,
   image,
   name,
-  status,
   condition,
-  price,
-  onUser,
-  onItem,
+  status,
+  onEdit,
+  onDelete,
 }) => {
   return (
     <ScrollView>
       <View style={styles.itemSummaryComponent}>
         <View style={styles.usernameBox}>
-          <Pressable onPress={onUser}>
+          <Pressable>
             <Image
               style={styles.userProfile}
               source={{
@@ -31,28 +33,40 @@ export const OrderComponent = ({
               }}
             />
           </Pressable>
-          <Pressable onPress={onUser}>
+          <Pressable>
             <Text style={styles.username}>{username}</Text>
           </Pressable>
         </View>
 
-        <View style={styles.swipable}>
-          <Pressable onPress={onItem}>
+        <SwipeRow
+          leftOpenValue={0}
+          rightOpenValue={-155}
+          style={styles.swipable}
+        >
+          <View style={styles.hiddenRow}>
+            <TouchableOpacity
+              onPress={onEdit}
+              style={[styles.hiddenButton, styles.editButton]}
+            >
+              <Ionicons name="pencil" size={24} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={onDelete}
+              style={[styles.hiddenButton, styles.deleteButton]}
+            >
+              <Ionicons name="trash" size={24} color="white" />
+            </TouchableOpacity>
+          </View>
+
+          <Pressable>
             <View style={styles.visibleRow}>
               <View>
-                <Image
-                  style={styles.itemImage}
-                  source={{
-                    uri: image,
-                  }}
-                />
+                <Image style={styles.itemImage} source={{ uri: image }} />
               </View>
 
               <View>
                 <View style={styles.itemNameBox}>
-                  <Text style={styles.itemName}>
-                    {name}
-                  </Text>
+                  <Text style={styles.itemName}>{name}</Text>
                 </View>
                 <View style={styles.conditionBox}>
                   <Text style={styles.condition}>{condition}</Text>
@@ -61,38 +75,19 @@ export const OrderComponent = ({
               </View>
             </View>
           </Pressable>
-        </View>
+        </SwipeRow>
 
         <View style={styles.bottomContainer}>
-          <Text style={styles.amount}>Total: ${price}</Text>
-          <Pressable style={styles.checkoutButton}>
-            <Text style={styles.buttonText}>{status}</Text>
-          </Pressable>
+          <View style={styles.checkoutButton}>
+            <Text style={styles.buttonText}>SOLD</Text>
+          </View>
         </View>
       </View>
     </ScrollView>
   );
 };
-const styles = StyleSheet.create({
-  checkoutButton: {
-    borderStyle: "solid",
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 5,
-    borderColor: "green",
-    marginLeft: 80,
-  },
-  amount: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  buttonText: {
-    color: "green",
-    fontWeight: "bold",
-    fontSize: 14,
-  },
 
+const styles = StyleSheet.create({
   itemText: {
     color: "gray",
   },
@@ -127,9 +122,32 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderRadius: 5,
   },
+  hiddenRow: {
+    flexDirection: "row",
+    height: 110,
+  },
+  hiddenButton: {
+    alignItems: "center",
+    bottom: 0,
+    justifyContent: "center",
+    position: "absolute",
+    top: 0,
+    width: 75,
+  },
 
+  editButton: {
+    backgroundColor: "#007bff",
+    right: 80,
+    height: "100%",
+  },
+  deleteButton: {
+    backgroundColor: "#dc3545",
+    right: 0,
+    width: 80,
+    height: "100%",
+  },
   visibleRow: {
-    backgroundColor: "#FFF",
+    backgroundColor: "#d0d0d0",
     height: 110,
     paddingLeft: 15,
     flexDirection: "row",
@@ -148,20 +166,20 @@ const styles = StyleSheet.create({
   },
 
   itemSummaryComponent: {
-    width: 340,
     borderWidth: 1,
     borderStyle: "solid",
     borderColor: "black",
     padding: 20,
     borderRadius: 10,
-    backgroundColor: "white",
-    paddingTop: 10,
+    backgroundColor: "#d0d0d0",
+    paddingTop: 5,
     paddingBottom: 10,
     overflow: "hidden",
+    width: 340,
   },
 
   usernameBox: {
-    backgroundColor: "white",
+    backgroundColor: "#d0d0d0",
     flexDirection: "row",
     alignItems: "center",
     padding: 10,
@@ -171,13 +189,34 @@ const styles = StyleSheet.create({
   },
 
   bottomContainer: {
-    backgroundColor: "white",
+    backgroundColor: "#d0d0d0",
     borderTopWidth: 1,
     borderStyle: "solid",
     borderColor: "black",
     flexDirection: "row",
     alignItems: "center",
     padding: 10,
-    justifyContent: "space-between"
+    justifyContent: "space-around",
+  },
+
+  checkoutButton: {
+    borderStyle: "solid",
+    borderWidth: 1,
+    backgroundColor: "#dc3545",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 5,
+    borderColor: "#D0D0D0",
+  },
+
+  amount: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 17,
   },
 });
