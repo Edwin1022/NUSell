@@ -555,7 +555,7 @@ router.post("/rateUser", async (req, res) => {
 });
 
 // endpoint to get the list of all the users from the database
-router.get(`/`, async (req, res) => {
+router.put(`/`, async (req, res) => {
   const userList = await User.find().select("-passwordHash");
   const verifiedUsers = userList.filter((user) => user.verified);
 

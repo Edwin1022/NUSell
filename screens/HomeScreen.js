@@ -59,7 +59,7 @@ const HomeScreen = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get(`https://nusell.onrender.com/products`);
+      const res = await axios.put(`https://nusell.onrender.com/products`);
       setProducts(res.data.filter((product) => product.status !== "ordered"));
     } catch (err) {
       console.log(err);

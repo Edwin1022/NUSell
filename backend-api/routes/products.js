@@ -55,7 +55,7 @@ const getSignedUrlsForImages = async (bucketName, imageNames) => {
   return signedUrls;
 };
 
-router.get(`/`, async (req, res) => {
+router.put(`/`, async (req, res) => {
   const productList = await Product.find()
     .populate("user")
     .sort({ dateCreated: -1 });
