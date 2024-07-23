@@ -64,7 +64,7 @@ router.put(`/`, async (req, res) => {
     res.status(500).json({ success: false });
   }
 
-  for (const product of productList) {
+  for (let product of productList) {
     const getObjectParams = {
       Bucket: bucketName,
       Key: product.image,
@@ -73,9 +73,9 @@ router.put(`/`, async (req, res) => {
     const url = await getSignedUrl(s3, command, {
       expiresIn: 60 * 60 * 24 * 6,
     });
-    const item = Product.findByIdAndUpdate(product.id, { imageUrl: url }, { new: true });
+    product = Product.findByIdAndUpdate(product.id, { imageUrl: url }, { new: true });
 
-    if (!item) return res.status(500).send("the product cannot be updated");
+    if (!product) return res.status(500).send("the product cannot be updated");
   }
 
   res.status(200).send(productList);
@@ -116,7 +116,7 @@ router.get(`/bySellers`, async (req, res) => {
 });
 
 router.put(`/:id`, async (req, res) => {
-  const product = await Product.findById(req.params.id).populate(
+  let product = await Product.findById(req.params.id).populate(
     "user category"
   );
 
@@ -132,13 +132,13 @@ router.put(`/:id`, async (req, res) => {
   const url = await getSignedUrl(s3, command);
   product.imageUrl = url;
   getSignedUrlsForImages(bucketName, product.images).then((urls) => {
-    const item = Product.findByIdAndUpdate(
+    product = Product.findByIdAndUpdate(
       req.params.id,
       { imagesUrls: urls },
       { new: true }
     );
 
-    if (!item) return res.status(500).send("the product cannot be updated");
+    if (!product) return res.status(500).send("the product cannot be updated");
   });
 
   res.send(product);
