@@ -74,8 +74,11 @@ router.put(`/`, async (req, res) => {
       expiresIn: 60 * 60 * 24 * 6,
     });
 
-    product.imageUrl = url;
-    await product.save();
+    product = await Product.findByIdAndUpdate(
+      product.id,
+      { imageUrl: url },
+      { new: true }
+    );
   }
 
   res.status(200).send(productList);
