@@ -73,11 +73,9 @@ router.put(`/`, async (req, res) => {
     const url = await getSignedUrl(s3, command, {
       expiresIn: 60 * 60 * 24 * 6,
     });
-    product = Product.findByIdAndUpdate(
-      product.id,
-      { imageUrl: url },
-      { new: true }
-    );
+
+    product.imageUrl = url;
+    await product.save();
 
     if (!product) return res.status(500).send("the product cannot be updated");
   }
@@ -140,7 +138,7 @@ router.put(`/:id`, async (req, res) => {
     { imagesUrls: urls },
     { new: true }
   ).populate("user category");
-  
+
   if (!product) return res.status(500).send("the product cannot be updated");
 
   res.send(product);
