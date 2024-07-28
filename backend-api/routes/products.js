@@ -139,7 +139,8 @@ router.put(`/:id`, async (req, res) => {
     req.params.id,
     { imagesUrls: urls },
     { new: true }
-  );
+  ).populate("user category");
+  
   if (!product) return res.status(500).send("the product cannot be updated");
 
   res.send(product);
