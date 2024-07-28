@@ -38,26 +38,9 @@ export const SoldListingComponent = ({
           </Pressable>
         </View>
 
-        <SwipeRow
-          leftOpenValue={0}
-          rightOpenValue={-155}
+        <View
           style={styles.swipable}
         >
-          <View style={styles.hiddenRow}>
-            <TouchableOpacity
-              onPress={onEdit}
-              style={[styles.hiddenButton, styles.editButton]}
-            >
-              <Ionicons name="pencil" size={24} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={onDelete}
-              style={[styles.hiddenButton, styles.deleteButton]}
-            >
-              <Ionicons name="trash" size={24} color="white" />
-            </TouchableOpacity>
-          </View>
-
           <Pressable>
             <View style={styles.visibleRow}>
               <View>
@@ -75,7 +58,7 @@ export const SoldListingComponent = ({
               </View>
             </View>
           </Pressable>
-        </SwipeRow>
+        </View>
 
         <View style={styles.bottomContainer}>
           <View style={styles.checkoutButton}>
