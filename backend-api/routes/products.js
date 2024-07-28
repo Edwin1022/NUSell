@@ -76,8 +76,6 @@ router.put(`/`, async (req, res) => {
 
     product.imageUrl = url;
     await product.save();
-
-    if (!product) return res.status(500).send("the product cannot be updated");
   }
 
   res.status(200).send(productList);
