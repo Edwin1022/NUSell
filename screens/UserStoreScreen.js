@@ -85,6 +85,7 @@ const UserStoreScreen = () => {
                   name={product.name}
                   condition={product.condition}
                   price={product.price}
+                  dateCreated={product.dateCreated}
                   onPress={() => {
                     setSelectedItem(product.id);
                     navigation.navigate("ProductInfo");

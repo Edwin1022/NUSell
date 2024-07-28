@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const { Order } = require("../models/order");
-const { OrderItem } = require("../models/order-item");
 const { Product } = require("../models/product");
 const Stripe = require("stripe");
 const nodemailer = require("nodemailer");
@@ -345,14 +344,14 @@ router.put(`/:id`, async (req, res) => {
 
 router.delete(`/:id`, (req, res) => {
   Order.findByIdAndDelete(req.params.id)
-    .then(async (order) => {
+    .then((order) => {
       if (order) {
-        await order.orderItems.map(async (orderItem) => {
-          await OrderItem.findByIdAndDelete(orderItem);
-        });
         return res
           .status(200)
-          .json({ success: true, message: "the order is deleted" });
+          .json({
+            success: true,
+            message: "the order is removed",
+          });
       } else {
         return res
           .status(404)

@@ -47,7 +47,7 @@ const getSignedUrlsForImages = async (bucketName, imageNames) => {
       const command = new GetObjectCommand(getObjectParams);
       const url = await getSignedUrl(s3, command, {
         expiresIn: 60 * 60 * 24 * 6,
-      }); // URL expires in 1 hour
+      });
       return url;
     })
   );
@@ -73,7 +73,11 @@ router.put(`/`, async (req, res) => {
     const url = await getSignedUrl(s3, command, {
       expiresIn: 60 * 60 * 24 * 6,
     });
-    product = Product.findByIdAndUpdate(product.id, { imageUrl: url }, { new: true });
+    product = Product.findByIdAndUpdate(
+      product.id,
+      { imageUrl: url },
+      { new: true }
+    );
 
     if (!product) return res.status(500).send("the product cannot be updated");
   }
@@ -116,9 +120,7 @@ router.get(`/bySellers`, async (req, res) => {
 });
 
 router.put(`/:id`, async (req, res) => {
-  let product = await Product.findById(req.params.id).populate(
-    "user category"
-  );
+  let product = await Product.findById(req.params.id).populate("user category");
 
   if (!product) {
     res.status(500).json({ success: false });
@@ -131,15 +133,14 @@ router.put(`/:id`, async (req, res) => {
   const command = new GetObjectCommand(getObjectParams);
   const url = await getSignedUrl(s3, command);
   product.imageUrl = url;
-  getSignedUrlsForImages(bucketName, product.images).then((urls) => {
-    product = Product.findByIdAndUpdate(
-      req.params.id,
-      { imagesUrls: urls },
-      { new: true }
-    );
 
-    if (!product) return res.status(500).send("the product cannot be updated");
-  });
+  const urls = await getSignedUrlsForImages(bucketName, product.images);
+  product = await Product.findByIdAndUpdate(
+    req.params.id,
+    { imagesUrls: urls },
+    { new: true }
+  );
+  if (!product) return res.status(500).send("the product cannot be updated");
 
   res.send(product);
 });
