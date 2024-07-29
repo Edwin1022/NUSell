@@ -501,6 +501,7 @@ const ManageListingScreen = () => {
                 </View>
               </View>
               <View style={styles.compareButtonRow}>
+                1
                 <Pressable
                   style={styles.priceDataButton}
                   onPress={handleViewPriceData}
@@ -628,13 +629,11 @@ const styles = StyleSheet.create({
   },
 
   priceDataButton: {
-    marginLeft: 60,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
     backgroundColor: "#007FFF",
     borderRadius: 75,
     width: 150,
     alignItems: "center",
+    padding: 10,
   },
 
   nextButton: {
