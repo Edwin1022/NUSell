@@ -465,37 +465,58 @@ const ManageListingScreen = () => {
                     />
                   </View>
                 </View>
-                <Pressable
-                  style={styles.priceDataButton}
-                  onPress={() =>
-                    navigation.navigate("Dashboard", {
-                      itemName: itemName || product.name,
-                      brand: brand || product.brand,
-                      condition: condition || product.condition,
-                    })
-                  }
-                >
-                  <Text
-                    style={[
-                      {
-                        color: "white",
-                      },
-                      styles.priceDataButtonText,
-                    ]}
+                <View style={styles.compareButtonRow}>
+                  <Pressable
+                    style={styles.priceDataButton}
+                    onPress={handleViewPriceData}
                   >
-                    Recommend
-                  </Text>
-                  <Text
-                    style={[
-                      {
-                        color: "white",
-                      },
-                      styles.priceDataButtonText,
-                    ]}
+                    <Text
+                      style={[
+                        {
+                          color: "white",
+                        },
+                        styles.priceDataButtonText,
+                      ]}
+                    >
+                      Compare Items
+                    </Text>
+                    <Text
+                      style={[
+                        {
+                          color: "white",
+                        },
+                        styles.priceDataButtonText,
+                      ]}
+                    >
+                      on NUSell
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    style={styles.priceDataButton}
+                    onPress={handleViewEbayPriceData}
                   >
-                    Listing Price
-                  </Text>
-                </Pressable>
+                    <Text
+                      style={[
+                        {
+                          color: "white",
+                        },
+                        styles.priceDataButtonText,
+                      ]}
+                    >
+                      Compare Items
+                    </Text>
+                    <Text
+                      style={[
+                        {
+                          color: "white",
+                        },
+                        styles.priceDataButtonText,
+                      ]}
+                    >
+                      on Ebay
+                    </Text>
+                  </Pressable>
+                </View>
               </View>
             </View>
 
@@ -557,6 +578,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 8,
     width: "99%",
+  },
+
+  compareButtonRow: {
+    width: "95%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
   },
 
   priceDataButtonText: {
