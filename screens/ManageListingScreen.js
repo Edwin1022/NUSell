@@ -178,6 +178,54 @@ const ManageListingScreen = () => {
     }
   };
 
+  //handle View Price Data logic
+  const handleViewPriceData = () => {
+    setErrorItemName(null);
+    setErrorBrand(null);
+
+    let isValid = true;
+
+    if (!itemName.trim()) {
+      setErrorItemName("Please provide an item name");
+      isValid = false;
+    }
+
+    if (!brand.trim()) {
+      setErrorBrand("Please provide the item brand");
+      isValid = false;
+    }
+
+    if (isValid) {
+      navigation.navigate("Dashboard", { itemName, brand });
+    } else {
+      return;
+    }
+  };
+
+  //handle View Price Data logic
+  const handleViewEbayPriceData = () => {
+    setErrorItemName(null);
+    setErrorBrand(null);
+
+    let isValid = true;
+
+    if (!itemName.trim()) {
+      setErrorItemName("Please provide an item name");
+      isValid = false;
+    }
+
+    if (!brand.trim()) {
+      setErrorBrand("Please provide the item brand");
+      isValid = false;
+    }
+
+    if (isValid) {
+      navigation.navigate("EbayDashboard", { itemName, brand, accessToken });
+    } else {
+      return;
+    }
+  };
+
   //handle Next logic
   const handleNext = async () => {
     const updatedProduct = {
