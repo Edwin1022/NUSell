@@ -131,12 +131,11 @@ router.put(`/:id`, async (req, res) => {
   };
   const command = new GetObjectCommand(getObjectParams);
   const url = await getSignedUrl(s3, command);
-  product.imageUrl = url;
 
   const urls = await getSignedUrlsForImages(bucketName, product.images);
   product = await Product.findByIdAndUpdate(
     req.params.id,
-    { imagesUrls: urls },
+    { imageUrl: url, imagesUrls: urls },
     { new: true }
   ).populate("user category");
 
