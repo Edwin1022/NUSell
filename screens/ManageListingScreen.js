@@ -501,7 +501,6 @@ const ManageListingScreen = () => {
                 </View>
               </View>
               <View style={styles.compareButtonRow}>
-                1
                 <Pressable
                   style={styles.priceDataButton}
                   onPress={handleViewPriceData}
