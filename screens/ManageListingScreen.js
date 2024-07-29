@@ -27,6 +27,7 @@ const ManageListingScreen = () => {
   const { selectedItem } = useContext(ProductContext);
   const [product, setProduct] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const [accessToken, setAccessToken] = useState("");
   const [loading, setLoading] = useState(false);
 
   //category states
@@ -133,6 +134,22 @@ const ManageListingScreen = () => {
     fetchProductData();
   }, []);
 
+  const getOAuth2Token = async () => {
+    try {
+      const response = await axios.get(
+        "https://nusell.onrender.com/products/getAccessToken"
+      );
+      const token = response.data.token;
+      setAccessToken(token);
+    } catch (error) {
+      console.error("Error fetching access token:", error);
+    }
+  };
+
+  useEffect(() => {
+    getOAuth2Token();
+  }, []);
+
   // allow users to upload their profile pictures
   const uploadImage = async (mode) => {
     try {
@@ -180,50 +197,19 @@ const ManageListingScreen = () => {
 
   //handle View Price Data logic
   const handleViewPriceData = () => {
-    setErrorItemName(null);
-    setErrorBrand(null);
-
-    let isValid = true;
-
-    if (!itemName.trim()) {
-      setErrorItemName("Please provide an item name");
-      isValid = false;
-    }
-
-    if (!brand.trim()) {
-      setErrorBrand("Please provide the item brand");
-      isValid = false;
-    }
-
-    if (isValid) {
-      navigation.navigate("Dashboard", { itemName, brand });
-    } else {
-      return;
-    }
+    navigation.navigate("Dashboard", {
+      itemName: itemName || product.name,
+      brand: brand || product.brand,
+    });
   };
 
   //handle View Price Data logic
   const handleViewEbayPriceData = () => {
-    setErrorItemName(null);
-    setErrorBrand(null);
-
-    let isValid = true;
-
-    if (!itemName.trim()) {
-      setErrorItemName("Please provide an item name");
-      isValid = false;
-    }
-
-    if (!brand.trim()) {
-      setErrorBrand("Please provide the item brand");
-      isValid = false;
-    }
-
-    if (isValid) {
-      navigation.navigate("EbayDashboard", { itemName, brand, accessToken });
-    } else {
-      return;
-    }
+    navigation.navigate("EbayDashboard", {
+      itemName: itemName || product.name,
+      brand: brand || product.brand,
+      accessToken,
+    });
   };
 
   //handle Next logic
@@ -513,58 +499,58 @@ const ManageListingScreen = () => {
                     />
                   </View>
                 </View>
-                <View style={styles.compareButtonRow}>
-                  <Pressable
-                    style={styles.priceDataButton}
-                    onPress={handleViewPriceData}
+              </View>
+              <View style={styles.compareButtonRow}>
+                <Pressable
+                  style={styles.priceDataButton}
+                  onPress={handleViewPriceData}
+                >
+                  <Text
+                    style={[
+                      {
+                        color: "white",
+                      },
+                      styles.priceDataButtonText,
+                    ]}
                   >
-                    <Text
-                      style={[
-                        {
-                          color: "white",
-                        },
-                        styles.priceDataButtonText,
-                      ]}
-                    >
-                      Compare Items
-                    </Text>
-                    <Text
-                      style={[
-                        {
-                          color: "white",
-                        },
-                        styles.priceDataButtonText,
-                      ]}
-                    >
-                      on NUSell
-                    </Text>
-                  </Pressable>
-                  <Pressable
-                    style={styles.priceDataButton}
-                    onPress={handleViewEbayPriceData}
+                    Compare Items
+                  </Text>
+                  <Text
+                    style={[
+                      {
+                        color: "white",
+                      },
+                      styles.priceDataButtonText,
+                    ]}
                   >
-                    <Text
-                      style={[
-                        {
-                          color: "white",
-                        },
-                        styles.priceDataButtonText,
-                      ]}
-                    >
-                      Compare Items
-                    </Text>
-                    <Text
-                      style={[
-                        {
-                          color: "white",
-                        },
-                        styles.priceDataButtonText,
-                      ]}
-                    >
-                      on Ebay
-                    </Text>
-                  </Pressable>
-                </View>
+                    on NUSell
+                  </Text>
+                </Pressable>
+                <Pressable
+                  style={styles.priceDataButton}
+                  onPress={handleViewEbayPriceData}
+                >
+                  <Text
+                    style={[
+                      {
+                        color: "white",
+                      },
+                      styles.priceDataButtonText,
+                    ]}
+                  >
+                    Compare Items
+                  </Text>
+                  <Text
+                    style={[
+                      {
+                        color: "white",
+                      },
+                      styles.priceDataButtonText,
+                    ]}
+                  >
+                    on Ebay
+                  </Text>
+                </Pressable>
               </View>
             </View>
 
