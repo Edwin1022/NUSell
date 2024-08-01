@@ -49,7 +49,7 @@ const RegisterScreen = () => {
   const handleRegister = async (data) => {
     if (data.password != data["password-repeat"]) {
       Alert.alert(
-        "Password Reset Failed",
+        "Password Not Match",
         "Passwords do not match. Please try again."
       );
       return;

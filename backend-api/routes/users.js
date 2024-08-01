@@ -76,10 +76,7 @@ const sendVerificationEmail = async (email, verificationToken) => {
   // send the email
   try {
     await transporter.sendMail(mailOptions);
-    console.log("Verification email sent successfully");
-  } catch (error) {
-    console.log("Error sending verification email", error);
-  }
+  } catch (error) {}
 };
 
 //endpoint to register the user
@@ -137,11 +134,9 @@ router.get("/verify/:token", async (req, res) => {
 
     await user.save();
 
-    res
-      .status(200)
-      .json({
-        message: "Email verified successfully. You may proceed to login.",
-      });
+    res.status(200).json({
+      message: "Email verified successfully. You may proceed to login.",
+    });
   } catch (error) {
     res.status(500).json({ message: "Email verification failed" });
   }
