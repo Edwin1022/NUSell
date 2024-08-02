@@ -54,57 +54,57 @@ const ItemListingScreen = () => {
   const data = [
     {
       label: "Computers and Tech",
-      value: "666bffdbadffbb04e4c808b5",
+      value: "66ad0f8251bf5acfd167bef4",
     },
     {
       label: "Women's Fashion",
-      value: "666c0060adffbb04e4c808b7",
+      value: "66ad0fc151bf5acfd167bef6",
     },
     {
       label: "Men's Fashion",
-      value: "666c0070adffbb04e4c808b9",
+      value: "66ad0fd851bf5acfd167bef8",
     },
-    { label: "Sneakers", value: "666c07c8eec38cf6815cfc8c" },
-    { label: "Luxury", value: "666c0090adffbb04e4c808bb" },
+    { label: "Sneakers", value: "66ad0ff151bf5acfd167befa" },
+    { label: "Luxury", value: "66ad100751bf5acfd167befc" },
     {
       label: "Mobile Phones & Gadgets",
-      value: "666c00dbadffbb04e4c808bd",
+      value: "66ad101c51bf5acfd167befe",
     },
     {
       label: "Video Gaming",
-      value: "666c0120adffbb04e4c808bf",
+      value: "66ad103551bf5acfd167bf00",
     },
-    { label: "Books", value: "666c01a0adffbb04e4c808c1" },
+    { label: "Books", value: "66ad104951bf5acfd167bf02" },
     {
       label: "Collectibles",
-      value: "666c01b6adffbb04e4c808c3",
+      value: "66ad107251bf5acfd167bf04",
     },
     {
       label: "Electronics & Home Appliances",
-      value: "666c01d9adffbb04e4c808c5",
+      value: "66ad108651bf5acfd167bf06",
     },
     {
       label: "Furnitures",
-      value: "666c0826eec38cf6815cfc8e",
+      value: "66ad10a051bf5acfd167bf08",
     },
     {
       label: "Household Goods",
-      value: "666c083ceec38cf6815cfc90",
+      value: "66ad10b251bf5acfd167bf0a",
     },
     {
       label: "Skincare products",
-      value: "666c0858eec38cf6815cfc92",
+      value: "66ad10c551bf5acfd167bf0c",
     },
-    { label: "Snacks", value: "666c086ceec38cf6815cfc94" },
+    { label: "Snacks", value: "66ad10e351bf5acfd167bf0e" },
     {
       label: "Sports Equipments",
-      value: "666c01f7adffbb04e4c808c7",
+      value: "66ad10f851bf5acfd167bf10",
     },
     {
       label: "Concert Tickets",
-      value: "666c0238adffbb04e4c808c9",
+      value: "66ad110e51bf5acfd167bf12",
     },
-    { label: "Others", value: "666c025badffbb04e4c808cb" },
+    { label: "Others", value: "66ad112251bf5acfd167bf14" },
   ];
 
   //text input states
