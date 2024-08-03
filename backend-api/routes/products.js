@@ -61,7 +61,7 @@ router.put(`/`, async (req, res) => {
     .sort({ dateCreated: -1 });
 
   if (!productList) {
-    res.status(500).json({ success: false });
+    return res.status(500).json({ success: false });
   }
 
   for (let product of productList) {
@@ -95,7 +95,7 @@ router.get(`/byCategories`, async (req, res) => {
     .sort({ dateCreated: -1 });
 
   if (!productList) {
-    res.status(500).json({ success: false });
+    return res.status(500).json({ success: false });
   }
 
   res.send(productList);
@@ -112,7 +112,7 @@ router.get(`/bySellers`, async (req, res) => {
     .sort({ dateCreated: -1 });
 
   if (!productList) {
-    res.status(500).json({ success: false });
+    return res.status(500).json({ success: false });
   }
 
   res.send(productList);
