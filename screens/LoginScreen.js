@@ -7,7 +7,7 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState, useContext } from "react";
 import Logo from "../assets/images/NUSell_app_icon.png";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
@@ -16,6 +16,7 @@ import CheckBox from "react-native-check-box";
 import CustomButton from "../components/CustomButton";
 import CustomInput from "../components/CustomInput";
 import { useForm } from "react-hook-form";
+
 
 const LoginScreen = () => {
   const [keepLoggedIn, setKeepLoggedIn] = useState(false);
@@ -80,7 +81,7 @@ const LoginScreen = () => {
     };
 
     axios
-      .post("http://192.168.0.110:8000/users/login", user)
+      .post("https://nusell.onrender.com/users/login", user)
       .then((response) => {
         console.log(response);
         const token = response.data.token;
@@ -139,7 +140,6 @@ const LoginScreen = () => {
               iconName="lock1"
               iconType="AntDesign"
               placeholder="Enter your Password"
-              secureTextEntry
               control={control}
               rules={{
                 required: "Password is required",
@@ -152,6 +152,7 @@ const LoginScreen = () => {
                   message: "Password should be no longer than 24 characters",
                 },
               }}
+              hidable
             />
           </View>
 

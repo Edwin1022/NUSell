@@ -6,23 +6,28 @@ import axios from "axios";
 import { UserContext } from "../UserContext";
 import { MaterialIcons, AntDesign } from "@expo/vector-icons";
 import CustomButton from "../components/CustomButton";
+import { ProductContext } from "../ProductContext";
 
 const PurchaseScreen = () => {
   const navigation = useNavigation();
+  const { selectedItem } = useContext(ProductContext);
   const [currentStep, setCurrentStep] = useState(0);
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState("");
   const [selectedDelivery, setSelectedDelivery] = useState("");
   const [selectedPayment, setSelectedPayment] = useState("");
-  const [totalPrice, setTotalPrice] = useState(69);
+  const [totalPrice, setTotalPrice] = useState(0);
   const [shippingFee, setShippingFee] = useState(0);
   const { userId } = useContext(UserContext);
   const { user } = useContext(UserContext);
 
+  const [errorDelivery, setErrorDelivery] = useState("");
+  const [errorPayment, setErrorPayment] = useState("");
+
   const fetchAddresses = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.0.110:8000/users/addresses/${userId}`
+        `https://nusell.onrender.com/users/addresses/${userId}`
       );
       const { addresses } = response.data;
       setAddresses(addresses);
@@ -31,8 +36,21 @@ const PurchaseScreen = () => {
     }
   };
 
+  const fetchProductData = async () => {
+    try {
+      const res = await axios.put(
+        `https://nusell.onrender.com/products/${selectedItem}`
+      );
+      setTotalPrice(res.data.price);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     fetchAddresses();
+    fetchProductData();
+    setSelectedAddress(user.defaultAddress);
   }, []);
 
   // header
@@ -59,7 +77,7 @@ const PurchaseScreen = () => {
         <Back
           name="arrow-back"
           size={30}
-          onPress={() => navigation.navigate("Profile")}
+          onPress={() => navigation.goBack()}
           style={{ marginRight: 20, color: "white" }}
         />
       ),
@@ -73,17 +91,61 @@ const PurchaseScreen = () => {
     { title: "Place Order", content: "Order Summary" },
   ];
 
-  const handlePlaceOrder = async () => {
-    navigation.navigate("Order");
+  const handleContinueToPayment = () => {
+    setErrorDelivery(null);
+
+    let isValid = true;
+
+    if (!selectedDelivery) {
+      setErrorDelivery("Please select a delivery option");
+      isValid = false;
+    }
+
+    if (isValid) {
+      setCurrentStep(2);
+    } else {
+      return;
+    }
   };
 
-  /*const pay = async () => {
-    try {
-        
-    } catch(error) {
-        console.log("error", error)
+  const handleContinueToOrderSummary = () => {
+    setErrorPayment(null);
+
+    let isValid = true;
+
+    if (!selectedPayment) {
+      setErrorPayment("Please select a payment option");
+      isValid = false;
     }
-  }*/
+
+    if (isValid) {
+      setCurrentStep(3);
+    } else {
+      return;
+    }
+  };
+
+  const handlePlaceOrder = async () => {
+    axios
+      .post("https://nusell.onrender.com/orders", {
+        user: userId,
+        orderItem: selectedItem,
+        status: "PAID",
+        subtotal: totalPrice,
+        shippingFee,
+        totalPrice: totalPrice + shippingFee,
+        shippingAddress: selectedAddress,
+        paymentMethod: selectedPayment,
+      })
+      .then((response) => {
+        Alert.alert("Success", "Order placed successfully");
+        navigation.navigate("Home");
+      })
+      .catch((error) => {
+        Alert.alert("Error", "Failed to place order");
+        console.log(error);
+      });
+  };
 
   return (
     <ScrollView>
@@ -99,7 +161,15 @@ const PurchaseScreen = () => {
           {steps?.map((step, index) => (
             <View style={{ justifyContent: "center", alignItems: "center" }}>
               <Pressable
-                onPress={() => setCurrentStep(index)}
+                onPress={() => {
+                  if (
+                    (index === 0 && selectedAddress) ||
+                    (index === 1 && selectedDelivery) ||
+                    (index === 2 && selectedPayment)
+                  ) {
+                    setCurrentStep(index);
+                  }
+                }}
                 style={[
                   {
                     width: 30,
@@ -140,90 +210,99 @@ const PurchaseScreen = () => {
           <Text style={{ fontSize: 17, fontWeight: "bold", marginLeft: 10 }}>
             Select a Delivery Address
           </Text>
+          {addresses.length === 0 ? (
+            <View style={{ flex: 1, alignItems: "center", marginTop: 200 }}>
+              <Text style={{ textAlign: "center", fontSize: 15 }}>
+                Navigate to Your Profile Page to add your addresses before
+                purchasing the item.
+              </Text>
+            </View>
+          ) : (
+            <Pressable style={{ marginLeft: 5, marginRight: 5 }}>
+              {addresses?.map((address, index) => (
+                <Pressable
+                  style={{
+                    backgroundColor: "white",
+                    borderWidth: 1,
+                    borderColor: "#D0D0D0",
+                    padding: 10,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 5,
+                    marginVertical: 10,
+                  }}
+                >
+                  {selectedAddress && selectedAddress._id == address?._id ? (
+                    <AntDesign name="checkcircle" size={24} color="#007AFF" />
+                  ) : (
+                    <AntDesign
+                      onPress={() => setSelectedAddress(address)}
+                      name="checkcircleo"
+                      size={24}
+                      color="#007AFF"
+                    />
+                  )}
 
-          <Pressable style={{ marginLeft: 5, marginRight: 5 }}>
-            {addresses?.map((address, index) => (
-              <Pressable
-                style={{
-                  backgroundColor: "white",
-                  borderWidth: 1,
-                  borderColor: "#D0D0D0",
-                  padding: 10,
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 5,
-                  marginVertical: 10,
-                }}
-              >
-                {selectedAddress && selectedAddress._id == address?._id ? (
-                  <AntDesign name="checkcircle" size={24} color="#007AFF" />
-                ) : (
-                  <AntDesign
-                    onPress={() => setSelectedAddress(address)}
-                    name="checkcircleo"
-                    size={24}
-                    color="#007AFF"
-                  />
-                )}
-
-                <View style={{ marginLeft: 10 }}>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: 3,
-                    }}
-                  >
-                    <Text style={{ fontSize: 15, fontWeight: "bold" }}>
-                      <MaterialIcons
-                        name="location-pin"
-                        size={24}
-                        color="#007AFF"
-                      />
+                  <View style={{ marginLeft: 10 }}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 3,
+                      }}
+                    >
+                      <Text style={{ fontSize: 15, fontWeight: "bold" }}>
+                        <MaterialIcons
+                          name="location-pin"
+                          size={24}
+                          color="#007AFF"
+                        />
+                      </Text>
+                    </View>
+                    <Text style={{ fontSize: 15, color: "#181818" }}>
+                      {address?.blockNo} {address?.street}
                     </Text>
+
+                    <Text style={{ fontSize: 15, color: "#181818" }}>
+                      {address?.unit} {address?.building}
+                    </Text>
+
+                    <Text style={{ fontSize: 15, color: "#181818" }}>
+                      Singapore {address?.postalCode}
+                    </Text>
+
+                    <View>
+                      {selectedAddress &&
+                        selectedAddress._id == address?._id && (
+                          <Pressable
+                            onPress={() => setCurrentStep(1)}
+                            style={{
+                              backgroundColor: "#007FFF",
+                              width: 200,
+                              padding: 10,
+                              borderRadius: 20,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              marginTop: 10,
+                            }}
+                          >
+                            <Text
+                              style={{
+                                textAlign: "center",
+                                color: "white",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              Deliver to this Address
+                            </Text>
+                          </Pressable>
+                        )}
+                    </View>
                   </View>
-                  <Text style={{ fontSize: 15, color: "#181818" }}>
-                    {address?.blockNo} {address?.street}
-                  </Text>
-
-                  <Text style={{ fontSize: 15, color: "#181818" }}>
-                    {address?.unit} {address?.building}
-                  </Text>
-
-                  <Text style={{ fontSize: 15, color: "#181818" }}>
-                    Singapore {address?.postalCode}
-                  </Text>
-
-                  <View>
-                    {selectedAddress && selectedAddress._id == address?._id && (
-                      <Pressable
-                        onPress={() => setCurrentStep(1)}
-                        style={{
-                          backgroundColor: "#007FFF",
-                          width: 200,
-                          padding: 10,
-                          borderRadius: 20,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          marginTop: 10,
-                        }}
-                      >
-                        <Text
-                          style={{
-                            textAlign: "center",
-                            color: "white",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          Deliver to this Address
-                        </Text>
-                      </Pressable>
-                    )}
-                  </View>
-                </View>
-              </Pressable>
-            ))}
-          </Pressable>
+                </Pressable>
+              ))}
+            </Pressable>
+          )}
         </View>
       )}
 
@@ -302,9 +381,15 @@ const PurchaseScreen = () => {
             </Text>
           </View>
 
+          {!!errorDelivery && (
+            <Text style={{ color: "red", marginBottom: 5, marginTop: 5 }}>
+              {errorDelivery}
+            </Text>
+          )}
+
           <View style={{ marginTop: 25 }} />
 
-          <CustomButton onPress={() => setCurrentStep(2)} text="Continue" />
+          <CustomButton onPress={handleContinueToPayment} text="Continue" />
         </View>
       )}
 
@@ -314,32 +399,6 @@ const PurchaseScreen = () => {
           <Text style={{ fontSize: 17, fontWeight: "bold" }}>
             Select your Payment Method
           </Text>
-
-          <View
-            style={{
-              backgroundColor: "white",
-              borderWidth: 1,
-              borderColor: "#D0D0D0",
-              padding: 10,
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 5,
-              marginVertical: 10,
-            }}
-          >
-            {selectedPayment == "paypal" ? (
-              <AntDesign name="checkcircle" size={24} color="#007AFF" />
-            ) : (
-              <AntDesign
-                onPress={() => setSelectedPayment("paypal")}
-                name="checkcircleo"
-                size={24}
-                color="#007AFF"
-              />
-            )}
-
-            <Text style={{ flex: 1, marginLeft: 10 }}>PayPal</Text>
-          </View>
 
           <View
             style={{
@@ -393,9 +452,18 @@ const PurchaseScreen = () => {
             <Text style={{ flex: 1, marginLeft: 10 }}>Credit/Debit Card</Text>
           </View>
 
+          {!!errorPayment && (
+            <Text style={{ color: "red", marginBottom: 5, marginTop: 5 }}>
+              {errorPayment}
+            </Text>
+          )}
+
           <View style={{ marginTop: 25 }} />
 
-          <CustomButton onPress={() => setCurrentStep(3)} text="Continue" />
+          <CustomButton
+            onPress={handleContinueToOrderSummary}
+            text="Continue"
+          />
         </View>
       )}
 
@@ -520,9 +588,7 @@ const PurchaseScreen = () => {
             <View>
               <Text style={{ fontSize: 17, fontWeight: "bold" }}>Pay with</Text>
               <Text style={{ marginTop: 5, fontSize: 15, color: "gray" }}>
-                {selectedPayment == "paypal"
-                  ? "Pay Online (PayPal)"
-                  : selectedPayment == "cash"
+                {selectedPayment == "cash"
                   ? "Pay on delivery (Cash)"
                   : "Pay Online (Credit/Debit Card)"}
               </Text>
@@ -531,7 +597,25 @@ const PurchaseScreen = () => {
 
           <View style={{ marginTop: 25 }} />
 
-          <CustomButton onPress={handlePlaceOrder} text="Place Order" />
+          <CustomButton
+            onPress={() => {
+              if (selectedPayment === "card") {
+                navigation.navigate("CardPayment", {
+                  user: userId,
+                  orderItem: selectedItem,
+                  status: "PAID",
+                  subtotal: totalPrice,
+                  shippingFee,
+                  totalPrice: totalPrice + shippingFee,
+                  shippingAddress: selectedAddress,
+                  paymentMethod: selectedPayment,
+                });
+              } else {
+                handlePlaceOrder();
+              }
+            }}
+            text="Place Order"
+          />
         </View>
       )}
     </ScrollView>

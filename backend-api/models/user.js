@@ -12,6 +12,10 @@ const userSchema = new mongoose.Schema({
   },
   image: {
     type: String,
+    default: "25967c1621c8ea52b526886251cf9ff0121e09ea6535986f9a554a125a1988c6",
+  },
+  imageUrl: {
+    type: String,
     default: "",
   },
   studentId: {
@@ -41,6 +45,26 @@ const userSchema = new mongoose.Schema({
   gender: {
     type: String,
     default: "",
+  },
+  studentIdVisible: {
+    type: Boolean,
+    default: false,
+  },
+  majorVisible: {
+    type: Boolean,
+    default: true,
+  },
+  facultyVisible: {
+    type: Boolean,
+    default: true,
+  },
+  addressVisible: {
+    type: Boolean,
+    default: false,
+  },
+  emailVisible: {
+    type: Boolean,
+    default: false,
   },
   totalRating: {
     type: Number,
@@ -81,30 +105,12 @@ const userSchema = new mongoose.Schema({
     },
   ],
   defaultAddress: {
-    _id: {
-      type: String,
-      required: true,
-    },
-    blockNo: {
-      type: String,
-      required: true,
-    },
-    street: {
-      type: String,
-      required: true,
-    },
-    unit: {
-      type: String,
-      default: "",
-    },
-    building: {
-      type: String,
-      default: "",
-    },
-    postalCode: {
-      type: String,
-      required: true,
-    },
+    _id: String,
+    blockNo: String,
+    street: String,
+    unit: String,
+    building: String,
+    postalCode: String,
   },
   orders: [
     {

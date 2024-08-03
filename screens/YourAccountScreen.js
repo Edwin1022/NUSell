@@ -8,9 +8,16 @@ import {
   ScrollView,
   Alert,
   TouchableOpacity,
+  StyleSheet
 } from "react-native";
-import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import CustomRadioButton from "../components/CustomRadioButton";
@@ -20,6 +27,7 @@ import * as ImagePicker from "expo-image-picker";
 import ModalScreen from "./ModalScreen";
 import { UserContext } from "../UserContext";
 import CustomButton from "../components/CustomButton";
+import { Ionicons } from "@expo/vector-icons";
 
 const YourAccountScreen = () => {
   const { user, setUser } = useContext(UserContext);
@@ -68,19 +76,19 @@ const YourAccountScreen = () => {
     });
   }, []);
 
+  const fetchUserData = async () => {
+    try {
+      const res = await axios.put(
+        `https://nusell.onrender.com/users/getUserData?email=${user.email}`
+      );
+      setUser(res.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   // retrieve user data from the backend
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const res = await axios.get(
-          `http://192.168.0.110:8000/users/getUserData?email=${user.email}`
-        );
-        setUser(res.data.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
     fetchUserData();
   }, []);
 
@@ -88,11 +96,8 @@ const YourAccountScreen = () => {
     if (user.gender) {
       setGender(user.gender);
     }
-    if (user.mobileNo) {
-      setMobileNo(user.mobile);
-    }
     if (user.image) {
-      setImage(user.image);
+      setImage(user.imageUrl);
     } else {
       setImage(placeholderImage);
     }
@@ -154,131 +159,147 @@ const YourAccountScreen = () => {
     navigation.replace("ForgotPassword");
   };
 
-  // allow users to edit their genders
-  useEffect(() => {
-    const loadGender = async () => {
+  const [errorMobileNo, setErrorMobileNo] = useState("");
+  const [errorTeleHandle, setErrorTeleHandle] = useState("");
+  const [errorUsername, setErrorUsername] = useState("");
+
+  function countCharsWithoutSpaces(text) {
+    // Remove spaces from the string
+    const textWithoutSpaces = text.replace(/\s+/g, '');
+    // Return the length of the modified string
+    return textWithoutSpaces.length;
+  }
+  
+  const handleUpdateProfile = async () => {
+
+    setErrorMobileNo(null);
+    setErrorTeleHandle(null);
+    setErrorUsername(null);
+
+    let isValid = true;
+
+    if (name !== "" && countCharsWithoutSpaces(name) == 0) {
+      setErrorUsername("Username is required")
+      isValid=false;
+    }
+
+    //if mobileNo is spacebar mobileNo === "" will return false
+    if (mobileNo !== "" && countCharsWithoutSpaces(mobileNo) == 0) {
+      setErrorMobileNo("Please provide a mobile number for contact")
+      isValid=false;
+    }
+
+    if (teleHandle !== "" && countCharsWithoutSpaces(teleHandle) == 0) {
+      setErrorTeleHandle("Please provide a Telegram Handle for contact")
+      isValid=false;
+    }
+   
+    if (isValid) {
+      const updatedUser = {
+        email: user.email,
+        image: image || user.image,
+        name: name || user.name,
+        gender: gender || user.gender,
+        mobileNo: mobileNo || user.mobileNo,
+        teleHandle: teleHandle || user.teleHandle,
+        studentId: studentId || user.studentId,
+        faculty: faculty || user.faculty,
+        major: major || user.major,
+      };
+      
+      setUser(updatedUser);
+  
       try {
-        const savedGender = await AsyncStorage.getItem("selectedGender");
-        if (savedGender !== null) {
-          setGender(savedGender);
+        const formData = new FormData();
+        formData.append("user", JSON.stringify(updatedUser));
+        formData.append("image", {
+          uri: image,
+          type: "image/jpeg",
+          name: "profile.jpg",
+        });
+
+        // send a post request to the backend API
+        const response = await axios.put(
+          "https://nusell.onrender.com/users/updateProfile",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        fetchUserData();
+        Alert.alert(
+          "Profile Update Successful",
+          "You have updated your profile successfully"
+        );
+        setErrorMobileNo(null);
+        setErrorTeleHandle(null);
+        setErrorUsername(null);
+      } catch (error) {
+        console.log("profile update failed", error);
+        Alert.alert(
+          "Profile Update Error",
+          "An error occurred during profile update"
+        );
+      }
+    } 
+  };
+
+  const [buttonStates, setButtonStates] = useState({
+    button1: false,
+    button2: false,
+    button3: false,
+    button4: false,
+    button5: false,
+  });
+
+  useEffect(() => {
+    const loadButtonStates = async () => {
+      try {
+        const savedStates = await AsyncStorage.getItem('buttonStates');
+        if (savedStates) {
+          setButtonStates(JSON.parse(savedStates));
         }
       } catch (error) {
-        console.error("Error loading gender:", error.message);
+        console.error('Failed to load button states:', error);
       }
     };
 
-    if (gender) {
-      loadGender();
-    }
+    loadButtonStates();
   }, []);
 
   useEffect(() => {
-    const saveGender = async () => {
+    const saveButtonStates = async () => {
       try {
-        await AsyncStorage.setItem("selectedGender", gender);
+        await AsyncStorage.setItem('buttonStates', JSON.stringify(buttonStates));
       } catch (error) {
-        console.error("Error saving gender:", error.message);
+        console.error('Failed to save button states:', error);
       }
     };
 
-    if (gender) {
-      saveGender();
-    }
-  }, [gender]);
+    saveButtonStates();
+  }, [buttonStates]);
 
-  const handleUpdateProfile = async () => {
-    const updatedUser = {
-      email: user.email,
-      image: image || user.image,
-      name: name || user.name,
-      gender: gender || user.gender,
-      mobileNo: mobileNo || user.mobileNo,
-      teleHandle: teleHandle || user.teleHandle,
-      studentId: studentId || user.studentId,
-      faculty: faculty || user.faculty,
-      major: major || user.major,
-    };
-
-    setUser(updatedUser);
-
-    try {
-      const formData = new FormData();
-      formData.append("user", JSON.stringify(updatedUser));
-      formData.append("image", {
-        uri: image,
-        type: "image/jpeg",
-        name: "profile.jpg",
-      });
-
-      // send a post request to the backend API
-      const response = await axios.post(
-        "http://192.168.0.110:8000/users/updateProfile",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      Alert.alert(
-        "Profile Update Successful",
-        "You have updated your profile successfully"
-      );
-    } catch (error) {
-      console.log("profile update failed", error);
-      Alert.alert(
-        "Profile Update Error",
-        "An error occurred during profile update"
-      );
-    }
+  const toggleButton = (button) => {
+    setButtonStates((prevState) => ({
+      ...prevState,
+      [button]: !prevState[button],
+    }));
   };
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
-    >
+    <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{ alignItems: "center", marginTop: 20 }}></View>
-
+        <View style={styles.randomMargin} />
         <KeyboardAvoidingView>
-          <View style={{ alignItems: "center" }}>
-            <Text
-              style={{
-                fontSize: 17,
-                fontWeight: "bold",
-                marginTop: 10,
-                color: "#041E42",
-              }}
-            >
-              Edit Your Profile
-            </Text>
+          <View style={{ alignItems: 'center' }}>
+            <Text style={styles.editProfiletext}>Edit Your Profile</Text>
           </View>
-
-          <View
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              position: "relative",
-            }}
-          >
-            <View
-              style={{
-                position: "absolute",
-                right: 105,
-                zIndex: 1,
-                bottom: 5,
-                height: 36,
-                width: 36,
-                backgroundColor: "#0163D2",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 18,
-              }}
-            >
-              <Back name="camera" size={22} style={{ color: "white" }} />
+          <View style={styles.profileContainer}>
+            <View style={styles.cameraIcon}>
+              <Back name="camera" size={22} style={{ color: 'white' }} />
             </View>
-
             <TouchableOpacity onPress={() => setModalVisible(true)}>
               <ModalScreen
                 image={image}
@@ -286,438 +307,279 @@ const YourAccountScreen = () => {
                 isVisible={modalVisible}
                 onClose={() => setModalVisible(false)}
                 onCameraPress={uploadImage}
-                onImagePress={() => uploadImage("gallery")}
+                onImagePress={() => uploadImage('gallery')}
                 onDeletePress={removeImage}
               />
               <Avatar.Image
                 size={140}
-                style={{
-                  borderRadius: 80,
-                  marginTop: 30,
-                  backgroundColor: "white",
-                  height: 160,
-                  width: 160,
-                  padding: 8,
-                  borderColor: "#ccc",
-                  borderWidth: 1,
-                  elevation: 4,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
+                style={styles.profilePicContainer}
                 source={image ? { uri: image } : { uri: placeholderImage }}
               />
             </TouchableOpacity>
           </View>
 
-          <View
-            style={{
-              marginTop: 30,
-            }}
-          >
-            <View
-              style={{
-                marginTop: 10,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderColor: "#e6e6e6",
-                borderBottomWidth: 1,
-                paddingBottom: 5,
-              }}
-            >
-              <Text
-                style={{ color: "#7d7c7c", fontSize: 16, fontWeight: "400" }}
-              >
-                Name
-              </Text>
+          <View style={{ marginTop: 30 }}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Name<Text style={{color: "red"}}>*</Text></Text>
               <TextInput
                 value={name}
                 onChangeText={(text) => setName(text)}
                 placeholder={user.name}
-                placeholderTextColor={"#999797"}
-                style={{
-                  color: "black",
-                  fontStyle: "normal",
-                  fontFamily: "Open Sans",
-                  fontSize: 15,
-                  textAlignVertical: "center",
-                  textAlign: "right",
-                  marginRight: 20,
-                }}
+                placeholderTextColor="#999797"
+                maxLength={24}
+                style={styles.textInput}
               />
             </View>
+            {!!errorUsername && <Text style={styles.error}>{errorUsername}</Text>}
           </View>
-
           <View style={{ marginTop: 30 }}>
-            <View
-              style={{
-                marginTop: 10,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderColor: "#e6e6e6",
-                borderBottomWidth: 1,
-                paddingBottom: 5,
-              }}
-            >
-              <Text
-                style={{ color: "#7d7c7c", fontSize: 16, fontWeight: "400" }}
-              >
-                Gender
-              </Text>
-
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <CustomRadioButton
-                    value={"Male"}
-                    gender={gender}
-                    setGender={setGender}
-                  />
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Gender</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={styles.radioContainer}>
+                  <CustomRadioButton value="Male" gender={gender} setGender={setGender} />
                 </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <CustomRadioButton
-                    value={"Female"}
-                    gender={gender}
-                    setGender={setGender}
-                  />
+                <View style={styles.radioContainer}>
+                  <CustomRadioButton value="Female" gender={gender} setGender={setGender} />
                 </View>
               </View>
             </View>
           </View>
-          <View
-            style={{
-              marginTop: 30,
-            }}
-          >
-            <View
-              style={{
-                marginTop: 10,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderColor: "#e6e6e6",
-                borderBottomWidth: 1,
-                paddingBottom: 5,
-              }}
-            >
-              <Text
-                style={{ color: "#7d7c7c", fontSize: 16, fontWeight: "400" }}
-              >
-                Student Id
-              </Text>
+
+          <View style={{ marginTop: 30 }}>
+            <View style={styles.inputContainer}>
+              <View style={styles.fieldsContainer}>
+                <Text style={styles.label}>Student Id</Text>
+                <Pressable onPress={() => toggleButton("button1")}>
+                  {buttonStates["button1"]? <Ionicons name="eye" size={16} color={"#808080"}/> : <Ionicons name="eye-outline" size={16} color={"#808080"}/>}
+                </Pressable>
+              </View>
+              
               <TextInput
                 value={studentId}
                 onChangeText={(text) => setStudentId(text)}
-                placeholder={user.studentId || "Eg. A1234567B"}
-                placeholderTextColor={"#999797"}
-                style={{
-                  color: "black",
-                  fontStyle: "normal",
-                  fontFamily: "Open Sans",
-                  fontSize: 15,
-                  textAlignVertical: "center",
-                  textAlign: "right",
-                  marginRight: 20,
-                }}
+                placeholder={ buttonStates["button1"] ? user.studentId.replace(/\d/g, '*') :( user.studentId || 'Eg. A1234567B')}
+                placeholderTextColor="#999797"
+                style={styles.textInput}
               />
             </View>
           </View>
-
-          <View
-            style={{
-              marginTop: 30,
-            }}
-          >
-            <View
-              style={{
-                marginTop: 10,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderColor: "#e6e6e6",
-                borderBottomWidth: 1,
-                paddingBottom: 5,
-              }}
-            >
-              <Text
-                style={{ color: "#7d7c7c", fontSize: 16, fontWeight: "400" }}
-              >
-                Faculty
-              </Text>
+          <View style={{ marginTop: 30 }}>
+            <View style={styles.inputContainer}>
+              <View style={styles.fieldsContainer}>
+                <Text style={styles.label}>Faculty</Text>
+                <Pressable onPress={() => toggleButton("button2")}>
+                  {buttonStates["button2"] ? <Ionicons name="eye" size={16} color={"#808080"}/> : <Ionicons name="eye-outline" size={16} color={"#808080"}/>}
+                </Pressable>
+              </View>
               <TextInput
                 value={faculty}
                 onChangeText={(text) => setFaculty(text)}
-                placeholder={user.faculty || "Eg. School of Computing"}
-                placeholderTextColor={"#999797"}
-                style={{
-                  color: "black",
-                  fontStyle: "normal",
-                  fontFamily: "Open Sans",
-                  fontSize: 15,
-                  textAlignVertical: "center",
-                  textAlign: "right",
-                  marginRight: 20,
-                }}
+                placeholder={ buttonStates["button2"] ? user.faculty.replace(/[a-zA-Z]/g, '*') :( user.faculty || 'Eg. School of Computing')}
+                placeholderTextColor="#999797"
+                style={styles.textInput}
               />
             </View>
           </View>
-
-          <View
-            style={{
-              marginTop: 30,
-            }}
-          >
-            <View
-              style={{
-                marginTop: 10,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderColor: "#e6e6e6",
-                borderBottomWidth: 1,
-                paddingBottom: 5,
-              }}
-            >
-              <Text
-                style={{ color: "#7d7c7c", fontSize: 16, fontWeight: "400" }}
-              >
-                Major
-              </Text>
+          <View style={{ marginTop: 30 }}>
+            <View style={styles.inputContainer}>
+              <View style={styles.fieldsContainer}>
+                <Text style={styles.label}>Major</Text>
+                <Pressable onPress={() => toggleButton("button3")}>
+                  {buttonStates["button3"] ? <Ionicons name="eye" size={16} color={"#808080"}/> : <Ionicons name="eye-outline" size={16} color={"#808080"}/> }
+                </Pressable>
+              </View>
               <TextInput
                 value={major}
                 onChangeText={(text) => setMajor(text)}
-                placeholder={user.major || "Eg. Computer Science"}
-                placeholderTextColor={"#999797"}
-                style={{
-                  color: "black",
-                  fontStyle: "normal",
-                  fontFamily: "Open Sans",
-                  fontSize: 15,
-                  textAlignVertical: "center",
-                  textAlign: "right",
-                  marginRight: 20,
-                }}
+                placeholder={ buttonStates["button3"]? user.major.replace(/[a-zA-Z]/g, '*') :( user.major || 'Eg. Computer Science')}
+                placeholderTextColor="#999797"
+                style={styles.textInput}
               />
             </View>
           </View>
-
-          <View
-            style={{
-              marginTop: 30,
-            }}
-          >
-            <View
-              style={{
-                marginTop: 10,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderColor: "#e6e6e6",
-                borderBottomWidth: 1,
-                paddingBottom: 5,
-              }}
-            >
-              <Text
-                style={{ color: "#7d7c7c", fontSize: 16, fontWeight: "400" }}
-              >
-                Mobile No.
-              </Text>
+          <View style={{ marginTop: 30 }}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Mobile No.<Text style={{color: "red"}}>*</Text></Text>
               <TextInput
                 value={mobileNo}
                 onChangeText={(text) => setMobileNo(text)}
-                placeholder={user.mobileNo || "xxxxxxxx"}
-                placeholderTextColor={"#999797"}
-                style={{
-                  color: "black",
-                  fontStyle: "normal",
-                  fontFamily: "Open Sans",
-                  fontSize: 15,
-                  textAlignVertical: "center",
-                  textAlign: "right",
-                  marginRight: 20,
-                }}
+                placeholder={user.mobileNo || 'xxxxxxxx'}
+                placeholderTextColor="#999797"
+                style={styles.textInput}
+                keyboardType="numeric"
               />
             </View>
+            {!!errorMobileNo && <Text style={styles.error}>{errorMobileNo}</Text>}
           </View>
-
-          <View
-            style={{
-              marginTop: 30,
-            }}
-          >
-            <View
-              style={{
-                marginTop: 10,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderColor: "#e6e6e6",
-                borderBottomWidth: 1,
-                paddingBottom: 5,
-              }}
-            >
-              <Text
-                style={{ color: "#7d7c7c", fontSize: 16, fontWeight: "400" }}
-              >
-                Telegram Handle
-              </Text>
+          <View style={{ marginTop: 30 }}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Telegram Handle<Text style={{color: "red"}}>*</Text></Text>
               <TextInput
                 value={teleHandle}
                 onChangeText={(text) => setTeleHandle(text)}
-                placeholder={user.teleHandle || "Eg. @edwin_1022"}
-                placeholderTextColor={"#999797"}
-                style={{
-                  color: "black",
-                  fontStyle: "normal",
-                  fontFamily: "Open Sans",
-                  fontSize: 15,
-                  textAlignVertical: "center",
-                  textAlign: "right",
-                  marginRight: 20,
-                }}
+                placeholder={user.teleHandle || 'Eg. @edwin_1022'}
+                placeholderTextColor="#999797"
+                style={styles.textInput}
               />
             </View>
+            {!!errorTeleHandle && <Text style={styles.error}>{errorTeleHandle}</Text>}
           </View>
-
-          <View
-            style={{
-              marginTop: 30,
-            }}
-          >
-            <View
-              style={{
-                marginTop: 10,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderColor: "#e6e6e6",
-                borderBottomWidth: 1,
-                paddingBottom: 5,
-              }}
-            >
-              <Text
-                style={{ color: "#7d7c7c", fontSize: 16, fontWeight: "400" }}
-              >
-                Email
-              </Text>
-              <Text
-                style={{
-                  color: "#999797",
-                  fontStyle: "normal",
-                  fontFamily: "Open Sans",
-                  fontSize: 15,
-                  textAlignVertical: "center",
-                  textAlign: "right",
-                  marginRight: 20,
-                }}
-              >
-                {user.email}
-              </Text>
+          <View style={{ marginTop: 30 }}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Email</Text>
+              <Text style={styles.emailText}>{user.email}</Text>
             </View>
           </View>
-
-          <Text
-            style={{
-              marginTop: 5,
-              marginLeft: 20,
-              marginRight: 20,
-              textAlign: "left",
-            }}
-          >
-            Do note that{" "}
-            <Text style={{ fontWeight: "bold", color: "#007FFF" }}>email</Text>{" "}
-            is{" "}
-            <Text style={{ fontWeight: "bold", color: "red" }}>
-              not changeable
-            </Text>
-            {". "}
+          <Text style={styles.note}>
+            Do note that <Text style={styles.emailHighlight}>email</Text> is{' '}
+            <Text style={styles.emailWarning}>not changeable</Text>{'. '}
           </Text>
-
-          <View
-            style={{
-              marginTop: 30,
-            }}
-          >
-            <View
-              style={{
-                marginTop: 10,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderColor: "#e6e6e6",
-                borderBottomWidth: 1,
-                paddingBottom: 5,
-              }}
-            >
-              <Text
-                style={{ color: "#7d7c7c", fontSize: 16, fontWeight: "400" }}
-              >
-                Password
-              </Text>
+          <View style={{ marginTop: 30 }}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Password</Text>
               <Pressable onPress={handleResetPassword}>
-                <Text
-                  style={{
-                    color: "#007FFF",
-                    fontWeight: "bold",
-                    marginRight: 20,
-                  }}
-                >
-                  ********
-                </Text>
+                <Text style={styles.passwordText}>********</Text>
               </Pressable>
             </View>
-
-            <Text
-              style={{
-                marginTop: 5,
-                marginLeft: 20,
-                marginRight: 20,
-                textAlign: "left",
-              }}
-            >
-              Click on your{" "}
-              <Text style={{ fontWeight: "bold", color: "#007FFF" }}>
-                password
-              </Text>{" "}
-              above to reset your{" "}
-              <Text style={{ fontWeight: "bold", color: "#007FFF" }}>
-                password
-              </Text>
-              {". "}
-              Do note that resetting your{"\n"}
-              <Text style={{ fontWeight: "bold", color: "#007FFF" }}>
-                password
-              </Text>{" "}
-              will{" "}
-              <Text style={{ fontWeight: "bold", color: "red" }}>
-                log you out
-              </Text>{" "}
-              from this account.
+            <Text style={styles.note}>
+              Click on your <Text style={styles.passwordHighlight}>password</Text> above to reset your{' '}
+              <Text style={styles.passwordHighlight}>password</Text>
+              {'. '}
+              Do note that resetting your{'\n'}
+              <Text style={styles.passwordHighlight}>password</Text> will{' '}
+              <Text style={styles.logoutWarning}>log you out</Text> from this account.
             </Text>
           </View>
-
           <View style={{ marginTop: 50 }} />
-
-          <CustomButton
-            onPress={handleUpdateProfile}
-            text="Update Your Profile"
-          />
+          <CustomButton onPress={handleUpdateProfile} text="Update Your Profile" />
         </KeyboardAvoidingView>
       </ScrollView>
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  fieldsContainer: {
+    flexDirection: "row",
+    alignItems: "center"
+ },
+
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    alignItems: 'center',
+  },
+  randomMargin: {
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  editProfiletext: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    marginTop: 10,
+    color: '#041E42',
+  },
+  profileContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  cameraIcon: {
+    position: 'absolute',
+    right: 105,
+    zIndex: 1,
+    bottom: 5,
+    height: 36,
+    width: 36,
+    backgroundColor: '#0163D2',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 18,
+  },
+  profilePicContainer: {
+    borderRadius: 80,
+    marginTop: 30,
+    backgroundColor: 'white',
+    height: 160,
+    width: 160,
+    padding: 8,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    elevation: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  inputContainer: {
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderColor: '#e6e6e6',
+    borderBottomWidth: 1,
+    paddingBottom: 5,
+  },
+  label: {
+    color: '#7d7c7c',
+    fontSize: 16,
+    fontWeight: '400',
+    marginRight: 10
+  },
+  textInput: {
+    color: 'black',
+    fontStyle: 'normal',
+    fontFamily: 'Open Sans',
+    fontSize: 15,
+    textAlignVertical: 'center',
+    textAlign: 'right',
+    marginRight: 20,
+  },
+  radioContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emailText: {
+    color: '#999797',
+    fontStyle: 'normal',
+    fontFamily: 'Open Sans',
+    fontSize: 15,
+    textAlignVertical: 'center',
+    textAlign: 'right',
+    marginRight: 20,
+  },
+  note: {
+    marginTop: 5,
+    marginLeft: 20,
+    marginRight: 20,
+    textAlign: 'left',
+  },
+  emailHighlight: {
+    fontWeight: 'bold',
+    color: '#007FFF',
+  },
+  emailWarning: {
+    fontWeight: 'bold',
+    color: 'red',
+  },
+  passwordText: {
+    color: '#007FFF',
+    fontWeight: 'bold',
+    marginRight: 20,
+  },
+  passwordHighlight: {
+    fontWeight: 'bold',
+    color: '#007FFF',
+  },
+  logoutWarning: {
+    fontWeight: 'bold',
+    color: 'red',
+  },
+  
+  error: {
+    color: "red"
+  }
+
+})
 
 export default YourAccountScreen;

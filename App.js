@@ -3,18 +3,26 @@ import { StyleSheet, Text, View } from "react-native";
 import StackNavigator from "./navigation/StackNavigator";
 import { UserProvider } from "./UserContext";
 import { ProductProvider } from "./ProductContext";
-import store from "./store";
-import { Provider } from "react-redux";
+import { ListingProvider } from "./ListingContext";
+import { DependentButtonProvider } from "./DependentButtonContext";
+import { StripeProvider } from "@stripe/stripe-react-native";
+import { IndependentButtonProvider } from "./IndependentButtonContext";
 
 export default function App() {
   return (
-    <Provider store={store}>
+    <StripeProvider publishableKey="pk_test_51Pd6exHdICOCnNReDkJ5x6xFbJCtWOq2l2ULNN0ha5OVAjclUmFaxkvLXkCdPhBfCMHFhW0sMgd6iOQLTlHjfqH3006X9i62Mp">
       <UserProvider>
         <ProductProvider>
-          <StackNavigator />
+          <ListingProvider>
+            <DependentButtonProvider>
+              <IndependentButtonProvider>
+                <StackNavigator />
+              </IndependentButtonProvider>
+            </DependentButtonProvider>
+          </ListingProvider>
         </ProductProvider>
       </UserProvider>
-    </Provider>
+    </StripeProvider>
   );
 }
 

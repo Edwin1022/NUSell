@@ -6,13 +6,10 @@ const orderSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  orderItems: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "OrderItem",
-      required: true,
-    },
-  ],
+  orderedItem: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Product",
+  },
   status: {
     type: String,
     required: true,
@@ -50,7 +47,7 @@ const orderSchema = new mongoose.Schema({
   },
   dateOrdered: {
     type: Date,
-    default: Date.now(),
+    default: Date.now,
   },
 });
 

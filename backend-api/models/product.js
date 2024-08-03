@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 
 const productSchema = mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   name: {
     type: String,
     required: true,
@@ -17,7 +22,16 @@ const productSchema = mongoose.Schema({
     type: String,
     default: "",
   },
+  imageUrl: {
+    type: String,
+    default: "",
+  },
   images: [
+    {
+      type: String,
+    },
+  ],
+  imagesUrls: [
     {
       type: String,
     },
@@ -45,6 +59,22 @@ const productSchema = mongoose.Schema({
     type: String,
     default: "",
   },
+  location: {
+    type: { type: String, default: "Point" },
+    coordinates: { type: [Number], default: [0, 0] }, // [longitude, latitude]
+  },
+  priceChangeType: {
+    type: String,
+    default: "",
+  },
+  priceChanged: {
+    type: Number,
+    default: 0,
+  },
+  status: {
+    type: String,
+    default: "",
+  },
   isFeatured: {
     type: Boolean,
     default: false,
@@ -62,5 +92,7 @@ productSchema.virtual("id").get(function () {
 productSchema.set("toJSON", {
   virtuals: true,
 });
+
+productSchema.index({ location: "2dsphere" });
 
 exports.Product = mongoose.model("Product", productSchema);

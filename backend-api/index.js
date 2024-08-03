@@ -24,15 +24,15 @@ const connection = process.env.CONNECTION;
 const usersRoutes = require("./routes/users");
 const categoriesRoutes = require("./routes/categories");
 const productsRoutes = require("./routes/products");
+const orderItemsRoutes = require("./routes/order-items");
 const ordersRoutes = require("./routes/orders");
-const googleCloudVisionRoutes = require("./routes/googleCloudVision");
 
 //routers
 app.use(`/users`, usersRoutes);
 app.use(`/categories`, categoriesRoutes);
 app.use(`/products`, productsRoutes);
+app.use(`/order-items`, orderItemsRoutes);
 app.use(`/orders`, ordersRoutes);
-app.use(`/googleCloudVision`, googleCloudVisionRoutes);
 
 mongoose
   .connect(connection)
@@ -46,3 +46,5 @@ mongoose
 app.listen(port, () => {
   console.log("Server is running on port " + port);
 });
+
+module.exports = app;

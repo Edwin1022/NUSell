@@ -7,7 +7,7 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import React, { useContext, useLayoutEffect, useState } from "react";
+import React, { useContext, useLayoutEffect } from "react";
 import Logo from "../assets/images/NUSell_app_icon.png";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
@@ -54,7 +54,7 @@ const ForgotPasswordScreen = () => {
 
     // send a post request to the backend API
     axios
-      .post("http://192.168.0.110:8000/users/resetPassword", user)
+      .post("https://nusell.onrender.com/users/resetPassword", user)
       .then((response) => {
         console.log(response);
         Alert.alert(

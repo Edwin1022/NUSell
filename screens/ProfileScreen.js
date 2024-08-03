@@ -5,11 +5,11 @@ import { AntDesign } from "@expo/vector-icons";
 import axios from "axios";
 import { UserContext } from "../UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import CustomButton from "../components/CustomButton";
 import { MaterialIcons } from "@expo/vector-icons";
 
 const ProfileScreen = () => {
   const { userId } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const navigation = useNavigation();
 
   // header
@@ -52,21 +52,20 @@ const ProfileScreen = () => {
     });
   }, []);
 
-  const { user, setUser } = useContext(UserContext);
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await axios.get(
-          `http://192.168.0.110:8000/users/profile/${userId}`
-        );
-        const { user } = response.data;
-        setUser(user);
-      } catch (error) {
-        console.log("error", error);
-      }
-    };
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(
+        `https://nusell.onrender.com/users/profile/${userId}`
+      );
+      const { user } = response.data;
+      setUser(user);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
-    fetchUserProfile();
+  useEffect(() => {
+    fetchUserData();
   }, []);
 
   const logout = () => {
@@ -161,6 +160,58 @@ const ProfileScreen = () => {
       </Pressable>
 
       <Pressable
+        onPress={() => navigation.navigate("Address")}
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          borderColor: "#D0D0D0",
+          borderWidth: 1,
+          borderLeftWidth: 0,
+          borderRightWidth: 0,
+          paddingVertical: 15,
+          paddingHorizontal: 5,
+        }}
+      >
+        <View style={{ marginLeft: 10 }}>
+          <Text style={{ fontSize: 18, fontWeight: 500 }}>Your Addresses</Text>
+        </View>
+        <MaterialIcons
+          style={{ marginRight: 20 }}
+          name="keyboard-arrow-right"
+          size={24}
+          color="black"
+        />
+      </Pressable>
+
+      <Pressable
+        onPress={() => navigation.navigate("Privacy")}
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          borderColor: "#D0D0D0",
+          borderWidth: 1,
+          borderLeftWidth: 0,
+          borderRightWidth: 0,
+          paddingVertical: 15,
+          paddingHorizontal: 5,
+        }}
+      >
+        <View style={{ marginLeft: 10 }}>
+          <Text style={{ fontSize: 18, fontWeight: 500 }}>
+            Privacy Settings
+          </Text>
+        </View>
+        <MaterialIcons
+          style={{ marginRight: 20 }}
+          name="keyboard-arrow-right"
+          size={24}
+          color="black"
+        />
+      </Pressable>
+
+      <Pressable
         onPress={logout}
         style={{
           flexDirection: "row",
@@ -175,7 +226,9 @@ const ProfileScreen = () => {
         }}
       >
         <View style={{ marginLeft: 10 }}>
-          <Text style={{ color: "red", fontSize: 18, fontWeight: 500 }}>Log Out</Text>
+          <Text style={{ color: "red", fontSize: 18, fontWeight: 500 }}>
+            Log Out
+          </Text>
         </View>
         <MaterialIcons
           style={{ marginRight: 20 }}
@@ -184,41 +237,6 @@ const ProfileScreen = () => {
           color="red"
         />
       </Pressable>
-
-      {/*dummy buttons*/}
-      <View style={{ alignItems: "center" }}>
-        <Text
-          style={{
-            fontSize: 17,
-            fontWeight: "bold",
-            marginTop: 50,
-            color: "#041E42",
-          }}
-        >
-          Dummy Buttons
-        </Text>
-      </View>
-
-      <View style={{ marginTop: 20 }} />
-
-      <CustomButton
-        onPress={() => navigation.navigate("Address")}
-        text="AddressScreen"
-      />
-
-      <View style={{ marginTop: 20 }} />
-
-      <CustomButton
-        onPress={() => navigation.navigate("Purchase")}
-        text="PurchaseScreen"
-      />
-
-      <View style={{ marginTop: 20 }} />
-
-      <CustomButton
-        onPress={() => navigation.navigate("UserProfile")}
-        text="UserProfileScreen"
-      />
     </ScrollView>
   );
 };
