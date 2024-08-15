@@ -23,13 +23,6 @@ beforeAll(async () => {
   });
 });
 
-afterEach(async () => {
-  await Order.deleteMany({});
-  await Product.deleteMany({});
-  await User.deleteMany({});
-  await Category.deleteMany({});
-});
-
 afterAll(async () => {
   await mongoose.connection.close();
 });

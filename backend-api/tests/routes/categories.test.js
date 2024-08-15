@@ -11,10 +11,6 @@ beforeAll(async () => {
   await mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
 });
 
-afterEach(async () => {
-  await Category.deleteMany({});
-});
-
 afterAll(async () => {
   await mongoose.connection.close();
 });

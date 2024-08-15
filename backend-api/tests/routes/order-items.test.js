@@ -17,12 +17,6 @@ beforeAll(async () => {
   });
 });
 
-afterEach(async () => {
-  await OrderItem.deleteMany({});
-  await Product.deleteMany({});
-  await User.deleteMany({});
-});
-
 afterAll(async () => {
   await mongoose.connection.close();
 });
